@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Communication Preferences</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6fb;
+            margin: 0;
+            padding: 20px;
+            color: #222;
+        }
+
+        .container {
+            background: white;
+            max-width: 420px;
+            margin: 40px auto;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            font-size: 25px;
+            text-align: center;
+            color: #263b63;
+        }
+
+        p {
+            text-align: center;
+            color: #555;
+        }
+
+        fieldset {
+            border: none;
+            padding: 0;
+            margin: 25px 0;
+        }
+
+        legend {
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .option {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 15px;
+            margin-bottom: 12px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .option:hover {
+            background-color: #eef3ff;
+        }
+
+        input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: #3458a4;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background-color: #3458a4;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 17px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #263b63;
+        }
+
+        button:focus-visible,
+        input:focus-visible {
+            outline: 3px solid #e09b24;
+            outline-offset: 3px;
+        }
+
+        #message {
+            margin-top: 15px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <main class="container">
+
+        <h1>Communication Preferences</h1>
+
+        <p>How do you prefer to communicate with your team?</p>
+
+        <form id="preferencesForm">
+
+            <fieldset>
+                <legend>Select your preferred options:</legend>
+
+                <label class="option">
+                    <input type="checkbox" name="communication" value="Email">
+                    Email
+                </label>
+
+                <label class="option">
+                    <input type="checkbox" name="communication" value="In-app Chat">
+                    In-app Chat
+                </label>
+
+                <label class="option">
+                    <input type="checkbox" name="communication" value="Discord">
+                    Discord
+                </label>
+
+                <label class="option">
+                    <input type="checkbox" name="communication" value="Zoom / Meet">
+                    Zoom / Meet
+                </label>
+
+                <label class="option">
+                    <input type="checkbox" name="communication" value="Other">
+                    Other
+                </label>
+
+            </fieldset>
+
+            <button type="submit">Next</button>
+
+            <p id="message" role="status" aria-live="polite"></p>
+
+        </form>
+
+    </main>
+
+    <script>
+        document.getElementById("preferencesForm")
+            .addEventListener("submit", function(event) {
+
+                event.preventDefault();
+
+                const selected = Array.from(
+                    document.querySelectorAll(
+                        'input[name="communication"]:checked'
+                    )
+                ).map(input => input.value);
+
+                const message = document.getElementById("message");
+
+                if (selected.length === 0) {
+                    message.textContent =
+                        "Please select at least one option.";
+                    return;
+                }
+
+                try {
+                    localStorage.setItem(
+                        "communicationPreferences",
+                        JSON.stringify(selected)
+                    );
+
+                    message.textContent =
+                        "Preferences saved for this demo! We will connect the next screen soon.";
+
+                } catch (error) {
+                    message.textContent =
+                        "Could not save preferences. Please try again.";
+                }
+            });
+    </script>
+
+</body>
+</html>
