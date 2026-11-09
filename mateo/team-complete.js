@@ -23,7 +23,7 @@
             member_one:"{count} joined member",
             member_other:"{count} joined members",
             preferences:"Continue to preferences",
-            note:"The preferences connection is pending. Erdeta's screens still need to be merged and connected to this team.",
+            note:"Next, choose your working preferences. Your preference answers are currently saved only in this browser.",
             refresh:"Refresh",
             navigation:"Team navigation"
         },
@@ -46,7 +46,7 @@
             member_few:"{count} pridružena člana",
             member_other:"{count} pridruženih članova",
             preferences:"Nastavi na preferencije",
-            note:"Povezivanje s preferencijama još nije dovršeno. Erdetine stranice treba spojiti i povezati s ovim timom.",
+            note:"Zatim odaberite svoje radne preferencije. Vaši odgovori trenutačno se spremaju samo u ovom pregledniku.",
             refresh:"Osvježi",
             navigation:"Navigacija tima"
         },
@@ -68,7 +68,7 @@
             member_one:"{count} anëtar i bashkuar",
             member_other:"{count} anëtarë të bashkuar",
             preferences:"Vazhdo te preferencat",
-            note:"Lidhja me preferencat është ende në pritje. Faqet e Erdetës duhet të bashkohen dhe të lidhen me këtë ekip.",
+            note:"Më pas zgjidhni preferencat tuaja të punës. Përgjigjet tuaja aktualisht ruhen vetëm në këtë shfletues.",
             refresh:"Rifresko",
             navigation:"Navigimi i ekipit"
         }
@@ -121,6 +121,7 @@
     const refresh=document.querySelector("#complete-refresh");
     const membersLink=document.querySelector("#complete-members-link");
     const statusLink=document.querySelector("#complete-status-link");
+    const preferencesButton=document.querySelector("#complete-preferences");
 
     let team=null;
     let memberCount=0;
@@ -144,7 +145,9 @@
 
         document.querySelector("#complete-team-label").textContent=text("team");
         document.querySelector("#complete-project-label").textContent=text("project");
-        document.querySelector("#complete-preferences").textContent=text("preferences");
+
+        preferencesButton.textContent=text("preferences");
+        preferencesButton.disabled=!ready || busy;
 
         document.querySelector("#complete-preferences-note").textContent=ready
             ? text("note")
@@ -246,6 +249,14 @@
             render();
         }
     }
+
+    preferencesButton.addEventListener("click",function(){
+        if(busy || !team || messageKey!=="saved"){
+            return;
+        }
+
+        window.location.href="../erdeta/communication.html?teamId="+encodeURIComponent(teamId);
+    });
 
     if(selector){
         selector.addEventListener("change",render);
