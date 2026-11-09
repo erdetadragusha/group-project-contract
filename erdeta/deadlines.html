@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Deadline Expectations</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6fb;
+            margin: 0;
+            padding: 20px;
+            color: #222;
+        }
+
+        .container {
+            background: white;
+            max-width: 420px;
+            margin: 40px auto;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .back {
+            color: #3458a4;
+            text-decoration: none;
+            font-size: 16px;
+        }
+
+        h1 {
+            font-size: 25px;
+            text-align: center;
+            color: #263b63;
+        }
+
+        p {
+            text-align: center;
+            color: #555;
+            line-height: 1.5;
+        }
+
+        fieldset {
+            border: none;
+            padding: 0;
+            margin: 25px 0;
+        }
+
+        legend {
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .option {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 18px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .option:hover {
+            background-color: #eef3ff;
+        }
+
+        .option:has(input:checked) {
+            background-color: #eef3ff;
+            border-color: #3458a4;
+        }
+
+        input[type="radio"] {
+            width: 20px;
+            height: 20px;
+            accent-color: #3458a4;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .option-text {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .option-title {
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .option-description {
+            font-size: 13px;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background-color: #3458a4;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 17px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #263b63;
+        }
+
+        button:focus-visible,
+        input:focus-visible,
+        a:focus-visible {
+            outline: 3px solid #e09b24;
+            outline-offset: 3px;
+        }
+
+        #message {
+            margin-top: 15px;
+            color: #b42318;
+        }
+
+        @media (max-width: 450px) {
+            .container {
+                padding: 20px;
+                margin: 15px auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <main class="container">
+
+        <a href="roles.html" class="back">
+            ← Back
+        </a>
+
+        <h1>Deadline Expectations</h1>
+
+        <p>How do you prefer to work with deadlines in your group project?</p>
+
+        <form id="deadlinesForm">
+
+            <fieldset>
+
+                <legend>Choose your preferred deadline style:</legend>
+
+                <label class="option">
+                    <input
+                        type="radio"
+                        name="deadline"
+                        value="Strict deadlines"
+                    >
+
+                    <span class="option-text">
+                        <span class="option-title">
+                            Strict deadlines
+                        </span>
+
+                        <span class="option-description">
+                            I prefer to finish tasks on time and follow fixed deadlines.
+                        </span>
+                    </span>
+                </label>
+
+                <label class="option">
+                    <input
+                        type="radio"
+                        name="deadline"
+                        value="Some flexibility"
+                    >
+
+                    <span class="option-text">
+                        <span class="option-title">
+                            Some flexibility
+                        </span>
+
+                        <span class="option-description">
+                            I prefer deadlines but can adjust them when needed.
+                        </span>
+                    </span>
+                </label>
+
+                <label class="option">
+                    <input
+                        type="radio"
+                        name="deadline"
+                        value="Flexible"
+                    >
+
+                    <span class="option-text">
+                        <span class="option-title">
+                            Flexible
+                        </span>
+
+                        <span class="option-description">
+                            I prefer a flexible schedule with adjustable deadlines.
+                        </span>
+                    </span>
+                </label>
+
+            </fieldset>
+
+            <button type="submit">Next</button>
+
+            <p id="message" role="status" aria-live="polite"></p>
+
+        </form>
+
+    </main>
+
+    <script>
+        const form = document.getElementById("deadlinesForm");
+        const message = document.getElementById("message");
+        const radioButtons = document.querySelectorAll(
+            'input[name="deadline"]'
+        );
+
+        try {
+            const savedDeadline = localStorage.getItem(
+                "deadlineExpectations"
+            );
+
+            if (savedDeadline) {
+                radioButtons.forEach(function(radio) {
+                    if (radio.value === savedDeadline) {
+                        radio.checked = true;
+                    }
+                });
+            }
+
+        } catch (error) {
+            message.textContent =
+                "Previous deadline preferences could not be loaded.";
+        }
+
+        radioButtons.forEach(function(radio) {
+            radio.addEventListener("change", function() {
+                message.textContent = "";
+            });
+        });
+
+        form.addEventListener("submit", function(event) {
+
+            event.preventDefault();
+
+            const selected = document.querySelector(
+                'input[name="deadline"]:checked'
+            );
+
+            if (!selected) {
+                message.textContent =
+                    "Please select your preferred deadline style.";
+                return;
+            }
+
+            try {
+                localStorage.setItem(
+                    "deadlineExpectations",
+                    selected.value
+                );
+
+                window.location.href = "quality.html";
+
+            } catch (error) {
+                message.textContent =
+                    "Could not save your deadline preference. Please try again.";
+            }
+
+        });
+    </script>
+
+</body>
+</html>
