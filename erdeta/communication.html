@@ -242,6 +242,209 @@
         });
 
     </script>
+<script src="https://cdn.jsdelivr.net/npm/i18next@23.16.8/dist/umd/i18next.min.js"></script>
 
+<script>
+(function () {
+    if (!window.i18next) return;
+
+    const resources = {
+        en: {
+            translation: {
+                title: "Communication Preferences",
+                question: "How do you prefer to communicate with your team?",
+                instruction: "Select your preferred options:",
+                email: "Email",
+                chat: "In-app Chat",
+                discord: "Discord",
+                zoom: "Zoom / Meet",
+                other: "Other",
+                next: "Next",
+                language: "Language",
+                selectError: "Please select at least one communication option.",
+                loadError: "Previous preferences could not be loaded.",
+                saveError: "Could not save your preferences. Please try again."
+            }
+        },
+        hr: {
+            translation: {
+                title: "Komunikacijske postavke",
+                question: "Kako najradije komunicirate sa svojim timom?",
+                instruction: "Odaberite željene mogućnosti:",
+                email: "E-pošta",
+                chat: "Razgovor u aplikaciji",
+                discord: "Discord",
+                zoom: "Zoom / Meet",
+                other: "Ostalo",
+                next: "Dalje",
+                language: "Jezik",
+                selectError: "Odaberite barem jednu mogućnost komunikacije.",
+                loadError: "Prethodne postavke nije moguće učitati.",
+                saveError: "Postavke nije moguće spremiti. Pokušajte ponovno."
+            }
+        },
+        sq: {
+            translation: {
+                title: "Preferencat e komunikimit",
+                question: "Si preferoni të komunikoni me ekipin tuaj?",
+                instruction: "Zgjidhni mënyrat që preferoni:",
+                email: "Email",
+                chat: "Bisedë në aplikacion",
+                discord: "Discord",
+                zoom: "Zoom / Meet",
+                other: "Tjetër",
+                next: "Vazhdo",
+                language: "Gjuha",
+                selectError: "Ju lutemi zgjidhni të paktën një mënyrë komunikimi.",
+                loadError: "Preferencat e mëparshme nuk mund të ngarkohen.",
+                saveError: "Preferencat nuk u ruajtën. Provoni përsëri."
+            }
+        }
+    };
+
+    const main = document.querySelector(".container");
+    const heading = main.querySelector("h1");
+    const question = main.querySelector("p");
+    const legend = main.querySelector("legend");
+    const options = main.querySelectorAll(".option");
+    const nextButton = main.querySelector('button[type="submit"]');
+    const message = document.getElementById("message");
+
+    const languageBox = document.createElement("div");
+    languageBox.style.marginBottom = "20px";
+
+    const languageLabel = document.createElement("label");
+    languageLabel.htmlFor = "languageSelector";
+    languageLabel.style.display = "block";
+    languageLabel.style.marginBottom = "8px";
+    languageLabel.style.fontWeight = "bold";
+
+    const languageSelector = document.createElement("select");
+    languageSelector.id = "languageSelector";
+    languageSelector.style.width = "100%";
+    languageSelector.style.padding = "12px";
+    languageSelector.style.borderRadius = "10px";
+    languageSelector.style.border = "1px solid #ccc";
+    languageSelector.style.fontSize = "15px";
+
+    const languages = [
+        { value: "en", label: "English" },
+        { value: "hr", label: "Hrvatski" },
+        { value: "sq", label: "Shqip" }
+    ];
+
+    languages.forEach(function (language) {
+        const option = document.createElement("option");
+        option.value = language.value;
+        option.textContent = language.label;
+        languageSelector.appendChild(option);
+    });
+
+    languageBox.appendChild(languageLabel);
+    languageBox.appendChild(languageSelector);
+    main.insertBefore(languageBox, heading);
+
+    const choiceKeys = ["email", "chat", "discord", "zoom", "other"];
+
+    const errorKeys = {
+        "Please select at least one communication option.": "selectError",
+        "Previous preferences could not be loaded.": "loadError",
+        "Could not save your preferences. Please try again.": "saveError"
+    };
+
+    let currentError = null;
+
+    function updateText() {
+        document.documentElement.lang = i18next.language;
+        document.title = i18next.t("title");
+
+        heading.textContent = i18next.t("title");
+        question.textContent = i18next.t("question");
+        legend.textContent = i18next.t("instruction");
+        nextButton.textContent = i18next.t("next");
+        languageLabel.textContent = i18next.t("language");
+
+        options.forEach(function (label, index) {
+            const textNode = Array.from(label.childNodes).find(function (node) {
+                return node.nodeType === 3 && node.textContent.trim();
+            });
+
+            if (textNode) {
+                textNode.textContent = " " + i18next.t(choiceKeys[index]);
+            }
+        });
+
+        if (currentError) {
+            message.textContent = i18next.t(currentError);
+        }
+    }
+
+    const observer = new MutationObserver(function () {
+        const text = message.textContent.trim();
+
+        if (!text) {
+            currentError = null;
+            return;
+        }
+
+        if (errorKeys[text]) {
+            currentError = errorKeys[text];
+        }
+
+        if (currentError) {
+            const translated = i18next.t(currentError);
+
+            if (message.textContent !== translated) {
+                message.textContent = translated;
+            }
+        }
+    });
+
+    let savedLanguage = "en";
+
+    try {
+        savedLanguage = localStorage.getItem("appLanguage") || "en";
+    } catch (error) {
+        savedLanguage = "en";
+    }
+
+    if (!resources[savedLanguage]) {
+        savedLanguage = "en";
+    }
+
+    i18next.init({
+        lng: savedLanguage,
+        fallbackLng: "en",
+        resources: resources
+    }).then(function () {
+        languageSelector.value = savedLanguage;
+
+        observer.observe(message, {
+            childList: true,
+            characterData: true,
+            subtree: true
+        });
+
+        if (errorKeys[message.textContent.trim()]) {
+            currentError = errorKeys[message.textContent.trim()];
+        }
+
+        updateText();
+
+        languageSelector.addEventListener("change", function () {
+            const selectedLanguage = languageSelector.value;
+
+            i18next.changeLanguage(selectedLanguage).then(function () {
+                try {
+                    localStorage.setItem("appLanguage", selectedLanguage);
+                } catch (error) {
+                }
+
+                updateText();
+            });
+        });
+    });
+})();
+</script>
 </body>
 </html>
