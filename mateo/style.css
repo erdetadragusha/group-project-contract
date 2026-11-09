@@ -175,3 +175,22 @@ button.button{
     outline:3px solid #005fcc;
     outline-offset:2px;
 }
+
+.status-card{
+    margin-bottom:24px;
+    padding:20px;
+    border:1px solid #ccc;
+    border-radius:8px;
+    background:#fff;
+    text-align:left;
+}
+
+.status-card h2{
+    margin:0 0 12px;
+    font-size:20px;
+}
+
+.status-card p{
+    margin:0;
+    line-height:1.6;
+}
