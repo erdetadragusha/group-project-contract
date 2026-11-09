@@ -255,6 +255,226 @@
 
         });
     </script>
+<script src="https://cdn.jsdelivr.net/npm/i18next@23.16.8/dist/umd/i18next.min.js"></script>
 
+<script>
+(function () {
+    if (!window.i18next) return;
+
+    const resources = {
+        en: {
+            translation: {
+                title: "Preferred Roles",
+                question: "Which roles would you like to have in your group project?",
+                instruction: "Select up to 3 roles:",
+                research: "Research",
+                design: "Design",
+                development: "Development",
+                testing: "Testing",
+                documentation: "Documentation",
+                other: "Other",
+                back: "Back",
+                next: "Next",
+                language: "Language",
+                requiredError: "Please select at least one role.",
+                limitError: "You can select a maximum of 3 roles.",
+                loadError: "Previous roles could not be loaded.",
+                saveError: "Could not save roles. Please try again."
+            }
+        },
+        hr: {
+            translation: {
+                title: "Željene uloge",
+                question: "Koje biste uloge željeli imati u grupnom projektu?",
+                instruction: "Odaberite najviše 3 uloge:",
+                research: "Istraživanje",
+                design: "Dizajn",
+                development: "Razvoj",
+                testing: "Testiranje",
+                documentation: "Dokumentacija",
+                other: "Ostalo",
+                back: "Natrag",
+                next: "Dalje",
+                language: "Jezik",
+                requiredError: "Odaberite barem jednu ulogu.",
+                limitError: "Možete odabrati najviše 3 uloge.",
+                loadError: "Prethodne uloge nije moguće učitati.",
+                saveError: "Uloge nije moguće spremiti. Pokušajte ponovno."
+            }
+        },
+        sq: {
+            translation: {
+                title: "Rolet e preferuara",
+                question: "Cilat role dëshironi të keni në projektin në grup?",
+                instruction: "Zgjidhni deri në 3 role:",
+                research: "Hulumtim",
+                design: "Dizajn",
+                development: "Zhvillim",
+                testing: "Testim",
+                documentation: "Dokumentim",
+                other: "Tjetër",
+                back: "Kthehu",
+                next: "Vazhdo",
+                language: "Gjuha",
+                requiredError: "Ju lutemi zgjidhni të paktën një rol.",
+                limitError: "Mund të zgjidhni maksimumi 3 role.",
+                loadError: "Rolet e mëparshme nuk mund të ngarkohen.",
+                saveError: "Rolet nuk u ruajtën. Provoni përsëri."
+            }
+        }
+    };
+
+    const main = document.querySelector(".container");
+    const heading = main.querySelector("h1");
+    const question = main.querySelector("p");
+    const legend = main.querySelector("legend");
+    const backLink = main.querySelector(".back");
+    const nextButton = main.querySelector('button[type="submit"]');
+    const options = main.querySelectorAll(".option");
+    const messageElement = document.getElementById("message");
+
+    const languageBox = document.createElement("div");
+    languageBox.style.margin = "20px 0";
+
+    const languageLabel = document.createElement("label");
+    languageLabel.htmlFor = "languageSelector";
+    languageLabel.style.display = "block";
+    languageLabel.style.marginBottom = "8px";
+    languageLabel.style.fontWeight = "bold";
+
+    const languageSelector = document.createElement("select");
+    languageSelector.id = "languageSelector";
+    languageSelector.style.width = "100%";
+    languageSelector.style.padding = "12px";
+    languageSelector.style.border = "1px solid #ccc";
+    languageSelector.style.borderRadius = "10px";
+    languageSelector.style.fontSize = "15px";
+
+    [
+        ["en", "English"],
+        ["hr", "Hrvatski"],
+        ["sq", "Shqip"]
+    ].forEach(function (entry) {
+        const option = document.createElement("option");
+        option.value = entry[0];
+        option.textContent = entry[1];
+        languageSelector.appendChild(option);
+    });
+
+    languageBox.appendChild(languageLabel);
+    languageBox.appendChild(languageSelector);
+    main.insertBefore(languageBox, heading);
+
+    const roleKeys = [
+        "research",
+        "design",
+        "development",
+        "testing",
+        "documentation",
+        "other"
+    ];
+
+    const errorKeys = {
+        "Please select at least one role.": "requiredError",
+        "You can select a maximum of 3 roles.": "limitError",
+        "Previous roles could not be loaded.": "loadError",
+        "Could not save roles. Please try again.": "saveError"
+    };
+
+    let currentError = null;
+
+    function updateText() {
+        document.documentElement.lang = i18next.language;
+        document.title = i18next.t("title");
+
+        heading.textContent = i18next.t("title");
+        question.textContent = i18next.t("question");
+        legend.textContent = i18next.t("instruction");
+        backLink.textContent = "← " + i18next.t("back");
+        nextButton.textContent = i18next.t("next");
+        languageLabel.textContent = i18next.t("language");
+
+        options.forEach(function (label, index) {
+            const textNode = Array.from(label.childNodes).find(function (node) {
+                return node.nodeType === 3 && node.textContent.trim();
+            });
+
+            if (textNode) {
+                textNode.textContent = " " + i18next.t(roleKeys[index]);
+            }
+        });
+
+        if (currentError) {
+            messageElement.textContent = i18next.t(currentError);
+        }
+    }
+
+    const observer = new MutationObserver(function () {
+        const text = messageElement.textContent.trim();
+
+        if (!text) {
+            currentError = null;
+            return;
+        }
+
+        if (errorKeys[text]) {
+            currentError = errorKeys[text];
+        }
+
+        if (currentError) {
+            const translated = i18next.t(currentError);
+
+            if (text !== translated) {
+                messageElement.textContent = translated;
+            }
+        }
+    });
+
+    let savedLanguage = "en";
+
+    try {
+        savedLanguage = localStorage.getItem("appLanguage") || "en";
+    } catch (error) {
+        savedLanguage = "en";
+    }
+
+    if (!resources[savedLanguage]) {
+        savedLanguage = "en";
+    }
+
+    i18next.init({
+        lng: savedLanguage,
+        fallbackLng: "en",
+        resources: resources
+    }).then(function () {
+        languageSelector.value = savedLanguage;
+
+        observer.observe(messageElement, {
+            childList: true,
+            characterData: true,
+            subtree: true
+        });
+
+        if (errorKeys[messageElement.textContent.trim()]) {
+            currentError = errorKeys[messageElement.textContent.trim()];
+        }
+
+        updateText();
+
+        languageSelector.addEventListener("change", function () {
+            const selectedLanguage = languageSelector.value;
+
+            i18next.changeLanguage(selectedLanguage).then(function () {
+                try {
+                    localStorage.setItem("appLanguage", selectedLanguage);
+                } catch (error) {
+                }
+
+                updateText();
+            });
+        });
+    });
+})();
+</script>
 </body>
 </html>
