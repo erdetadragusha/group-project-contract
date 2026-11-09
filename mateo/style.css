@@ -66,3 +66,53 @@ p{
     outline:3px solid #005fcc;
     outline-offset:4px;
 }
+
+.back-link{
+    align-self:flex-start;
+    margin-bottom:32px;
+    color:#222;
+}
+
+.account-form{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    margin-bottom:24px;
+    text-align:left;
+}
+
+.account-form label{
+    font-weight:bold;
+}
+
+.account-form input{
+    width:100%;
+    min-height:48px;
+    padding:12px;
+    border:1px solid #666;
+    border-radius:8px;
+    font:inherit;
+    background:#fff;
+    color:#222;
+}
+
+.account-form input:focus-visible{
+    outline:3px solid #005fcc;
+    outline-offset:2px;
+}
+
+.account-form small{
+    line-height:1.5;
+}
+
+.account-form .button{
+    margin-top:12px;
+    font:inherit;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+#signup-message{
+    margin:0;
+    line-height:1.5;
+}
