@@ -8,13 +8,26 @@
 </head>
 <body>
     <main class="welcome">
+        <div class="language-control">
+            <label for="language-select" data-i18n="language">
+                Language
+            </label>
+
+            <select id="language-select" name="language">
+                <option value="en" lang="en">English</option>
+                <option value="hr" lang="hr">Hrvatski</option>
+                <option value="sq" lang="sq">Shqip</option>
+            </select>
+        </div>
+
         <h1>Invite members</h1>
         <p>Add your teammates' email addresses.</p>
 
         <form id="invite-form" class="account-form">
             <label for="member-email">Email address</label>
+
             <input type="email" id="member-email" name="email"
-                autocomplete="email" required>
+                autocomplete="email" maxlength="254" required>
 
             <button type="submit" class="button button-secondary">
                 Add member
@@ -26,12 +39,13 @@
         <ul id="invite-list" class="invite-list"></ul>
 
         <button type="button" id="send-invites" class="button" disabled>
-            Send invitations
+            Save invitations
         </button>
 
         <p id="invite-message" role="status"></p>
     </main>
 
+    <script src="language.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="supabase-client.js"></script>
     <script src="script.js"></script>

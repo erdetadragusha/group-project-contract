@@ -369,3 +369,264 @@
         });
     });
 })();
+
+(function(){
+    const form=document.querySelector("#invite-form");
+
+    if(!form){
+        return;
+    }
+
+    const selector=document.querySelector("#language-select");
+    const message=document.querySelector("#invite-message");
+    const main=document.querySelector("main");
+
+    const translations={
+        "Invite members":["Pozovite članove","Ftoni anëtarë"],
+        "Add your teammates' email addresses.":[
+            "Dodajte adrese e-pošte svojih kolega.",
+            "Shtoni adresat e emailit të anëtarëve të ekipit."
+        ],
+        "Email address":["Adresa e-pošte","Adresa e emailit"],
+        "Add member":["Dodaj člana","Shto anëtar"],
+        "Invitation list":["Popis pozivnica","Lista e ftesave"],
+        "No teammates added yet.":[
+            "Još nisu dodani članovi.",
+            "Ende nuk është shtuar asnjë anëtar."
+        ],
+        "Save invitations":["Spremi pozivnice","Ruaj ftesat"],
+        "Send invitations":["Pošalji pozivnice","Dërgo ftesat"],
+        "Saved invitations":["Spremljene pozivnice","Ftesat e ruajtura"],
+        "Remove":["Ukloni","Hiq"],
+        "Open invitation":["Otvori pozivnicu","Hap ftesën"],
+        "View team members":["Prikaži članove tima","Shiko anëtarët e ekipit"],
+        "Loading your team...":["Učitavanje tima...","Duke ngarkuar ekipin..."],
+        "Saving invitations...":["Spremanje pozivnica...","Duke ruajtur ftesat..."],
+        "Open this page after saving a team and project.":[
+            "Otvorite ovu stranicu nakon spremanja tima i projekta.",
+            "Hapeni këtë faqe pasi të ruani ekipin dhe projektin."
+        ],
+        "Please log in before managing invitations.":[
+            "Prijavite se prije upravljanja pozivnicama.",
+            "Hyni përpara se të menaxhoni ftesat."
+        ],
+        "This team could not be loaded or you are not its owner.":[
+            "Tim nije moguće učitati ili niste njegov vlasnik.",
+            "Ekipi nuk mund të ngarkohej ose nuk jeni pronari i tij."
+        ],
+        "Save invitations, then copy their links for your teammates. Emails are not sent automatically.":[
+            "Spremite pozivnice, zatim kopirajte njihove poveznice za kolege. E-poruke ne šalju se automatski.",
+            "Ruani ftesat, pastaj kopjoni lidhjet për anëtarët e ekipit. Emailet nuk dërgohen automatikisht."
+        ],
+        "Could not load invitations. Check your connection and reload.":[
+            "Pozivnice nije moguće učitati. Provjerite vezu i ponovno učitajte stranicu.",
+            "Ftesat nuk mund të ngarkoheshin. Kontrolloni lidhjen dhe ringarkoni faqen."
+        ],
+        "This email is already in the draft list or has a pending invitation.":[
+            "Ova adresa već je na popisu ili ima pozivnicu na čekanju.",
+            "Ky email është tashmë në listë ose ka një ftesë në pritje."
+        ],
+        "Please log in before saving invitations.":[
+            "Prijavite se prije spremanja pozivnica.",
+            "Hyni përpara se të ruani ftesat."
+        ],
+        "An email already has a pending invitation. Reload to check; the draft list will reset.":[
+            "Jedna adresa već ima pozivnicu na čekanju. Ponovno učitajte stranicu za provjeru; privremeni popis bit će izbrisan.",
+            "Një email ka tashmë një ftesë në pritje. Ringarkoni për ta kontrolluar; lista e përkohshme do të pastrohet."
+        ],
+        "Invitations saved. Copy the invitation links for your teammates. No emails have been sent.":[
+            "Pozivnice su spremljene. Kopirajte poveznice za kolege. E-poruke nisu poslane.",
+            "Ftesat u ruajtën. Kopjoni lidhjet për anëtarët e ekipit. Asnjë email nuk është dërguar."
+        ],
+        "Could not confirm saving. Reload to check saved invitations before trying again.":[
+            "Spremanje nije moguće potvrditi. Prije ponovnog pokušaja ponovno učitajte stranicu i provjerite spremljene pozivnice.",
+            "Ruajtja nuk mund të konfirmohej. Ringarkoni për të kontrolluar ftesat e ruajtura përpara se të provoni përsëri."
+        ],
+        "Please fill in this field.":["Ispunite ovo polje.","Plotësoni këtë fushë."],
+        "Please enter a valid email address.":[
+            "Unesite valjanu adresu e-pošte.",
+            "Shkruani një adresë emaili të vlefshme."
+        ],
+        "The request could not be completed. Please try again.":[
+            "Zahtjev nije moguće dovršiti. Pokušajte ponovno.",
+            "Kërkesa nuk mund të përfundohej. Provoni përsëri."
+        ],
+        "pending":["na čekanju","në pritje"],
+        "accepted":["prihvaćeno","pranuar"],
+        "declined":["odbijeno","refuzuar"],
+        "revoked":["opozvano","anuluar"]
+    };
+
+    const textState=new WeakMap();
+    const ariaState=new WeakMap();
+    const emailInput=document.querySelector("#member-email");
+
+    function currentLanguage(){
+        return selector.value==="hr" || selector.value==="sq"
+            ? selector.value
+            : "en";
+    }
+
+    function translate(text){
+        const language=currentLanguage();
+
+        if(language==="en"){
+            return text;
+        }
+
+        const index=language==="hr" ? 0 : 1;
+
+        if(Object.hasOwn(translations,text)){
+            return translations[text][index];
+        }
+
+        if(text.endsWith(" added to the draft list.")){
+            const email=text.slice(0,-25);
+
+            return language==="hr"
+                ? email+" dodano na privremeni popis."
+                : email+" u shtua në listën e përkohshme.";
+        }
+
+        if(text.endsWith(" removed from the draft list.")){
+            const email=text.slice(0,-29);
+
+            return language==="hr"
+                ? email+" uklonjeno s privremenog popisa."
+                : email+" u hoq nga lista e përkohshme.";
+        }
+
+        const status=text.match(/^(.*) — (pending|accepted|declined|revoked)$/);
+
+        if(status){
+            return status[1]+" — "+translate(status[2]);
+        }
+
+        if(text.startsWith("Remove ")){
+            return translate("Remove")+" "+text.slice(7);
+        }
+
+        return text;
+    }
+
+    function updateNode(node){
+        const current=node.textContent;
+        const saved=textState.get(node);
+
+        const source=saved && current===saved.translated
+            ? saved.source
+            : current;
+
+        const trimmed=source.trim();
+
+        if(trimmed===""){
+            return;
+        }
+
+        let translated=translate(trimmed);
+
+        if(node.parentElement===message && translated===trimmed){
+            const known=Object.hasOwn(translations,trimmed);
+            const draftMessage=trimmed.endsWith(" added to the draft list.")
+                || trimmed.endsWith(" removed from the draft list.");
+
+            if(!known && !draftMessage){
+                translated=translate(
+                    "The request could not be completed. Please try again."
+                );
+            }
+        }
+
+        textState.set(node,{
+            source:source,
+            translated:translated
+        });
+
+        if(current!==translated){
+            node.textContent=translated;
+        }
+    }
+
+    function updateTranslations(){
+        const walker=document.createTreeWalker(
+            main,
+            NodeFilter.SHOW_TEXT
+        );
+
+        const nodes=[];
+
+        while(walker.nextNode()){
+            const node=walker.currentNode;
+            const parent=node.parentElement;
+
+            if(parent && !parent.closest(
+                "script,style,select,textarea,.language-control"
+            )){
+                nodes.push(node);
+            }
+        }
+
+        nodes.forEach(updateNode);
+
+        main.querySelectorAll("button[aria-label]").forEach(function(button){
+            const current=button.getAttribute("aria-label");
+            const saved=ariaState.get(button);
+
+            const source=saved && current===saved.translated
+                ? saved.source
+                : current;
+
+            const translated=translate(source);
+
+            ariaState.set(button,{
+                source:source,
+                translated:translated
+            });
+
+            if(current!==translated){
+                button.setAttribute("aria-label",translated);
+            }
+        });
+
+        const language=currentLanguage();
+
+        document.title=language==="hr"
+            ? "Pozivnice | Ugovor za grupni projekt"
+            : language==="sq"
+                ? "Ftesat | Kontrata e projektit në grup"
+                : "Invite members | Group Project Contract";
+    }
+
+    emailInput.addEventListener("input",function(){
+        emailInput.setCustomValidity("");
+    });
+
+    emailInput.addEventListener("invalid",function(){
+        emailInput.setCustomValidity("");
+
+        if(emailInput.validity.valueMissing){
+            emailInput.setCustomValidity(
+                translate("Please fill in this field.")
+            );
+        }else if(emailInput.validity.typeMismatch){
+            emailInput.setCustomValidity(
+                translate("Please enter a valid email address.")
+            );
+        }
+    });
+
+    selector.addEventListener("change",function(){
+        emailInput.setCustomValidity("");
+        updateTranslations();
+    });
+
+    updateTranslations();
+
+    const observer=new MutationObserver(updateTranslations);
+
+    observer.observe(main,{
+        childList:true,
+        characterData:true,
+        subtree:true
+    });
+})();
