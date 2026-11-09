@@ -630,3 +630,201 @@
         subtree:true
     });
 })();
+
+(function(){
+    const details=document.querySelector("#join-details");
+
+    if(!details){
+        return;
+    }
+
+    const main=document.querySelector("main");
+    const selector=document.querySelector("#language-select");
+    const message=document.querySelector("#join-message");
+    const textState=new WeakMap();
+
+    const translations={
+        "Join a team":["Pridružite se timu","Bashkohuni me një ekip"],
+        "Team invitation":["Pozivnica za tim","Ftesë për ekipin"],
+        "Loading invitation...":[
+            "Učitavanje pozivnice...",
+            "Duke ngarkuar ftesën..."
+        ],
+        "Accept invitation":["Prihvati pozivnicu","Prano ftesën"],
+        "Decline invitation":["Odbij pozivnicu","Refuzo ftesën"],
+        "Log in":["Prijavi se","Hyr"],
+        "Create account":["Izradi račun","Krijo llogari"],
+        "View team members":["Prikaži članove tima","Shiko anëtarët e ekipit"],
+        "No valid invitation link was provided.":[
+            "Nije navedena valjana poveznica pozivnice.",
+            "Nuk është dhënë një lidhje e vlefshme e ftesës."
+        ],
+        "Log in with the email address that received this invitation.":[
+            "Prijavite se adresom e-pošte na koju je poslana ova pozivnica.",
+            "Hyni me adresën e emailit që mori këtë ftesë."
+        ],
+        "Could not load invitation.":[
+            "Pozivnicu nije moguće učitati.",
+            "Ftesa nuk mund të ngarkohej."
+        ],
+        "Invitation unavailable. Check that you logged in with the invited email address.":[
+            "Pozivnica nije dostupna. Provjerite jeste li prijavljeni pozvanom adresom e-pošte.",
+            "Ftesa nuk është e disponueshme. Kontrolloni nëse keni hyrë me emailin e ftuar."
+        ],
+        "This invitation belongs to another email address.":[
+            "Ova pozivnica pripada drugoj adresi e-pošte.",
+            "Kjo ftesë i përket një adrese tjetër emaili."
+        ],
+        "Accept to join the team, or decline the invitation.":[
+            "Prihvatite pozivnicu za pridruživanje timu ili je odbijte.",
+            "Pranoni për t'u bashkuar me ekipin ose refuzoni ftesën."
+        ],
+        "You have accepted this invitation.":[
+            "Prihvatili ste ovu pozivnicu.",
+            "E keni pranuar këtë ftesë."
+        ],
+        "This invitation is no longer pending.":[
+            "Ova pozivnica više nije na čekanju.",
+            "Kjo ftesë nuk është më në pritje."
+        ],
+        "Could not load invitation. Check your connection and reload.":[
+            "Pozivnicu nije moguće učitati. Provjerite vezu i ponovno učitajte stranicu.",
+            "Ftesa nuk mund të ngarkohej. Kontrolloni lidhjen dhe ringarkoni faqen."
+        ],
+        "Joining team...":["Pridruživanje timu...","Duke u bashkuar me ekipin..."],
+        "Declining invitation...":["Odbijanje pozivnice...","Duke refuzuar ftesën..."],
+        "Could not confirm your response. Reload to check the invitation status.":[
+            "Odgovor nije moguće potvrditi. Ponovno učitajte stranicu za provjeru statusa pozivnice.",
+            "Përgjigjja nuk mund të konfirmohej. Ringarkoni për të kontrolluar statusin e ftesës."
+        ],
+        "Please log in first.":["Najprije se prijavite.","Ju lutemi hyni fillimisht."],
+        "Choose accept or decline.":[
+            "Odaberite prihvaćanje ili odbijanje.",
+            "Zgjidhni pranimin ose refuzimin."
+        ],
+        "Confirm your email before responding.":[
+            "Potvrdite adresu e-pošte prije odgovora.",
+            "Konfirmoni emailin përpara se të përgjigjeni."
+        ],
+        "Invitation is unavailable.":[
+            "Pozivnica nije dostupna.",
+            "Ftesa nuk është e disponueshme."
+        ],
+        "This invitation has already been answered or revoked.":[
+            "Na ovu je pozivnicu već odgovoreno ili je opozvana.",
+            "Kjo ftesë ka marrë tashmë përgjigje ose është anuluar."
+        ],
+        "The request could not be completed. Please try again.":[
+            "Zahtjev nije moguće dovršiti. Pokušajte ponovno.",
+            "Kërkesa nuk mund të përfundohej. Provoni përsëri."
+        ],
+        "pending":["na čekanju","në pritje"],
+        "accepted":["prihvaćeno","pranuar"],
+        "declined":["odbijeno","refuzuar"],
+        "revoked":["opozvano","anuluar"]
+    };
+
+    function currentLanguage(){
+        return selector.value==="hr" || selector.value==="sq"
+            ? selector.value
+            : "en";
+    }
+
+    function translate(text){
+        const language=currentLanguage();
+
+        if(language==="en"){
+            return text;
+        }
+
+        const index=language==="hr" ? 0 : 1;
+
+        if(Object.hasOwn(translations,text)){
+            return translations[text][index];
+        }
+
+        const invitation=text.match(
+            /^Invitation for (.+)\. Status: (pending|accepted|declined|revoked)\.$/
+        );
+
+        if(invitation){
+            const email=invitation[1];
+            const status=translate(invitation[2]);
+
+            return language==="hr"
+                ? "Pozivnica za "+email+". Status: "+status+"."
+                : "Ftesë për "+email+". Statusi: "+status+".";
+        }
+
+        return text;
+    }
+
+    function updateTranslations(){
+        const walker=document.createTreeWalker(main,NodeFilter.SHOW_TEXT);
+        const nodes=[];
+
+        while(walker.nextNode()){
+            const node=walker.currentNode;
+            const parent=node.parentElement;
+
+            if(parent && !parent.closest(
+                "script,style,select,.language-control"
+            )){
+                nodes.push(node);
+            }
+        }
+
+        nodes.forEach(function(node){
+            const current=node.textContent;
+            const saved=textState.get(node);
+
+            const source=saved && current===saved.translated
+                ? saved.source
+                : current;
+
+            const trimmed=source.trim();
+
+            if(trimmed===""){
+                return;
+            }
+
+            let translated=translate(trimmed);
+
+            if(node.parentElement===message &&
+                !Object.hasOwn(translations,trimmed)){
+                translated=translate(
+                    "The request could not be completed. Please try again."
+                );
+            }
+
+            textState.set(node,{
+                source:source,
+                translated:translated
+            });
+
+            if(current!==translated){
+                node.textContent=translated;
+            }
+        });
+
+        const language=currentLanguage();
+
+        document.title=language==="hr"
+            ? "Pridruživanje timu | Ugovor za grupni projekt"
+            : language==="sq"
+                ? "Bashkimi me ekipin | Kontrata e projektit në grup"
+                : "Join team | Group Project Contract";
+    }
+
+    selector.addEventListener("change",updateTranslations);
+
+    updateTranslations();
+
+    const observer=new MutationObserver(updateTranslations);
+
+    observer.observe(main,{
+        childList:true,
+        characterData:true,
+        subtree:true
+    });
+})();
