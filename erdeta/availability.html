@@ -277,6 +277,241 @@
                 }
             });
     </script>
+<script src="https://cdn.jsdelivr.net/npm/i18next@23.16.8/dist/umd/i18next.min.js"></script>
 
+<script>
+(function () {
+    if (!window.i18next) return;
+
+    const resources = {
+        en: {
+            translation: {
+                title: "Weekly Availability",
+                question: "When are you usually available to work on your group project?",
+                instruction: "Select your available times",
+                time: "Time",
+                days: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+                fullDays: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+                times: ["Morning", "Afternoon", "Evening"],
+                flexible: "I have a flexible schedule",
+                back: "Back",
+                next: "Next",
+                language: "Language",
+                selectError: "Please select a time or choose a flexible schedule.",
+                loadError: "Previous choices could not be loaded.",
+                saveError: "Could not save availability. Please try again."
+            }
+        },
+        hr: {
+            translation: {
+                title: "Tjedna dostupnost",
+                question: "Kada ste obično dostupni za rad na grupnom projektu?",
+                instruction: "Odaberite termine kada ste dostupni",
+                time: "Vrijeme",
+                days: ["Pon", "Uto", "Sri", "Čet", "Pet", "Sub", "Ned"],
+                fullDays: ["Ponedjeljak", "Utorak", "Srijeda", "Četvrtak", "Petak", "Subota", "Nedjelja"],
+                times: ["Jutro", "Poslijepodne", "Večer"],
+                flexible: "Imam fleksibilan raspored",
+                back: "Natrag",
+                next: "Dalje",
+                language: "Jezik",
+                selectError: "Odaberite barem jedan termin ili fleksibilan raspored.",
+                loadError: "Prethodne odabire nije moguće učitati.",
+                saveError: "Dostupnost nije moguće spremiti. Pokušajte ponovno."
+            }
+        },
+        sq: {
+            translation: {
+                title: "Disponueshmëria javore",
+                question: "Kur jeni zakonisht të lirë për të punuar në projektin në grup?",
+                instruction: "Zgjidhni oraret kur jeni të lirë",
+                time: "Koha",
+                days: ["Hën", "Mar", "Mër", "Enj", "Pre", "Sht", "Die"],
+                fullDays: ["E hënë", "E martë", "E mërkurë", "E enjte", "E premte", "E shtunë", "E diel"],
+                times: ["Mëngjes", "Pasdite", "Mbrëmje"],
+                flexible: "Kam një orar fleksibël",
+                back: "Kthehu",
+                next: "Vazhdo",
+                language: "Gjuha",
+                selectError: "Zgjidhni të paktën një orar ose orarin fleksibël.",
+                loadError: "Zgjedhjet e mëparshme nuk mund të ngarkohen.",
+                saveError: "Disponueshmëria nuk u ruajt. Provoni përsëri."
+            }
+        }
+    };
+
+    const main = document.querySelector(".container");
+    const heading = main.querySelector("h1");
+    const question = main.querySelector("p");
+    const instruction = main.querySelector("h2");
+    const backLink = main.querySelector(".back");
+    const nextButton = main.querySelector('button[type="submit"]');
+    const flexibleLabel = main.querySelector(".flexible");
+    const message = document.getElementById("message");
+
+    const languageBox = document.createElement("div");
+    languageBox.style.margin = "20px 0";
+
+    const languageLabel = document.createElement("label");
+    languageLabel.htmlFor = "languageSelector";
+    languageLabel.style.display = "block";
+    languageLabel.style.marginBottom = "8px";
+    languageLabel.style.fontWeight = "bold";
+
+    const selector = document.createElement("select");
+    selector.id = "languageSelector";
+    selector.style.width = "100%";
+    selector.style.padding = "12px";
+    selector.style.border = "1px solid #ccc";
+    selector.style.borderRadius = "10px";
+    selector.style.fontSize = "15px";
+
+    [
+        ["en", "English"],
+        ["hr", "Hrvatski"],
+        ["sq", "Shqip"]
+    ].forEach(function (entry) {
+        const option = document.createElement("option");
+        option.value = entry[0];
+        option.textContent = entry[1];
+        selector.appendChild(option);
+    });
+
+    languageBox.appendChild(languageLabel);
+    languageBox.appendChild(selector);
+    main.insertBefore(languageBox, heading);
+
+    const errorKeys = {
+        "Please select a time or choose a flexible schedule.": "selectError",
+        "Previous choices could not be loaded.": "loadError",
+        "Could not save availability. Please try again.": "saveError"
+    };
+
+    let currentError = null;
+
+    function updateText() {
+        const language = i18next.language;
+        const translation = resources[language].translation;
+
+        document.documentElement.lang = language;
+        document.title = i18next.t("title");
+
+        heading.textContent = i18next.t("title");
+        question.textContent = i18next.t("question");
+        instruction.textContent = i18next.t("instruction");
+        backLink.textContent = "← " + i18next.t("back");
+        nextButton.textContent = i18next.t("next");
+        languageLabel.textContent = i18next.t("language");
+
+        const headerCells = main.querySelectorAll("thead th");
+
+        headerCells[0].textContent = i18next.t("time");
+
+        translation.days.forEach(function (day, index) {
+            headerCells[index + 1].textContent = day;
+        });
+
+        const rows = document.querySelectorAll("#scheduleBody tr");
+
+        rows.forEach(function (row, timeIndex) {
+            const rowHeading = row.querySelector("th");
+            rowHeading.textContent = translation.times[timeIndex];
+
+            const checkboxes = row.querySelectorAll(
+                'input[name="availability"]'
+            );
+
+            checkboxes.forEach(function (checkbox, dayIndex) {
+                checkbox.setAttribute(
+                    "aria-label",
+                    translation.fullDays[dayIndex] + " " +
+                    translation.times[timeIndex]
+                );
+            });
+        });
+
+        const flexibleText = Array.from(
+            flexibleLabel.childNodes
+        ).find(function (node) {
+            return node.nodeType === 3 && node.textContent.trim();
+        });
+
+        if (flexibleText) {
+            flexibleText.textContent = " " + i18next.t("flexible");
+        }
+
+        if (currentError) {
+            message.textContent = i18next.t(currentError);
+        }
+    }
+
+    const observer = new MutationObserver(function () {
+        const text = message.textContent.trim();
+
+        if (!text) {
+            currentError = null;
+            return;
+        }
+
+        if (errorKeys[text]) {
+            currentError = errorKeys[text];
+        }
+
+        if (currentError) {
+            const translated = i18next.t(currentError);
+
+            if (text !== translated) {
+                message.textContent = translated;
+            }
+        }
+    });
+
+    let savedLanguage = "en";
+
+    try {
+        savedLanguage = localStorage.getItem("appLanguage") || "en";
+    } catch (error) {
+        savedLanguage = "en";
+    }
+
+    if (!resources[savedLanguage]) {
+        savedLanguage = "en";
+    }
+
+    i18next.init({
+        lng: savedLanguage,
+        fallbackLng: "en",
+        resources: resources,
+        returnObjects: true
+    }).then(function () {
+        selector.value = savedLanguage;
+
+        observer.observe(message, {
+            childList: true,
+            characterData: true,
+            subtree: true
+        });
+
+        if (errorKeys[message.textContent.trim()]) {
+            currentError = errorKeys[message.textContent.trim()];
+        }
+
+        updateText();
+
+        selector.addEventListener("change", function () {
+            const selected = selector.value;
+
+            i18next.changeLanguage(selected).then(function () {
+                try {
+                    localStorage.setItem("appLanguage", selected);
+                } catch (error) {
+                }
+
+                updateText();
+            });
+        });
+    });
+})();
+</script>
 </body>
 </html>
