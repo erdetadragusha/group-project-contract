@@ -3,18 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome | Group Project Contract</title>
+    <title data-i18n="pageTitle">Welcome | Group Project Contract</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <main class="welcome">
-        <h1>Group Project Contract</h1>
-        <p>Create your team and agree on how you will work together.</p>
+        <div class="language-control">
+            <label for="language-select" data-i18n="language">
+                Language
+            </label>
 
-        <nav class="welcome-actions" aria-label="Get started">
-            <a href="signup.html" class="button">Get started</a>
-            <a href="login.html" class="button button-secondary">Log in</a>
+            <select id="language-select" name="language">
+                <option value="en" lang="en">English</option>
+                <option value="hr" lang="hr">Hrvatski</option>
+                <option value="sq" lang="sq">Shqip</option>
+            </select>
+        </div>
+
+        <h1 data-i18n="heading">Group Project Contract</h1>
+
+        <p data-i18n="introduction">
+            Create your team and agree on how you will work together.
+        </p>
+
+        <nav class="welcome-actions"
+            aria-label="Get started" data-i18n-aria="navigation">
+
+            <a href="signup.html" class="button" data-i18n="signup">
+                Get started
+            </a>
+
+            <a href="login.html" class="button button-secondary"
+                data-i18n="login">
+                Log in
+            </a>
         </nav>
     </main>
+
+    <script src="language.js"></script>
 </body>
 </html>

@@ -198,3 +198,28 @@ button.button{
 [hidden]{
     display:none !important;
 }
+
+.language-control{
+    display:flex;
+    align-items:center;
+    justify-content:flex-end;
+    flex-wrap:wrap;
+    gap:12px;
+    margin-bottom:32px;
+}
+
+.language-control select{
+    min-height:44px;
+    max-width:100%;
+    padding:8px 12px;
+    border:1px solid #666;
+    border-radius:8px;
+    background:#fff;
+    color:#222;
+    font:inherit;
+}
+
+.language-control select:focus-visible{
+    outline:3px solid #005fcc;
+    outline-offset:3px;
+}
