@@ -15,15 +15,26 @@ function afterLogin(){
 
 function addLink(container,text,address){
     const link=document.createElement("a");
+
     link.textContent=text;
     link.href=address;
     link.className="button button-secondary";
     container.append(link);
+
+    return link;
 }
 
 const signupForm=document.querySelector("#signup-form");
 
 if(signupForm){
+    if(validId(invitationId)){
+        const loginLink=document.querySelector('a[href="login.html"]');
+
+        if(loginLink){
+            loginLink.href="login.html?invitationId="+encodeURIComponent(invitationId);
+        }
+    }
+
     signupForm.addEventListener("submit",async function(event){
         event.preventDefault();
 
@@ -222,11 +233,22 @@ if(inviteForm){
     const savedSection=document.createElement("section");
     const savedHeading=document.createElement("h2");
     const savedList=document.createElement("ul");
+    const teamNav=document.createElement("nav");
 
     savedHeading.textContent="Saved invitations";
     savedList.className="invite-list";
+    teamNav.className="welcome-actions";
+    teamNav.setAttribute("aria-label","Team navigation");
+
     savedSection.append(savedHeading,savedList);
     message.after(savedSection);
+    savedSection.after(teamNav);
+
+    addLink(
+        teamNav,
+        "View team members",
+        "team-members.html?teamId="+encodeURIComponent(teamId || "")
+    );
 
     sendButton.textContent="Save invitations";
 
@@ -238,6 +260,7 @@ if(inviteForm){
         emailInput.disabled=busy || !teamReady;
         addButton.disabled=busy || !teamReady;
         sendButton.disabled=busy || !teamReady || emails.length===0;
+        teamNav.hidden=!teamReady;
 
         emails.forEach(function(email){
             const item=document.createElement("li");
@@ -424,6 +447,7 @@ if(joinDetails){
     let responding=false;
 
     async function loadInvitation(){
+        currentInvitation=null;
         acceptButton.disabled=true;
         declineButton.disabled=true;
         links.replaceChildren();
@@ -525,4 +549,123 @@ if(joinDetails){
     });
 
     loadInvitation();
+}
+
+const membersSummary=document.querySelector("#members-summary");
+
+if(membersSummary){
+    const teamId=pageParams.get("teamId");
+    const membersList=document.querySelector("#members-list");
+    const invitationList=document.querySelector("#members-invitations");
+    const empty=document.querySelector("#members-empty");
+    const message=document.querySelector("#members-message");
+    const inviteLink=document.querySelector("#members-invite-link");
+    const refreshButton=document.querySelector("#refresh-members");
+
+    async function loadMembers(){
+        refreshButton.disabled=true;
+        inviteLink.hidden=true;
+        membersList.replaceChildren();
+        invitationList.replaceChildren();
+        membersSummary.textContent="Loading your team...";
+        empty.textContent="Loading invitations...";
+        empty.hidden=false;
+        message.textContent="";
+
+        if(!validId(teamId)){
+            membersSummary.textContent="No valid team was selected.";
+            empty.textContent="Open this page from your team invitation or Invite members page.";
+            refreshButton.disabled=false;
+            return;
+        }
+
+        try{
+            const {data:userData,error:userError}=await database.auth.getUser();
+
+            if(userError || !userData.user){
+                membersSummary.textContent="Please log in to view this team.";
+                empty.textContent="Your session is unavailable.";
+                return;
+            }
+
+            const {data:team,error:teamError}=await database
+                .from("teams")
+                .select("id,name,project_name,owner_id")
+                .eq("id",teamId)
+                .single();
+
+            if(teamError || !team){
+                membersSummary.textContent="Team unavailable or you do not have access.";
+                empty.textContent="No invitation information loaded.";
+                return;
+            }
+
+            const {data:members,error:membersError}=await database.rpc(
+                "get_team_members",
+                {p_team_id:teamId}
+            );
+
+            if(membersError){
+                membersSummary.textContent="Could not load team members.";
+                empty.textContent="No invitation information loaded.";
+                message.textContent=membersError.message;
+                return;
+            }
+
+            membersSummary.textContent=team.name+" — "+team.project_name;
+
+            members.forEach(function(member){
+                const item=document.createElement("li");
+                const text=document.createElement("span");
+
+                const role=member.is_owner ? "Owner" : "Member";
+
+                text.textContent=member.full_name+" ("+member.email+") — "+role+" — Joined";
+
+                item.append(text);
+                membersList.append(item);
+            });
+
+            if(team.owner_id===userData.user.id){
+                inviteLink.href="invite-members.html?teamId="+encodeURIComponent(teamId);
+                inviteLink.hidden=false;
+            }
+
+            const {data:invitations,error:invitationsError}=await database
+                .from("invitations")
+                .select("id,invited_email,status")
+                .eq("team_id",teamId)
+                .order("created_at",{ascending:false});
+
+            if(invitationsError){
+                empty.textContent="Could not load invitations.";
+                message.textContent=invitationsError.message;
+                return;
+            }
+
+            empty.hidden=invitations.length>0;
+            empty.textContent="No invitations created yet.";
+
+            invitations.forEach(function(invitation){
+                const item=document.createElement("li");
+                const text=document.createElement("span");
+
+                text.textContent=invitation.invited_email+" — "+invitation.status;
+
+                item.append(text);
+                invitationList.append(item);
+            });
+
+            message.textContent="Team information loaded.";
+        }catch(error){
+            message.textContent="Could not load all team information. Check your connection and press Refresh.";
+            empty.textContent="Invitation information may be unavailable.";
+        }finally{
+            refreshButton.disabled=false;
+        }
+    }
+
+    refreshButton.addEventListener("click",loadMembers);
+
+    loadMembers();
 }
