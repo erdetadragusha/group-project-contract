@@ -70,6 +70,7 @@
             width: 20px;
             height: 20px;
             accent-color: #3458a4;
+            cursor: pointer;
         }
 
         button {
@@ -95,6 +96,7 @@
 
         #message {
             margin-top: 15px;
+            color: #b42318;
         }
     </style>
 </head>
@@ -113,27 +115,47 @@
                 <legend>Select your preferred options:</legend>
 
                 <label class="option">
-                    <input type="checkbox" name="communication" value="Email">
+                    <input
+                        type="checkbox"
+                        name="communication"
+                        value="Email"
+                    >
                     Email
                 </label>
 
                 <label class="option">
-                    <input type="checkbox" name="communication" value="In-app Chat">
+                    <input
+                        type="checkbox"
+                        name="communication"
+                        value="In-app Chat"
+                    >
                     In-app Chat
                 </label>
 
                 <label class="option">
-                    <input type="checkbox" name="communication" value="Discord">
+                    <input
+                        type="checkbox"
+                        name="communication"
+                        value="Discord"
+                    >
                     Discord
                 </label>
 
                 <label class="option">
-                    <input type="checkbox" name="communication" value="Zoom / Meet">
+                    <input
+                        type="checkbox"
+                        name="communication"
+                        value="Zoom / Meet"
+                    >
                     Zoom / Meet
                 </label>
 
                 <label class="option">
-                    <input type="checkbox" name="communication" value="Other">
+                    <input
+                        type="checkbox"
+                        name="communication"
+                        value="Other"
+                    >
                     Other
                 </label>
 
@@ -148,39 +170,77 @@
     </main>
 
     <script>
-        document.getElementById("preferencesForm")
-            .addEventListener("submit", function(event) {
 
-                event.preventDefault();
+        // Get the form and message area
+        const form = document.getElementById("preferencesForm");
+        const message = document.getElementById("message");
 
-                const selected = Array.from(
-                    document.querySelectorAll(
-                        'input[name="communication"]:checked'
-                    )
-                ).map(input => input.value);
+        // Load previously saved preferences
+        try {
+            const savedPreferences = JSON.parse(
+                localStorage.getItem("communicationPreferences") || "[]"
+            );
 
-                const message = document.getElementById("message");
+            if (Array.isArray(savedPreferences)) {
+                document.querySelectorAll(
+                    'input[name="communication"]'
+                ).forEach(function(input) {
 
-                if (selected.length === 0) {
-                    message.textContent =
-                        "Please select at least one option.";
-                    return;
-                }
+                    if (savedPreferences.includes(input.value)) {
+                        input.checked = true;
+                    }
 
-                try {
-                    localStorage.setItem(
-                        "communicationPreferences",
-                        JSON.stringify(selected)
-                    );
+                });
+            }
 
-                    message.textContent =
-                        "Preferences saved for this demo! We will connect the next screen soon.";
+        } catch (error) {
+            message.textContent =
+                "Previous preferences could not be loaded.";
+        }
 
-                } catch (error) {
-                    message.textContent =
-                        "Could not save preferences. Please try again.";
-                }
+        // Handle the Next button
+        form.addEventListener("submit", function(event) {
+
+            event.preventDefault();
+
+            // Get selected communication options
+            const selected = Array.from(
+                document.querySelectorAll(
+                    'input[name="communication"]:checked'
+                )
+            ).map(function(input) {
+                return input.value;
             });
+
+            // Make sure at least one option is selected
+            if (selected.length === 0) {
+
+                message.textContent =
+                    "Please select at least one communication option.";
+
+                return;
+            }
+
+            // Save the selected preferences
+            try {
+
+                localStorage.setItem(
+                    "communicationPreferences",
+                    JSON.stringify(selected)
+                );
+
+                // Open Screen 2: Weekly Availability
+                window.location.href = "availability.html";
+
+            } catch (error) {
+
+                message.textContent =
+                    "Could not save your preferences. Please try again.";
+
+            }
+
+        });
+
     </script>
 
 </body>
