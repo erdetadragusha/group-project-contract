@@ -191,6 +191,7 @@
                         .includes(checkbox.value);
                 });
             }
+
         } catch (error) {
             message.textContent = "Previous roles could not be loaded.";
         }
@@ -205,7 +206,6 @@
 
                 if (selected.length > 3) {
                     checkbox.checked = false;
-                    message.style.color = "#b42318";
                     message.textContent =
                         "You can select a maximum of 3 roles.";
                 } else {
@@ -229,14 +229,12 @@
             });
 
             if (selected.length === 0) {
-                message.style.color = "#b42318";
                 message.textContent =
                     "Please select at least one role.";
                 return;
             }
 
             if (selected.length > 3) {
-                message.style.color = "#b42318";
                 message.textContent =
                     "You can select a maximum of 3 roles.";
                 return;
@@ -248,12 +246,9 @@
                     JSON.stringify(selected)
                 );
 
-                message.style.color = "#167347";
-                message.textContent =
-                    "Roles saved! The next screen will be connected soon.";
+                window.location.href = "deadlines.html";
 
             } catch (error) {
-                message.style.color = "#b42318";
                 message.textContent =
                     "Could not save roles. Please try again.";
             }
