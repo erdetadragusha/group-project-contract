@@ -3,39 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign up | Group Project Contract</title>
+    <title data-i18n="signupTitle">Sign up | Group Project Contract</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <main class="welcome">
-        <a href="index.html" class="back-link">Back to welcome</a>
+        <div class="language-control">
+            <label for="language-select" data-i18n="language">
+                Language
+            </label>
 
-        <h1>Create an account</h1>
-        <p>Sign up to start working with your team.</p>
+            <select id="language-select" name="language">
+                <option value="en" lang="en">English</option>
+                <option value="hr" lang="hr">Hrvatski</option>
+                <option value="sq" lang="sq">Shqip</option>
+            </select>
+        </div>
+
+        <a href="index.html" class="back-link" data-i18n="backWelcome">
+            Back to welcome
+        </a>
+
+        <h1 data-i18n="createAccount">Create an account</h1>
+
+        <p data-i18n="signupIntroduction">
+            Sign up to start working with your team.
+        </p>
 
         <form id="signup-form" class="account-form">
-            <label for="name">Full name</label>
+            <label for="name" data-i18n="fullName">Full name</label>
             <input type="text" id="name" name="name"
                 autocomplete="name" required>
 
-            <label for="email">Email</label>
+            <label for="email" data-i18n="email">Email</label>
             <input type="email" id="email" name="email"
                 autocomplete="email" required>
 
-            <label for="password">Password</label>
+            <label for="password" data-i18n="password">Password</label>
             <input type="password" id="password" name="password"
                 autocomplete="new-password" minlength="8"
                 aria-describedby="password-help" required>
-            <small id="password-help">Use at least 8 characters.</small>
 
-            <button type="submit" class="button">Sign up</button>
+            <small id="password-help" data-i18n="passwordHelp">
+                Use at least 8 characters.
+            </small>
+
+            <button type="submit" class="button" data-i18n="signupButton">
+                Sign up
+            </button>
 
             <p id="signup-message" role="status"></p>
         </form>
 
-        <p>Already have an account? <a href="login.html">Log in</a></p>
+        <p>
+            <span data-i18n="alreadyAccount">Already have an account?</span>
+            <a href="login.html" data-i18n="login">Log in</a>
+        </p>
     </main>
 
+    <script src="language.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="supabase-client.js"></script>
     <script src="script.js"></script>
