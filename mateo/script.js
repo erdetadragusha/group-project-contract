@@ -1,3 +1,26 @@
+const pageParams=new URLSearchParams(window.location.search);
+const invitationId=pageParams.get("invitationId");
+
+function validId(value){
+    return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(value || "");
+}
+
+function afterLogin(){
+    if(validId(invitationId)){
+        return "join-team.html?invitationId="+encodeURIComponent(invitationId);
+    }
+
+    return "create-team.html";
+}
+
+function addLink(container,text,address){
+    const link=document.createElement("a");
+    link.textContent=text;
+    link.href=address;
+    link.className="button button-secondary";
+    container.append(link);
+}
+
 const signupForm=document.querySelector("#signup-form");
 
 if(signupForm){
@@ -24,9 +47,7 @@ if(signupForm){
                 email:email.value.trim(),
                 password:password.value,
                 options:{
-                    data:{
-                        full_name:name.value.trim()
-                    },
+                    data:{full_name:name.value.trim()},
                     emailRedirectTo:new URL("login.html",window.location.href).href
                 }
             });
@@ -39,9 +60,9 @@ if(signupForm){
             password.value="";
 
             if(data.session){
-                window.location.href="create-team.html";
+                window.location.href=afterLogin();
             }else{
-                message.textContent="Check your email for a confirmation link. If you already have an account, use Log in.";
+                message.textContent="Check your email for a confirmation link. If joining a team, reopen your invitation link after confirming.";
             }
         }catch(error){
             message.textContent="Could not reach the signup service. Check your connection and try again.";
@@ -54,6 +75,14 @@ if(signupForm){
 const loginForm=document.querySelector("#login-form");
 
 if(loginForm){
+    if(validId(invitationId)){
+        const signupLink=document.querySelector('a[href="signup.html"]');
+
+        if(signupLink){
+            signupLink.href="signup.html?invitationId="+encodeURIComponent(invitationId);
+        }
+    }
+
     loginForm.addEventListener("submit",async function(event){
         event.preventDefault();
 
@@ -77,7 +106,7 @@ if(loginForm){
             }
 
             password.value="";
-            window.location.href="create-team.html";
+            window.location.href=afterLogin();
         }catch(error){
             message.textContent="Could not reach the login service. Check your connection and try again.";
         }finally{
@@ -108,8 +137,7 @@ if(createTeamForm){
 const projectDetailsForm=document.querySelector("#project-details-form");
 
 if(projectDetailsForm){
-    const params=new URLSearchParams(window.location.search);
-    const teamName=(params.get("teamName") || "").trim();
+    const teamName=(pageParams.get("teamName") || "").trim();
     const summary=document.querySelector("#team-summary");
 
     summary.textContent=teamName ? "Team: "+teamName : "Return to Create team and enter a team name.";
@@ -178,10 +206,7 @@ if(projectDetailsForm){
 const inviteForm=document.querySelector("#invite-form");
 
 if(inviteForm){
-    const params=new URLSearchParams(window.location.search);
-    const teamId=params.get("teamId");
-    const validTeamId=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(teamId || "");
-
+    const teamId=pageParams.get("teamId");
     const emails=[];
     let savedInvitations=[];
     let busy=true;
@@ -241,8 +266,16 @@ if(inviteForm){
             const text=document.createElement("span");
 
             text.textContent=invitation.invited_email+" — "+invitation.status;
-
             item.append(text);
+
+            if(invitation.status==="pending"){
+                const link=document.createElement("a");
+
+                link.textContent="Open invitation";
+                link.href="join-team.html?invitationId="+encodeURIComponent(invitation.id);
+                item.append(link);
+            }
+
             savedList.append(item);
         });
 
@@ -252,7 +285,7 @@ if(inviteForm){
     async function loadInvitations(){
         renderInvites();
 
-        if(!validTeamId){
+        if(!validId(teamId)){
             busy=false;
             message.textContent="Open this page after saving a team and project.";
             renderInvites();
@@ -293,9 +326,9 @@ if(inviteForm){
 
             savedInvitations=data;
             teamReady=true;
-            message.textContent="Add email addresses to prepare invitations. Saving does not send emails yet.";
+            message.textContent="Save invitations, then copy their links for your teammates. Emails are not sent automatically.";
         }catch(error){
-            message.textContent="Could not load invitations. Check your connection and reload the page.";
+            message.textContent="Could not load invitations. Check your connection and reload.";
         }finally{
             busy=false;
             renderInvites();
@@ -316,7 +349,7 @@ if(inviteForm){
         });
 
         if(emails.includes(email) || alreadyPending){
-            message.textContent="This email is already in your draft list or has a pending invitation.";
+            message.textContent="This email is already in the draft list or has a pending invitation.";
             emailInput.focus();
             return;
         }
@@ -360,14 +393,14 @@ if(inviteForm){
 
             if(error){
                 message.textContent=error.code==="23505"
-                    ? "An email already has a pending invitation. Reload to see the latest invitations; the draft list will reset."
+                    ? "An email already has a pending invitation. Reload to check; the draft list will reset."
                     : error.message;
                 return;
             }
 
             savedInvitations=data.concat(savedInvitations);
             emails.length=0;
-            message.textContent="Invitations saved as pending. No invitation emails have been sent yet.";
+            message.textContent="Invitations saved. Copy the invitation links for your teammates. No emails have been sent.";
         }catch(error){
             message.textContent="Could not confirm saving. Reload to check saved invitations before trying again.";
         }finally{
@@ -377,4 +410,119 @@ if(inviteForm){
     });
 
     loadInvitations();
+}
+
+const joinDetails=document.querySelector("#join-details");
+
+if(joinDetails){
+    const acceptButton=document.querySelector("#accept-invitation");
+    const declineButton=document.querySelector("#decline-invitation");
+    const message=document.querySelector("#join-message");
+    const links=document.querySelector("#join-links");
+
+    let currentInvitation=null;
+    let responding=false;
+
+    async function loadInvitation(){
+        acceptButton.disabled=true;
+        declineButton.disabled=true;
+        links.replaceChildren();
+
+        if(!validId(invitationId)){
+            joinDetails.textContent="No valid invitation link was provided.";
+            return;
+        }
+
+        try{
+            const {data:userData,error:userError}=await database.auth.getUser();
+
+            if(userError || !userData.user){
+                joinDetails.textContent="Log in with the email address that received this invitation.";
+
+                addLink(links,"Log in","login.html?invitationId="+encodeURIComponent(invitationId));
+                addLink(links,"Create account","signup.html?invitationId="+encodeURIComponent(invitationId));
+                return;
+            }
+
+            const {data,error}=await database
+                .from("invitations")
+                .select("id,team_id,invited_email,status")
+                .eq("id",invitationId)
+                .maybeSingle();
+
+            if(error){
+                joinDetails.textContent="Could not load invitation.";
+                message.textContent=error.message;
+                return;
+            }
+
+            if(!data){
+                joinDetails.textContent="Invitation unavailable. Check that you logged in with the invited email address.";
+                return;
+            }
+
+            if(data.invited_email!==(userData.user.email || "").toLowerCase()){
+                joinDetails.textContent="This invitation belongs to another email address.";
+                return;
+            }
+
+            currentInvitation=data;
+            joinDetails.textContent="Invitation for "+data.invited_email+". Status: "+data.status+".";
+
+            if(data.status==="pending"){
+                acceptButton.disabled=false;
+                declineButton.disabled=false;
+                message.textContent="Accept to join the team, or decline the invitation.";
+            }else if(data.status==="accepted"){
+                message.textContent="You have accepted this invitation.";
+
+                addLink(links,"View team members","team-members.html?teamId="+encodeURIComponent(data.team_id));
+            }else{
+                message.textContent="This invitation is no longer pending.";
+            }
+        }catch(error){
+            joinDetails.textContent="Could not load invitation. Check your connection and reload.";
+        }
+    }
+
+    async function respondToInvitation(accept){
+        if(responding || !currentInvitation || currentInvitation.status!=="pending"){
+            return;
+        }
+
+        responding=true;
+        acceptButton.disabled=true;
+        declineButton.disabled=true;
+        message.textContent=accept ? "Joining team..." : "Declining invitation...";
+
+        try{
+            const {error}=await database.rpc("respond_to_invitation",{
+                p_invitation_id:invitationId,
+                p_accept:accept
+            });
+
+            if(error){
+                message.textContent=error.message;
+                acceptButton.disabled=false;
+                declineButton.disabled=false;
+                return;
+            }
+
+            await loadInvitation();
+        }catch(error){
+            message.textContent="Could not confirm your response. Reload to check the invitation status.";
+        }finally{
+            responding=false;
+        }
+    }
+
+    acceptButton.addEventListener("click",function(){
+        respondToInvitation(true);
+    });
+
+    declineButton.addEventListener("click",function(){
+        respondToInvitation(false);
+    });
+
+    loadInvitation();
 }
