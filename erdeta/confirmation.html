@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Agreement Confirmation</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6fb;
+            margin: 0;
+            padding: 20px;
+            color: #222;
+        }
+
+        .container {
+            background: white;
+            max-width: 460px;
+            margin: 40px auto;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .back {
+            color: #3458a4;
+            text-decoration: none;
+            font-size: 16px;
+        }
+
+        .success-icon {
+            width: 85px;
+            height: 85px;
+            background-color: #e1f5e8;
+            color: #176b37;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 45px;
+            font-weight: bold;
+            margin: 25px auto;
+        }
+
+        h1 {
+            font-size: 25px;
+            text-align: center;
+            color: #263b63;
+        }
+
+        h2 {
+            font-size: 18px;
+            color: #263b63;
+            margin-top: 0;
+        }
+
+        p {
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .subtitle {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .status {
+            display: block;
+            width: fit-content;
+            margin: 15px auto;
+            padding: 8px 15px;
+            background-color: #e1f5e8;
+            color: #176b37;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 13px;
+        }
+
+        .card {
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 18px;
+            margin-bottom: 15px;
+        }
+
+        .agreement-card {
+            background-color: #eef3ff;
+            border-color: #b9c9ee;
+        }
+
+        .label {
+            display: block;
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 6px;
+        }
+
+        .value {
+            display: block;
+            font-size: 15px;
+            color: #263b63;
+            font-weight: bold;
+            overflow-wrap: anywhere;
+        }
+
+        .proposal-text {
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+            margin-bottom: 0;
+        }
+
+        .preference {
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .preference:last-child {
+            border-bottom: none;
+        }
+
+        .preference strong {
+            display: block;
+            color: #263b63;
+            margin-bottom: 7px;
+            font-size: 14px;
+        }
+
+        .preference span {
+            font-size: 14px;
+            color: #555;
+            line-height: 1.6;
+            overflow-wrap: anywhere;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background-color: #3458a4;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 17px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+
+        button:hover {
+            background-color: #263b63;
+        }
+
+        button:focus-visible,
+        a:focus-visible {
+            outline: 3px solid #e09b24;
+            outline-offset: 3px;
+        }
+
+        .notice {
+            background-color: #fff7e6;
+            border: 1px solid #ead09a;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 13px;
+            line-height: 1.6;
+            margin: 20px 0;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .empty {
+            padding: 20px;
+            background-color: #eef3ff;
+            border-radius: 10px;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .empty a {
+            display: inline-block;
+            margin-top: 10px;
+            color: #3458a4;
+            font-weight: bold;
+        }
+
+        #message {
+            margin-top: 15px;
+            color: #b42318;
+            text-align: center;
+        }
+
+        @media (max-width: 450px) {
+            .container {
+                padding: 20px;
+                margin: 15px auto;
+            }
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <main class="container">
+
+        <section id="confirmationScreen">
+
+            <a href="review.html" class="back">
+                ← Back
+            </a>
+
+            <div id="confirmationContent" class="hidden">
+
+                <div class="success-icon" aria-hidden="true">
+                    ✓
+                </div>
+
+                <h1>Agreement Approved!</h1>
+
+                <p class="subtitle">
+                    You have successfully approved your proposed agreement.
+                </p>
+
+                <span class="status">
+                    Approved
+                </span>
+
+                <div class="notice">
+                    Demo mode: Your approval has been saved in this browser.
+                    Other team members must also approve before this becomes
+                    a final team agreement.
+                </div>
+
+                <div class="card agreement-card">
+
+                    <h2>Approved Proposal</h2>
+
+                    <span class="label">
+                        Agreement Topic
+                    </span>
+
+                    <span class="value" id="agreementTopic"></span>
+
+                    <div style="margin-top: 18px;">
+
+                        <span class="label">
+                            Proposed Solution
+                        </span>
+
+                        <p class="proposal-text" id="agreementText"></p>
+
+                    </div>
+
+                </div>
+
+                <div class="card">
+
+                    <h2>Your Saved Preferences</h2>
+
+                    <div class="preference">
+                        <strong>Communication</strong>
+                        <span id="communicationSummary"></span>
+                    </div>
+
+                    <div class="preference">
+                        <strong>Weekly Availability</strong>
+                        <span id="availabilitySummary"></span>
+                    </div>
+
+                    <div class="preference">
+                        <strong>Preferred Roles</strong>
+                        <span id="rolesSummary"></span>
+                    </div>
+
+                    <div class="preference">
+                        <strong>Deadline Expectations</strong>
+                        <span id="deadlineSummary"></span>
+                    </div>
+
+                    <div class="preference">
+                        <strong>Quality Expectations</strong>
+                        <span id="qualitySummary"></span>
+                    </div>
+
+                </div>
+
+                <div class="card">
+
+                    <h2>Approval Details</h2>
+
+                    <span class="label">
+                        Approval Date
+                    </span>
+
+                    <span class="value" id="approvalDate"></span>
+
+                </div>
+
+                <button type="button" id="dashboardButton">
+                    Go to Dashboard
+                </button>
+
+            </div>
+
+            <div id="emptyState" class="empty hidden">
+
+                <h2>No Approved Proposal Found</h2>
+
+                <p>
+                    You need to create and approve a proposal
+                    before viewing the confirmation.
+                </p>
+
+                <a href="review.html">
+                    Return to Review Proposal
+                </a>
+
+            </div>
+
+            <p id="message" role="status" aria-live="polite"></p>
+
+        </section>
+
+        <section id="dashboardScreen" class="hidden">
+
+            <h1 id="dashboardHeading" tabindex="-1">
+                Project Dashboard
+            </h1>
+
+            <p class="subtitle">
+                Welcome to your Group Project Contract dashboard.
+            </p>
+
+            <div class="notice">
+                This is a temporary demo dashboard.
+                Your team's main dashboard will be connected later.
+            </div>
+
+            <div class="card">
+
+                <h2>Your Proposal</h2>
+
+                <span class="label">
+                    Topic
+                </span>
+
+                <span class="value" id="dashboardTopic"></span>
+
+                <div style="margin-top: 15px;">
+
+                    <span class="label">
+                        Your Approved Proposal
+                    </span>
+
+                    <p class="proposal-text" id="dashboardProposal"></p>
+
+                </div>
+
+            </div>
+
+            <div class="card">
+
+                <h2>Next Steps</h2>
+
+                <p>
+                    Your proposed agreement has been approved by you.
+                    The next step is to collect approval from the other
+                    team members.
+                </p>
+
+            </div>
+
+            <button type="button" id="reviewButton">
+                Review Agreement
+            </button>
+
+            <button type="button" id="preferencesButton">
+                Edit My Preferences
+            </button>
+
+        </section>
+
+    </main>
+
+    <script>
+        const confirmationContent = document.getElementById(
+            "confirmationContent"
+        );
+
+        const dashboardScreen = document.getElementById(
+            "dashboardScreen"
+        );
+
+        const confirmationScreen = document.getElementById(
+            "confirmationScreen"
+        );
+
+        const emptyState = document.getElementById("emptyState");
+        const message = document.getElementById("message");
+
+        let proposal = null;
+
+        function getSavedArray(key) {
+            try {
+                const value = JSON.parse(
+                    localStorage.getItem(key) || "[]"
+                );
+
+                return Array.isArray(value) ? value : [];
+
+            } catch (error) {
+                return [];
+            }
+        }
+
+        function getSavedText(key) {
+            try {
+                return localStorage.getItem(key) || "";
+            } catch (error) {
+                return "";
+            }
+        }
+
+        function displayArray(elementId, values) {
+            document.getElementById(elementId).textContent =
+                values.length > 0
+                    ? values.join(", ")
+                    : "Not selected";
+        }
+
+        function getAvailability() {
+            try {
+                const saved = JSON.parse(
+                    localStorage.getItem("weeklyAvailability") || "null"
+                );
+
+                if (!saved) {
+                    return [];
+                }
+
+                const times = Array.isArray(saved.times)
+                    ? saved.times.map(function(value) {
+                        return value.replace("-", " ");
+                    })
+                    : [];
+
+                if (saved.flexible === true) {
+                    times.push("Flexible schedule");
+                }
+
+                return times;
+
+            } catch (error) {
+                return [];
+            }
+        }
+
+        function displayPreferences() {
+            displayArray(
+                "communicationSummary",
+                getSavedArray("communicationPreferences")
+            );
+
+            displayArray(
+                "availabilitySummary",
+                getAvailability()
+            );
+
+            displayArray(
+                "rolesSummary",
+                getSavedArray("preferredRoles")
+            );
+
+            const deadline = getSavedText("deadlineExpectations");
+
+            document.getElementById("deadlineSummary").textContent =
+                deadline || "Not selected";
+
+            displayArray(
+                "qualitySummary",
+                getSavedArray("qualityExpectations")
+            );
+        }
+
+        function displayApprovalDate(value) {
+            const dateElement = document.getElementById(
+                "approvalDate"
+            );
+
+            if (!value) {
+                dateElement.textContent = "Date unavailable";
+                return;
+            }
+
+            const date = new Date(value);
+
+            if (Number.isNaN(date.getTime())) {
+                dateElement.textContent = "Date unavailable";
+                return;
+            }
+
+            dateElement.textContent = new Intl.DateTimeFormat(
+                "en",
+                {
+                    dateStyle: "medium",
+                    timeStyle: "short"
+                }
+            ).format(date);
+        }
+
+        try {
+            const saved = JSON.parse(
+                localStorage.getItem("groupProposal") || "null"
+            );
+
+            if (
+                saved &&
+                saved.status === "approved" &&
+                typeof saved.topic === "string" &&
+                saved.topic.trim().length > 0 &&
+                typeof saved.text === "string" &&
+                saved.text.trim().length >= 10
+            ) {
+                proposal = saved;
+
+                document.getElementById(
+                    "agreementTopic"
+                ).textContent = proposal.topic;
+
+                document.getElementById(
+                    "agreementText"
+                ).textContent = proposal.text;
+
+                displayPreferences();
+
+                displayApprovalDate(proposal.approvedAt);
+
+                document.getElementById(
+                    "dashboardTopic"
+                ).textContent = proposal.topic;
+
+                document.getElementById(
+                    "dashboardProposal"
+                ).textContent = proposal.text;
+
+                confirmationContent.classList.remove("hidden");
+
+            } else {
+                emptyState.classList.remove("hidden");
+            }
+
+        } catch (error) {
+            emptyState.classList.remove("hidden");
+
+            message.textContent =
+                "The agreement could not be loaded.";
+        }
+
+        document.getElementById("dashboardButton")
+            .addEventListener("click", function() {
+
+                if (!proposal) {
+                    message.textContent =
+                        "No approved proposal is available.";
+                    return;
+                }
+
+                confirmationScreen.classList.add("hidden");
+                dashboardScreen.classList.remove("hidden");
+
+                document.title = "Project Dashboard";
+
+                document.getElementById(
+                    "dashboardHeading"
+                ).focus();
+
+            });
+
+        document.getElementById("reviewButton")
+            .addEventListener("click", function() {
+                window.location.href = "review.html";
+            });
+
+        document.getElementById("preferencesButton")
+            .addEventListener("click", function() {
+                window.location.href = "communication.html";
+            });
+    </script>
+
+</body>
+</html>
