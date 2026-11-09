@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create team | Group Project Contract</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <main class="welcome">
+        <h1>Create your team</h1>
+        <p>Choose a name for your project team.</p>
+
+        <form id="create-team-form" class="account-form">
+            <label for="team-name">Team name</label>
+            <input type="text" id="team-name" name="teamName"
+                maxlength="80" required>
+
+            <button type="submit" class="button">Continue</button>
+
+            <p id="team-message" role="status"></p>
+        </form>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
