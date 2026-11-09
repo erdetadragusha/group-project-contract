@@ -281,6 +281,220 @@
 
         });
     </script>
+<script src="https://cdn.jsdelivr.net/npm/i18next@23.16.8/dist/umd/i18next.min.js"></script>
 
+<script>
+(function () {
+    if (!window.i18next) return;
+
+    const resources = {
+        en: {
+            translation: {
+                title: "Deadline Expectations",
+                question: "How do you prefer to work with deadlines in your group project?",
+                instruction: "Choose your preferred deadline style:",
+                strict: "Strict deadlines",
+                strictDescription: "I prefer to finish tasks on time and follow fixed deadlines.",
+                some: "Some flexibility",
+                someDescription: "I prefer deadlines but can adjust them when needed.",
+                flexible: "Flexible",
+                flexibleDescription: "I prefer a flexible schedule with adjustable deadlines.",
+                back: "Back",
+                next: "Next",
+                language: "Language",
+                requiredError: "Please select your preferred deadline style.",
+                loadError: "Previous deadline preferences could not be loaded.",
+                saveError: "Could not save your deadline preference. Please try again."
+            }
+        },
+        hr: {
+            translation: {
+                title: "Očekivanja vezana uz rokove",
+                question: "Kako najradije radite s rokovima u grupnom projektu?",
+                instruction: "Odaberite način rada s rokovima:",
+                strict: "Strogi rokovi",
+                strictDescription: "Volim završavati zadatke na vrijeme i pridržavati se fiksnih rokova.",
+                some: "Određena fleksibilnost",
+                someDescription: "Volim imati rokove, ali ih mogu prilagoditi kada je potrebno.",
+                flexible: "Fleksibilni rokovi",
+                flexibleDescription: "Više mi odgovara fleksibilan raspored s prilagodljivim rokovima.",
+                back: "Natrag",
+                next: "Dalje",
+                language: "Jezik",
+                requiredError: "Odaberite način rada s rokovima.",
+                loadError: "Prethodne postavke rokova nije moguće učitati.",
+                saveError: "Postavku rokova nije moguće spremiti. Pokušajte ponovno."
+            }
+        },
+        sq: {
+            translation: {
+                title: "Pritshmëritë për afatet",
+                question: "Si preferoni të punoni me afatet në projektin tuaj në grup?",
+                instruction: "Zgjidhni mënyrën tuaj të preferuar të punës me afate:",
+                strict: "Afate të rrepta",
+                strictDescription: "Preferoj t'i përfundoj detyrat në kohë dhe t'i respektoj afatet e caktuara.",
+                some: "Pak fleksibilitet",
+                someDescription: "Preferoj të kem afate, por mund t'i ndryshoj kur është e nevojshme.",
+                flexible: "Afate fleksibile",
+                flexibleDescription: "Preferoj një orar fleksibil me afate që mund të ndryshohen.",
+                back: "Kthehu",
+                next: "Vazhdo",
+                language: "Gjuha",
+                requiredError: "Ju lutemi zgjidhni mënyrën e preferuar të punës me afate.",
+                loadError: "Preferencat e mëparshme për afatet nuk mund të ngarkohen.",
+                saveError: "Preferenca për afatet nuk u ruajt. Provoni përsëri."
+            }
+        }
+    };
+
+    const main = document.querySelector(".container");
+    const heading = main.querySelector("h1");
+    const question = main.querySelector("p");
+    const legend = main.querySelector("legend");
+    const backLink = main.querySelector(".back");
+    const nextButton = main.querySelector('button[type="submit"]');
+    const optionTitles = main.querySelectorAll(".option-title");
+    const optionDescriptions = main.querySelectorAll(".option-description");
+    const messageElement = document.getElementById("message");
+
+    const languageBox = document.createElement("div");
+    languageBox.style.margin = "20px 0";
+
+    const languageLabel = document.createElement("label");
+    languageLabel.htmlFor = "languageSelector";
+    languageLabel.style.display = "block";
+    languageLabel.style.marginBottom = "8px";
+    languageLabel.style.fontWeight = "bold";
+
+    const languageSelector = document.createElement("select");
+    languageSelector.id = "languageSelector";
+    languageSelector.style.width = "100%";
+    languageSelector.style.padding = "12px";
+    languageSelector.style.border = "1px solid #ccc";
+    languageSelector.style.borderRadius = "10px";
+    languageSelector.style.fontSize = "15px";
+
+    [
+        ["en", "English"],
+        ["hr", "Hrvatski"],
+        ["sq", "Shqip"]
+    ].forEach(function (entry) {
+        const option = document.createElement("option");
+        option.value = entry[0];
+        option.textContent = entry[1];
+        languageSelector.appendChild(option);
+    });
+
+    languageBox.appendChild(languageLabel);
+    languageBox.appendChild(languageSelector);
+    main.insertBefore(languageBox, heading);
+
+    const titleKeys = ["strict", "some", "flexible"];
+
+    const descriptionKeys = [
+        "strictDescription",
+        "someDescription",
+        "flexibleDescription"
+    ];
+
+    const errorKeys = {
+        "Please select your preferred deadline style.": "requiredError",
+        "Previous deadline preferences could not be loaded.": "loadError",
+        "Could not save your deadline preference. Please try again.": "saveError"
+    };
+
+    let currentError = null;
+
+    function updateText() {
+        document.documentElement.lang = i18next.language;
+        document.title = i18next.t("title");
+
+        heading.textContent = i18next.t("title");
+        question.textContent = i18next.t("question");
+        legend.textContent = i18next.t("instruction");
+        backLink.textContent = "← " + i18next.t("back");
+        nextButton.textContent = i18next.t("next");
+        languageLabel.textContent = i18next.t("language");
+
+        optionTitles.forEach(function (element, index) {
+            element.textContent = i18next.t(titleKeys[index]);
+        });
+
+        optionDescriptions.forEach(function (element, index) {
+            element.textContent = i18next.t(descriptionKeys[index]);
+        });
+
+        if (currentError) {
+            messageElement.textContent = i18next.t(currentError);
+        }
+    }
+
+    const observer = new MutationObserver(function () {
+        const text = messageElement.textContent.trim();
+
+        if (!text) {
+            currentError = null;
+            return;
+        }
+
+        if (errorKeys[text]) {
+            currentError = errorKeys[text];
+        }
+
+        if (currentError) {
+            const translated = i18next.t(currentError);
+
+            if (text !== translated) {
+                messageElement.textContent = translated;
+            }
+        }
+    });
+
+    let savedLanguage = "en";
+
+    try {
+        savedLanguage = localStorage.getItem("appLanguage") || "en";
+    } catch (error) {
+        savedLanguage = "en";
+    }
+
+    if (!resources[savedLanguage]) {
+        savedLanguage = "en";
+    }
+
+    i18next.init({
+        lng: savedLanguage,
+        fallbackLng: "en",
+        resources: resources
+    }).then(function () {
+        languageSelector.value = savedLanguage;
+
+        observer.observe(messageElement, {
+            childList: true,
+            characterData: true,
+            subtree: true
+        });
+
+        if (errorKeys[messageElement.textContent.trim()]) {
+            currentError = errorKeys[messageElement.textContent.trim()];
+        }
+
+        updateText();
+
+        languageSelector.addEventListener("change", function () {
+            const selectedLanguage = languageSelector.value;
+
+            i18next.changeLanguage(selectedLanguage).then(function () {
+                try {
+                    localStorage.setItem("appLanguage", selectedLanguage);
+                } catch (error) {
+                }
+
+                updateText();
+            });
+        });
+    });
+})();
+</script>
 </body>
 </html>
