@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Review Proposal</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6fb;
+            margin: 0;
+            padding: 20px;
+            color: #222;
+        }
+
+        .container {
+            background: white;
+            max-width: 460px;
+            margin: 40px auto;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .back {
+            color: #3458a4;
+            text-decoration: none;
+            font-size: 16px;
+        }
+
+        h1 {
+            font-size: 25px;
+            text-align: center;
+            color: #263b63;
+        }
+
+        p {
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .subtitle {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .notice {
+            background-color: #fff7e6;
+            border: 1px solid #ead09a;
+            padding: 13px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .card {
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 18px;
+            margin-bottom: 15px;
+        }
+
+        .card h2 {
+            font-size: 17px;
+            color: #263b63;
+            margin: 0 0 12px;
+        }
+
+        .card p {
+            margin: 0;
+            font-size: 14px;
+            overflow-wrap: anywhere;
+            white-space: pre-wrap;
+        }
+
+        .proposal-card {
+            background-color: #eef3ff;
+            border-color: #b9c9ee;
+        }
+
+        .label {
+            display: block;
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 6px;
+        }
+
+        .value {
+            display: block;
+            font-size: 15px;
+            font-weight: bold;
+            color: #263b63;
+            overflow-wrap: anywhere;
+        }
+
+        .details {
+            margin-top: 15px;
+        }
+
+        .details h2 {
+            font-size: 18px;
+            color: #263b63;
+            margin-bottom: 15px;
+        }
+
+        .status {
+            display: inline-block;
+            background-color: #fff0db;
+            color: #8a4900;
+            padding: 7px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 25px;
+        }
+
+        button {
+            flex: 1;
+            padding: 15px 10px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+        }
+
+        .change-button {
+            background-color: white;
+            color: #3458a4;
+            border: 2px solid #3458a4;
+        }
+
+        .change-button:hover {
+            background-color: #eef3ff;
+        }
+
+        .approve-button {
+            background-color: #3458a4;
+            color: white;
+        }
+
+        .approve-button:hover {
+            background-color: #263b63;
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        button:focus-visible,
+        a:focus-visible {
+            outline: 3px solid #e09b24;
+            outline-offset: 3px;
+        }
+
+        #message {
+            margin-top: 15px;
+            color: #b42318;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 450px) {
+            .container {
+                padding: 20px;
+                margin: 15px auto;
+            }
+
+            .buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <main class="container">
+
+        <a href="proposal.html" class="back">
+            ← Back
+        </a>
+
+        <h1>Review Proposal</h1>
+
+        <p class="subtitle">
+            Review your proposed agreement before making a decision.
+        </p>
+
+        <div class="notice">
+            Demo mode: This review is stored only in your browser.
+            Approval by other team members will be added when
+            the shared database is connected.
+        </div>
+
+        <div id="proposalDetails" class="hidden">
+
+            <div class="card">
+
+                <h2>Proposal Information</h2>
+
+                <span class="label">Disagreement Topic</span>
+
+                <span class="value" id="proposalTopic"></span>
+
+                <div style="margin-top: 15px;">
+
+                    <span class="label">Status</span>
+
+                    <span class="status" id="proposalStatus">
+                        Pending Review
+                    </span>
+
+                </div>
+
+            </div>
+
+            <div class="card proposal-card">
+
+                <h2>Proposed Agreement</h2>
+
+                <p id="proposalText"></p>
+
+            </div>
+
+            <section class="details">
+
+                <h2>Your Current Preferences</h2>
+
+                <div class="card">
+
+                    <h2>Deadlines</h2>
+
+                    <p id="deadlineSummary"></p>
+
+                </div>
+
+                <div class="card">
+
+                    <h2>Preferred Roles</h2>
+
+                    <p id="rolesSummary"></p>
+
+                </div>
+
+                <div class="card">
+
+                    <h2>Quality Expectations</h2>
+
+                    <p id="qualitySummary"></p>
+
+                </div>
+
+            </section>
+
+            <div class="buttons">
+
+                <button
+                    type="button"
+                    class="change-button"
+                    id="changeButton"
+                >
+                    Request Changes
+                </button>
+
+                <button
+                    type="button"
+                    class="approve-button"
+                    id="approveButton"
+                >
+                    Approve
+                </button>
+
+            </div>
+
+        </div>
+
+        <p id="message" role="status" aria-live="polite"></p>
+
+    </main>
+
+    <script>
+        const proposalDetails = document.getElementById("proposalDetails");
+        const proposalTopic = document.getElementById("proposalTopic");
+        const proposalText = document.getElementById("proposalText");
+        const proposalStatus = document.getElementById("proposalStatus");
+        const deadlineSummary = document.getElementById("deadlineSummary");
+        const rolesSummary = document.getElementById("rolesSummary");
+        const qualitySummary = document.getElementById("qualitySummary");
+        const changeButton = document.getElementById("changeButton");
+        const approveButton = document.getElementById("approveButton");
+        const message = document.getElementById("message");
+
+        let proposal = null;
+
+        function getSavedArray(key) {
+            try {
+                const saved = JSON.parse(
+                    localStorage.getItem(key) || "[]"
+                );
+
+                return Array.isArray(saved) ? saved : [];
+
+            } catch (error) {
+                return [];
+            }
+        }
+
+        function getSavedText(key) {
+            try {
+                return localStorage.getItem(key) || "";
+            } catch (error) {
+                return "";
+            }
+        }
+
+        function showPreferences() {
+            const deadline = getSavedText("deadlineExpectations");
+
+            deadlineSummary.textContent =
+                deadline || "No deadline preference selected.";
+
+            const roles = getSavedArray("preferredRoles");
+
+            rolesSummary.textContent = roles.length > 0
+                ? roles.join(", ")
+                : "No preferred roles selected.";
+
+            const quality = getSavedArray("qualityExpectations");
+
+            qualitySummary.textContent = quality.length > 0
+                ? quality.join(", ")
+                : "No quality expectations selected.";
+        }
+
+        try {
+            const saved = JSON.parse(
+                localStorage.getItem("groupProposal") || "null"
+            );
+
+            if (
+                saved &&
+                typeof saved.topic === "string" &&
+                saved.topic.trim().length > 0 &&
+                typeof saved.text === "string" &&
+                saved.text.trim().length >= 10
+            ) {
+                proposal = saved;
+
+                proposalTopic.textContent = proposal.topic;
+                proposalText.textContent = proposal.text;
+
+                if (proposal.status === "approved") {
+                    proposalStatus.textContent = "Approved";
+                } else if (proposal.status === "changes_requested") {
+                    proposalStatus.textContent = "Changes Requested";
+                } else {
+                    proposalStatus.textContent = "Pending Review";
+                }
+
+                showPreferences();
+
+                proposalDetails.classList.remove("hidden");
+
+            } else {
+                message.textContent =
+                    "No valid proposal found. Please go back and create a proposal first.";
+            }
+
+        } catch (error) {
+            message.textContent =
+                "The proposal could not be loaded. Please return to the previous screen.";
+        }
+
+        changeButton.addEventListener("click", function() {
+
+            if (!proposal) {
+                message.textContent =
+                    "No proposal is available to change.";
+                return;
+            }
+
+            try {
+                proposal.status = "changes_requested";
+
+                localStorage.setItem(
+                    "groupProposal",
+                    JSON.stringify(proposal)
+                );
+
+                window.location.href = "proposal.html";
+
+            } catch (error) {
+                message.textContent =
+                    "Could not save the change request. Please try again.";
+            }
+
+        });
+
+        approveButton.addEventListener("click", function() {
+
+            if (!proposal) {
+                message.textContent =
+                    "No proposal is available to approve.";
+                return;
+            }
+
+            try {
+                proposal.status = "approved";
+                proposal.approvedAt = new Date().toISOString();
+
+                localStorage.setItem(
+                    "groupProposal",
+                    JSON.stringify(proposal)
+                );
+
+                window.location.href = "confirmation.html";
+
+            } catch (error) {
+                message.textContent =
+                    "Could not save the approval. Please try again.";
+            }
+
+        });
+    </script>
+
+</body>
+</html>
