@@ -4,6 +4,8 @@
             pageTitle:"Welcome | Group Project Contract",
             signupTitle:"Sign up | Group Project Contract",
             loginTitle:"Log in | Group Project Contract",
+            teamTitle:"Create team | Group Project Contract",
+            projectTitle:"Project details | Group Project Contract",
             language:"Language",
             heading:"Group Project Contract",
             introduction:"Create your team and agree on how you will work together.",
@@ -36,12 +38,31 @@
             requestFailed:"The request could not be completed. Please try again.",
             fieldRequired:"Please fill in this field.",
             validEmail:"Please enter a valid email address.",
-            shortPassword:"Use at least 8 characters."
+            shortPassword:"Use at least 8 characters.",
+            createTeam:"Create your team",
+            teamIntroduction:"Choose a name for your project team.",
+            teamName:"Team name",
+            continueButton:"Continue",
+            backTeam:"Back to create team",
+            projectDetails:"Project details",
+            projectName:"Project name",
+            projectDescription:"Project description",
+            teamSummary:"Team: {name}",
+            missingTeam:"Return to Create team and enter a team name.",
+            teamRequired:"Please enter a team name.",
+            invalidTeam:"Return to Create team and enter a valid team name.",
+            projectRequired:"Please enter a project name.",
+            descriptionRequired:"Please enter a project description.",
+            savingTeam:"Saving your team and project...",
+            loginBeforeSave:"Please log in before saving your team.",
+            saveTeamConnection:"Could not save your team. Check your connection and try again."
         },
         hr:{
             pageTitle:"Dobro došli | Ugovor za grupni projekt",
             signupTitle:"Registracija | Ugovor za grupni projekt",
             loginTitle:"Prijava | Ugovor za grupni projekt",
+            teamTitle:"Izrada tima | Ugovor za grupni projekt",
+            projectTitle:"Detalji projekta | Ugovor za grupni projekt",
             language:"Jezik",
             heading:"Ugovor za grupni projekt",
             introduction:"Stvorite svoj tim i dogovorite kako ćete zajedno raditi.",
@@ -74,12 +95,31 @@
             requestFailed:"Zahtjev nije moguće dovršiti. Pokušajte ponovno.",
             fieldRequired:"Ispunite ovo polje.",
             validEmail:"Unesite valjanu adresu e-pošte.",
-            shortPassword:"Upotrijebite najmanje 8 znakova."
+            shortPassword:"Upotrijebite najmanje 8 znakova.",
+            createTeam:"Stvorite svoj tim",
+            teamIntroduction:"Odaberite naziv svojeg projektnog tima.",
+            teamName:"Naziv tima",
+            continueButton:"Nastavi",
+            backTeam:"Natrag na izradu tima",
+            projectDetails:"Detalji projekta",
+            projectName:"Naziv projekta",
+            projectDescription:"Opis projekta",
+            teamSummary:"Tim: {name}",
+            missingTeam:"Vratite se na izradu tima i unesite naziv tima.",
+            teamRequired:"Unesite naziv tima.",
+            invalidTeam:"Vratite se na izradu tima i unesite valjan naziv tima.",
+            projectRequired:"Unesite naziv projekta.",
+            descriptionRequired:"Unesite opis projekta.",
+            savingTeam:"Spremanje tima i projekta...",
+            loginBeforeSave:"Prijavite se prije spremanja tima.",
+            saveTeamConnection:"Spremanje tima nije uspjelo. Provjerite vezu i pokušajte ponovno."
         },
         sq:{
             pageTitle:"Mirë se vini | Kontrata e projektit në grup",
             signupTitle:"Regjistrimi | Kontrata e projektit në grup",
             loginTitle:"Hyrja | Kontrata e projektit në grup",
+            teamTitle:"Krijimi i ekipit | Kontrata e projektit në grup",
+            projectTitle:"Detajet e projektit | Kontrata e projektit në grup",
             language:"Gjuha",
             heading:"Kontrata e projektit në grup",
             introduction:"Krijoni ekipin tuaj dhe bini dakord se si do të punoni së bashku.",
@@ -112,7 +152,24 @@
             requestFailed:"Kërkesa nuk mund të përfundohej. Provoni përsëri.",
             fieldRequired:"Plotësoni këtë fushë.",
             validEmail:"Shkruani një adresë emaili të vlefshme.",
-            shortPassword:"Përdorni të paktën 8 karaktere."
+            shortPassword:"Përdorni të paktën 8 karaktere.",
+            createTeam:"Krijoni ekipin tuaj",
+            teamIntroduction:"Zgjidhni një emër për ekipin tuaj të projektit.",
+            teamName:"Emri i ekipit",
+            continueButton:"Vazhdo",
+            backTeam:"Kthehu te krijimi i ekipit",
+            projectDetails:"Detajet e projektit",
+            projectName:"Emri i projektit",
+            projectDescription:"Përshkrimi i projektit",
+            teamSummary:"Ekipi: {name}",
+            missingTeam:"Kthehuni te krijimi i ekipit dhe shkruani emrin e ekipit.",
+            teamRequired:"Shkruani emrin e ekipit.",
+            invalidTeam:"Kthehuni te krijimi i ekipit dhe shkruani një emër të vlefshëm.",
+            projectRequired:"Shkruani emrin e projektit.",
+            descriptionRequired:"Shkruani përshkrimin e projektit.",
+            savingTeam:"Duke ruajtur ekipin dhe projektin...",
+            loginBeforeSave:"Hyni përpara se të ruani ekipin.",
+            saveTeamConnection:"Ekipi nuk u ruajt. Kontrolloni lidhjen dhe provoni përsëri."
         }
     };
 
@@ -130,21 +187,29 @@
         "Email rate limit exceeded":"rateLimit",
         "Request rate limit reached":"rateLimit",
         "Signup is disabled":"signupDisabled",
-        "Signups not allowed for this instance":"signupDisabled"
+        "Signups not allowed for this instance":"signupDisabled",
+        "Return to Create team and enter a team name.":"missingTeam",
+        "Add your project information.":"missingTeam",
+        "Please enter a team name.":"teamRequired",
+        "Return to Create team and enter a valid team name.":"invalidTeam",
+        "Please enter a project name.":"projectRequired",
+        "Please enter a project description.":"descriptionRequired",
+        "Saving your team and project...":"savingTeam",
+        "Please log in before saving your team.":"loginBeforeSave",
+        "Could not save your team. Check your connection and try again.":"saveTeamConnection"
     };
 
     const languageSelect=document.querySelector("#language-select");
 
     const messageElements=document.querySelectorAll(
-        "#signup-message,#login-message"
+        "#signup-message,#login-message,#team-message,#project-message,#team-summary"
     );
 
-    const accountInputs=document.querySelectorAll(
-        "#signup-form input,#login-form input"
+    const formInputs=document.querySelectorAll(
+        "#signup-form input,#login-form input,#create-team-form input,#project-details-form input,#project-details-form textarea"
     );
 
     const messageState=new WeakMap();
-
     let language="en";
 
     try{
@@ -157,6 +222,18 @@
         language="en";
     }
 
+    function messageText(state){
+        let text=translations[language][state.key];
+
+        if(state.name!==undefined){
+            text=text.replace("{name}",function(){
+                return state.name;
+            });
+        }
+
+        return text;
+    }
+
     function translateMessage(element){
         const text=element.textContent.trim();
 
@@ -165,19 +242,30 @@
             return;
         }
 
-        const savedKey=messageState.get(element);
+        const saved=messageState.get(element);
 
-        if(savedKey && text===translations[language][savedKey]){
+        if(saved && text===messageText(saved)){
             return;
         }
 
-        const key=Object.hasOwn(messageKeys,text)
-            ? messageKeys[text]
-            : "requestFailed";
+        let state;
 
-        messageState.set(element,key);
+        if(element.id==="team-summary" && text.startsWith("Team: ")){
+            state={
+                key:"teamSummary",
+                name:text.slice(6)
+            };
+        }else{
+            state={
+                key:Object.hasOwn(messageKeys,text)
+                    ? messageKeys[text]
+                    : "requestFailed"
+            };
+        }
 
-        const translated=translations[language][key];
+        messageState.set(element,state);
+
+        const translated=messageText(state);
 
         if(element.textContent!==translated){
             element.textContent=translated;
@@ -206,10 +294,10 @@
         });
 
         messageElements.forEach(function(element){
-            const key=messageState.get(element);
+            const state=messageState.get(element);
 
-            if(key){
-                const translated=labels[key];
+            if(state){
+                const translated=messageText(state);
 
                 if(element.textContent!==translated){
                     element.textContent=translated;
@@ -219,7 +307,7 @@
             }
         });
 
-        accountInputs.forEach(function(input){
+        formInputs.forEach(function(input){
             input.setCustomValidity("");
         });
 
@@ -228,7 +316,7 @@
         }
     }
 
-    accountInputs.forEach(function(input){
+    formInputs.forEach(function(input){
         input.addEventListener("input",function(){
             input.setCustomValidity("");
         });

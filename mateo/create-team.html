@@ -3,25 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create team | Group Project Contract</title>
+    <title data-i18n="teamTitle">Create team | Group Project Contract</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <main class="welcome">
-        <h1>Create your team</h1>
-        <p>Choose a name for your project team.</p>
+        <div class="language-control">
+            <label for="language-select" data-i18n="language">
+                Language
+            </label>
+
+            <select id="language-select" name="language">
+                <option value="en" lang="en">English</option>
+                <option value="hr" lang="hr">Hrvatski</option>
+                <option value="sq" lang="sq">Shqip</option>
+            </select>
+        </div>
+
+        <h1 data-i18n="createTeam">Create your team</h1>
+
+        <p data-i18n="teamIntroduction">
+            Choose a name for your project team.
+        </p>
 
         <form id="create-team-form" class="account-form">
-            <label for="team-name">Team name</label>
+            <label for="team-name" data-i18n="teamName">Team name</label>
+
             <input type="text" id="team-name" name="teamName"
                 maxlength="80" required>
 
-            <button type="submit" class="button">Continue</button>
+            <button type="submit" class="button" data-i18n="continueButton">
+                Continue
+            </button>
 
             <p id="team-message" role="status"></p>
         </form>
     </main>
 
+    <script src="language.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
