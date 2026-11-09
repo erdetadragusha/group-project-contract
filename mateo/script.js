@@ -72,3 +72,63 @@ if(projectDetailsForm){
         message.textContent="Project details are not connected yet. Your team and project have not been saved.";
     });
 }
+
+const inviteForm=document.querySelector("#invite-form");
+
+if(inviteForm){
+    const emails=[];
+    const emailInput=document.querySelector("#member-email");
+    const list=document.querySelector("#invite-list");
+    const empty=document.querySelector("#invite-empty");
+    const sendButton=document.querySelector("#send-invites");
+    const message=document.querySelector("#invite-message");
+
+    function renderInvites(){
+        list.replaceChildren();
+        empty.hidden=emails.length>0;
+        sendButton.disabled=emails.length===0;
+
+        emails.forEach(function(email){
+            const item=document.createElement("li");
+            const text=document.createElement("span");
+            const removeButton=document.createElement("button");
+
+            text.textContent=email;
+            removeButton.type="button";
+            removeButton.textContent="Remove";
+            removeButton.setAttribute("aria-label","Remove "+email);
+
+            removeButton.addEventListener("click",function(){
+                emails.splice(emails.indexOf(email),1);
+                renderInvites();
+                message.textContent=email+" removed.";
+                emailInput.focus();
+            });
+
+            item.append(text,removeButton);
+            list.append(item);
+        });
+    }
+
+    inviteForm.addEventListener("submit",function(event){
+        event.preventDefault();
+
+        const email=emailInput.value.trim().toLowerCase();
+
+        if(emails.includes(email)){
+            message.textContent="This email is already in the list.";
+            emailInput.focus();
+            return;
+        }
+
+        emails.push(email);
+        renderInvites();
+        message.textContent=email+" added to the list.";
+        emailInput.value="";
+        emailInput.focus();
+    });
+
+    sendButton.addEventListener("click",function(){
+        message.textContent="Sending invitations is not connected yet. No invitations have been sent.";
+    });
+}

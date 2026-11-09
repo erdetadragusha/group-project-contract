@@ -132,3 +132,46 @@ p{
     outline:3px solid #005fcc;
     outline-offset:2px;
 }
+
+.invite-list{
+    padding:0;
+    list-style:none;
+    text-align:left;
+}
+
+.invite-list li{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    padding:12px 0;
+    border-bottom:1px solid #ccc;
+}
+
+.invite-list span{
+    overflow-wrap:anywhere;
+    min-width:0;
+}
+
+.invite-list button{
+    min-height:44px;
+    padding:8px 12px;
+    font:inherit;
+    cursor:pointer;
+}
+
+button.button{
+    font:inherit;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.button:disabled{
+    opacity:0.5;
+    cursor:not-allowed;
+}
+
+.invite-list button:focus-visible{
+    outline:3px solid #005fcc;
+    outline-offset:2px;
+}

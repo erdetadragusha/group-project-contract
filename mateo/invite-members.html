@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invite members | Group Project Contract</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <main class="welcome">
+        <h1>Invite members</h1>
+        <p>Add your teammates' email addresses.</p>
+
+        <form id="invite-form" class="account-form">
+            <label for="member-email">Email address</label>
+            <input type="email" id="member-email" name="email"
+                autocomplete="email" required>
+
+            <button type="submit" class="button button-secondary">
+                Add member
+            </button>
+        </form>
+
+        <h2>Invitation list</h2>
+        <p id="invite-empty">No teammates added yet.</p>
+        <ul id="invite-list" class="invite-list"></ul>
+
+        <button type="button" id="send-invites" class="button" disabled>
+            Send invitations
+        </button>
+
+        <p id="invite-message" role="status"></p>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
