@@ -381,6 +381,383 @@
 
         });
     </script>
+<script src="https://cdn.jsdelivr.net/npm/i18next@23.16.8/dist/umd/i18next.min.js"></script>
 
+<script>
+(function () {
+    if (!window.i18next) return;
+
+    const resources = {
+        en: {
+            translation: {
+                title: "Create Proposal",
+                description: "Suggest a solution to help your team reach an agreement.",
+                topicLabel: "Choose a disagreement topic:",
+                selectTopic: "Select a topic",
+                solutionLabel: "Your proposed solution:",
+                placeholder: "Write your suggested solution here...",
+                hint: "Explain how your team could solve this disagreement.",
+                exampleTitle: "Example proposal",
+                exampleText: "We can set deadlines two days before the actual submission date. This gives everyone extra time to check their work and make changes.",
+                back: "Back",
+                submit: "Submit Proposal",
+                language: "Language",
+                yourPreference: "Your preference",
+                teammate: "Example teammate",
+                notSelected: "Not selected",
+                notAvailable: "Not available",
+                selectInfo: "Select a topic to view the preferences.",
+                chooseInfo: "Choose a disagreement and describe your solution.",
+                unavailableInfo: "Comparison information is unavailable.",
+                loadInfoError: "Comparison information could not be loaded.",
+                loadError: "Previous proposal information could not be loaded.",
+                topicError: "Please select a disagreement topic.",
+                lengthError: "Please write a proposal with at least 10 characters.",
+                saveError: "Could not save your proposal. Please try again.",
+                categories: {
+                    Communication: "Communication",
+                    Availability: "Availability",
+                    "Preferred Roles": "Preferred Roles",
+                    Deadlines: "Deadlines",
+                    Quality: "Quality"
+                },
+                values: {
+                    Email: "Email",
+                    "In-app Chat": "In-app Chat",
+                    Discord: "Discord",
+                    "Zoom / Meet": "Zoom / Meet",
+                    Other: "Other",
+                    Research: "Research",
+                    Design: "Design",
+                    Development: "Development",
+                    Testing: "Testing",
+                    Documentation: "Documentation",
+                    "Strict deadlines": "Strict deadlines",
+                    "Some flexibility": "Some flexibility",
+                    Flexible: "Flexible",
+                    Accuracy: "Accuracy",
+                    "Good design / usability": "Good design / usability",
+                    "Clean work": "Clean work",
+                    "Detailed documentation": "Detailed documentation",
+                    "Flexible schedule": "Flexible schedule"
+                },
+                days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+                periods: ["Morning", "Afternoon", "Evening"]
+            }
+        },
+        hr: {
+            translation: {
+                title: "Izrada prijedloga",
+                description: "Predložite rješenje koje će pomoći vašem timu da postigne dogovor.",
+                topicLabel: "Odaberite temu neslaganja:",
+                selectTopic: "Odaberite temu",
+                solutionLabel: "Vaše predloženo rješenje:",
+                placeholder: "Ovdje napišite svoje predloženo rješenje...",
+                hint: "Objasnite kako bi vaš tim mogao riješiti ovo neslaganje.",
+                exampleTitle: "Primjer prijedloga",
+                exampleText: "Možemo postaviti rokove dva dana prije stvarnog datuma predaje. Tako svi imaju dodatno vrijeme za provjeru rada i izmjene.",
+                back: "Natrag",
+                submit: "Pošalji prijedlog",
+                language: "Jezik",
+                yourPreference: "Vaša preferencija",
+                teammate: "Primjer člana tima",
+                notSelected: "Nije odabrano",
+                notAvailable: "Nije dostupno",
+                selectInfo: "Odaberite temu kako biste vidjeli preferencije.",
+                chooseInfo: "Odaberite neslaganje i opišite svoje rješenje.",
+                unavailableInfo: "Podaci o usporedbi nisu dostupni.",
+                loadInfoError: "Podatke o usporedbi nije moguće učitati.",
+                loadError: "Prethodne podatke o prijedlogu nije moguće učitati.",
+                topicError: "Odaberite temu neslaganja.",
+                lengthError: "Napišite prijedlog s najmanje 10 znakova.",
+                saveError: "Prijedlog nije moguće spremiti. Pokušajte ponovno.",
+                categories: {
+                    Communication: "Komunikacija",
+                    Availability: "Dostupnost",
+                    "Preferred Roles": "Željene uloge",
+                    Deadlines: "Rokovi",
+                    Quality: "Kvaliteta"
+                },
+                values: {
+                    Email: "E-pošta",
+                    "In-app Chat": "Razgovor u aplikaciji",
+                    Discord: "Discord",
+                    "Zoom / Meet": "Zoom / Meet",
+                    Other: "Ostalo",
+                    Research: "Istraživanje",
+                    Design: "Dizajn",
+                    Development: "Razvoj",
+                    Testing: "Testiranje",
+                    Documentation: "Dokumentacija",
+                    "Strict deadlines": "Strogi rokovi",
+                    "Some flexibility": "Određena fleksibilnost",
+                    Flexible: "Fleksibilni rokovi",
+                    Accuracy: "Točnost",
+                    "Good design / usability": "Dobar dizajn / jednostavnost korištenja",
+                    "Clean work": "Uredno obavljen posao",
+                    "Detailed documentation": "Detaljna dokumentacija",
+                    "Flexible schedule": "Fleksibilan raspored"
+                },
+                days: ["Ponedjeljak", "Utorak", "Srijeda", "Četvrtak", "Petak", "Subota", "Nedjelja"],
+                periods: ["Jutro", "Poslijepodne", "Večer"]
+            }
+        },
+        sq: {
+            translation: {
+                title: "Krijo propozim",
+                description: "Sugjeroni një zgjidhje për ta ndihmuar ekipin tuaj të arrijë një marrëveshje.",
+                topicLabel: "Zgjidhni temën e mospajtimit:",
+                selectTopic: "Zgjidhni një temë",
+                solutionLabel: "Zgjidhja juaj e propozuar:",
+                placeholder: "Shkruani zgjidhjen tuaj këtu...",
+                hint: "Shpjegoni si mund ta zgjidhë ekipi juaj këtë mospajtim.",
+                exampleTitle: "Shembull propozimi",
+                exampleText: "Mund t'i caktojmë afatet dy ditë para datës së dorëzimit. Kështu të gjithë kanë kohë shtesë për ta kontrolluar punën dhe për të bërë ndryshime.",
+                back: "Kthehu",
+                submit: "Dërgo propozimin",
+                language: "Gjuha",
+                yourPreference: "Preferenca juaj",
+                teammate: "Shembull i anëtarit të ekipit",
+                notSelected: "Nuk është zgjedhur",
+                notAvailable: "Nuk është në dispozicion",
+                selectInfo: "Zgjidhni një temë për të parë preferencat.",
+                chooseInfo: "Zgjidhni një mospajtim dhe përshkruani zgjidhjen tuaj.",
+                unavailableInfo: "Të dhënat e krahasimit nuk janë në dispozicion.",
+                loadInfoError: "Të dhënat e krahasimit nuk mund të ngarkohen.",
+                loadError: "Të dhënat e mëparshme të propozimit nuk mund të ngarkohen.",
+                topicError: "Ju lutemi zgjidhni një temë mospajtimi.",
+                lengthError: "Shkruani një propozim me të paktën 10 karaktere.",
+                saveError: "Propozimi nuk u ruajt. Provoni përsëri.",
+                categories: {
+                    Communication: "Komunikimi",
+                    Availability: "Disponueshmëria",
+                    "Preferred Roles": "Rolet e preferuara",
+                    Deadlines: "Afatet",
+                    Quality: "Cilësia"
+                },
+                values: {
+                    Email: "Email",
+                    "In-app Chat": "Bisedë në aplikacion",
+                    Discord: "Discord",
+                    "Zoom / Meet": "Zoom / Meet",
+                    Other: "Tjetër",
+                    Research: "Hulumtim",
+                    Design: "Dizajn",
+                    Development: "Zhvillim",
+                    Testing: "Testim",
+                    Documentation: "Dokumentim",
+                    "Strict deadlines": "Afate të rrepta",
+                    "Some flexibility": "Pak fleksibilitet",
+                    Flexible: "Afate fleksibile",
+                    Accuracy: "Saktësia",
+                    "Good design / usability": "Dizajn i mirë / lehtësi në përdorim",
+                    "Clean work": "Punë e rregullt",
+                    "Detailed documentation": "Dokumentim i detajuar",
+                    "Flexible schedule": "Orar fleksibil"
+                },
+                days: ["E hënë", "E martë", "E mërkurë", "E enjte", "E premte", "E shtunë", "E diel"],
+                periods: ["Mëngjes", "Pasdite", "Mbrëmje"]
+            }
+        }
+    };
+
+    const main = document.querySelector(".container");
+    const heading = main.querySelector("h1");
+    const description = main.querySelector("p");
+    const backLink = main.querySelector(".back");
+    const topicLabel = main.querySelector('label[for="topic"]');
+    const solutionLabel = main.querySelector('label[for="proposalText"]');
+    const hint = main.querySelector(".hint");
+    const exampleTitle = main.querySelector(".example strong");
+    const exampleText = main.querySelector(".example p");
+    const submitButton = main.querySelector('button[type="submit"]');
+
+    const languageBox = document.createElement("div");
+    languageBox.style.margin = "20px 0";
+
+    const languageLabel = document.createElement("label");
+    languageLabel.htmlFor = "languageSelector";
+    languageLabel.style.marginBottom = "8px";
+    languageLabel.style.display = "block";
+
+    const languageSelector = document.createElement("select");
+    languageSelector.id = "languageSelector";
+
+    [
+        ["en", "English"],
+        ["hr", "Hrvatski"],
+        ["sq", "Shqip"]
+    ].forEach(function (entry) {
+        const option = document.createElement("option");
+        option.value = entry[0];
+        option.textContent = entry[1];
+        languageSelector.appendChild(option);
+    });
+
+    languageBox.appendChild(languageLabel);
+    languageBox.appendChild(languageSelector);
+    main.insertBefore(languageBox, heading);
+
+    const errorKeys = {
+        "Previous proposal information could not be loaded.": "loadError",
+        "Please select a disagreement topic.": "topicError",
+        "Please write a proposal with at least 10 characters.": "lengthError",
+        "Could not save your proposal. Please try again.": "saveError"
+    };
+
+    let currentError = errorKeys[message.textContent.trim()] || null;
+
+    function translateValue(value) {
+        const translation = resources[i18next.language].translation;
+
+        if (translation.values[value]) {
+            return translation.values[value];
+        }
+
+        const parts = value.split(" ");
+        const englishDays = resources.en.translation.days;
+        const englishPeriods = resources.en.translation.periods;
+
+        if (parts.length === 2) {
+            const dayIndex = englishDays.indexOf(parts[0]);
+            const periodIndex = englishPeriods.indexOf(parts[1]);
+
+            if (dayIndex >= 0 && periodIndex >= 0) {
+                return translation.days[dayIndex] + " — " +
+                    translation.periods[periodIndex];
+            }
+        }
+
+        return value;
+    }
+
+    function translateChoices(values, fallbackKey) {
+        if (!Array.isArray(values) || values.length === 0) {
+            return i18next.t(fallbackKey);
+        }
+
+        return values.map(translateValue).join(", ");
+    }
+
+    function updateComparisonTranslation() {
+        try {
+            const comparison = JSON.parse(
+                localStorage.getItem("groupComparison") || "[]"
+            );
+
+            if (!Array.isArray(comparison)) {
+                comparisonInfo.textContent = i18next.t("unavailableInfo");
+                return;
+            }
+
+            const selected = comparison.find(function (item) {
+                return item && item.category === topic.value;
+            });
+
+            if (selected) {
+                comparisonInfo.textContent =
+                    i18next.t("yourPreference") + ": " +
+                    translateChoices(selected.mine, "notSelected") +
+                    "\n" +
+                    i18next.t("teammate") + ": " +
+                    translateChoices(selected.teammate, "notAvailable");
+            } else if (!topic.value) {
+                comparisonInfo.textContent = i18next.t("selectInfo");
+            } else {
+                comparisonInfo.textContent = i18next.t("chooseInfo");
+            }
+
+        } catch (error) {
+            comparisonInfo.textContent = i18next.t("loadInfoError");
+        }
+    }
+
+    function updateText() {
+        document.documentElement.lang = i18next.language;
+        document.title = i18next.t("title");
+
+        heading.textContent = i18next.t("title");
+        description.textContent = i18next.t("description");
+        backLink.textContent = "← " + i18next.t("back");
+        topicLabel.textContent = i18next.t("topicLabel");
+        solutionLabel.textContent = i18next.t("solutionLabel");
+        proposalText.placeholder = i18next.t("placeholder");
+        hint.textContent = i18next.t("hint");
+        exampleTitle.textContent = i18next.t("exampleTitle");
+        exampleText.textContent = i18next.t("exampleText");
+        submitButton.textContent = i18next.t("submit");
+        languageLabel.textContent = i18next.t("language");
+
+        Array.from(topic.options).forEach(function (option) {
+            if (!option.value) {
+                option.textContent = i18next.t("selectTopic");
+            } else {
+                const translated =
+                    resources[i18next.language].translation.categories[option.value];
+
+                option.textContent = translated || option.value;
+            }
+        });
+
+        updateComparisonTranslation();
+
+        if (currentError) {
+            message.textContent = i18next.t(currentError);
+        }
+    }
+
+    topic.addEventListener("change", function () {
+        currentError = null;
+        updateComparisonTranslation();
+    });
+
+    proposalText.addEventListener("input", function () {
+        currentError = null;
+    });
+
+    form.addEventListener("submit", function () {
+        const englishMessage = message.textContent.trim();
+
+        if (errorKeys[englishMessage]) {
+            currentError = errorKeys[englishMessage];
+            message.textContent = i18next.t(currentError);
+        }
+    });
+
+    let savedLanguage = "en";
+
+    try {
+        savedLanguage = localStorage.getItem("appLanguage") || "en";
+    } catch (error) {
+        savedLanguage = "en";
+    }
+
+    if (!resources[savedLanguage]) {
+        savedLanguage = "en";
+    }
+
+    i18next.init({
+        lng: savedLanguage,
+        fallbackLng: "en",
+        resources: resources
+    }).then(function () {
+        languageSelector.value = savedLanguage;
+        updateText();
+
+        languageSelector.addEventListener("change", function () {
+            const selectedLanguage = languageSelector.value;
+
+            i18next.changeLanguage(selectedLanguage).then(function () {
+                try {
+                    localStorage.setItem("appLanguage", selectedLanguage);
+                } catch (error) {
+                }
+
+                updateText();
+            });
+        });
+    });
+})();
+</script>
 </body>
 </html>
