@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log in | Group Project Contract</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <main class="welcome">
+        <a href="index.html" class="back-link">Back to welcome</a>
+
+        <h1>Log in</h1>
+        <p>Continue working with your team.</p>
+
+        <form id="login-form" class="account-form">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email"
+                autocomplete="email" required>
+
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password"
+                autocomplete="current-password" required>
+
+            <button type="submit" class="button">Log in</button>
+
+            <p id="login-message" role="status"></p>
+        </form>
+
+        <p>Don't have an account? <a href="signup.html">Sign up</a></p>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
