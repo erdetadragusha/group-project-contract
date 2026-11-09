@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project details | Group Project Contract</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <main class="welcome">
+        <a href="create-team.html" class="back-link">Back to create team</a>
+
+        <h1>Project details</h1>
+        <p id="team-summary"></p>
+
+        <form id="project-details-form" class="account-form">
+            <label for="project-name">Project name</label>
+            <input type="text" id="project-name" name="projectName"
+                maxlength="100" required>
+
+            <label for="project-description">Project description</label>
+            <textarea id="project-description" name="description"
+                rows="4" maxlength="1000" required></textarea>
+
+            <button type="submit" class="button">Continue</button>
+
+            <p id="project-message" role="status"></p>
+        </form>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
