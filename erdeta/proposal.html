@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Proposal</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6fb;
+            margin: 0;
+            padding: 20px;
+            color: #222;
+        }
+
+        .container {
+            background: white;
+            max-width: 420px;
+            margin: 40px auto;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .back {
+            color: #3458a4;
+            text-decoration: none;
+            font-size: 16px;
+        }
+
+        h1 {
+            font-size: 25px;
+            text-align: center;
+            color: #263b63;
+        }
+
+        p {
+            text-align: center;
+            color: #555;
+            line-height: 1.5;
+        }
+
+        .form-group {
+            margin: 25px 0;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #263b63;
+        }
+
+        select,
+        textarea {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            font-family: Arial, sans-serif;
+            font-size: 15px;
+            background-color: white;
+            color: #222;
+        }
+
+        select {
+            cursor: pointer;
+        }
+
+        textarea {
+            min-height: 160px;
+            resize: vertical;
+            line-height: 1.6;
+        }
+
+        .info-box {
+            padding: 15px;
+            background-color: #eef3ff;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #263b63;
+            white-space: pre-line;
+        }
+
+        .example {
+            background-color: #f8f9fc;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .example strong {
+            display: block;
+            margin-bottom: 8px;
+            color: #263b63;
+        }
+
+        .example p {
+            text-align: left;
+            font-size: 13px;
+            margin: 0;
+        }
+
+        .hint {
+            font-size: 12px;
+            color: #666;
+            margin-top: 8px;
+            text-align: left;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background-color: #3458a4;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 17px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #263b63;
+        }
+
+        button:focus-visible,
+        select:focus-visible,
+        textarea:focus-visible,
+        a:focus-visible {
+            outline: 3px solid #e09b24;
+            outline-offset: 3px;
+        }
+
+        #message {
+            margin-top: 15px;
+            color: #b42318;
+        }
+
+        @media (max-width: 450px) {
+            .container {
+                padding: 20px;
+                margin: 15px auto;
+            }
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <main class="container">
+
+        <a href="disagreements.html" class="back">
+            ← Back
+        </a>
+
+        <h1>Create Proposal</h1>
+
+        <p>
+            Suggest a solution to help your team reach an agreement.
+        </p>
+
+        <form id="proposalForm">
+
+            <div class="form-group">
+
+                <label for="topic">
+                    Choose a disagreement topic:
+                </label>
+
+                <select id="topic" name="topic" required>
+                    <option value="">Select a topic</option>
+                    <option value="Communication">Communication</option>
+                    <option value="Availability">Availability</option>
+                    <option value="Preferred Roles">Preferred Roles</option>
+                    <option value="Deadlines">Deadlines</option>
+                    <option value="Quality">Quality</option>
+                </select>
+
+            </div>
+
+            <div class="info-box" id="comparisonInfo" role="status">
+                Select a topic to view the preferences.
+            </div>
+
+            <div class="form-group">
+
+                <label for="proposalText">
+                    Your proposed solution:
+                </label>
+
+                <textarea
+                    id="proposalText"
+                    name="proposalText"
+                    placeholder="Write your suggested solution here..."
+                    minlength="10"
+                    maxlength="1000"
+                    required
+                ></textarea>
+
+                <p class="hint">
+                    Explain how your team could solve this disagreement.
+                </p>
+
+            </div>
+
+            <div class="example">
+
+                <strong>Example proposal</strong>
+
+                <p>
+                    We can set deadlines two days before the actual
+                    submission date. This gives everyone extra time
+                    to check their work and make changes.
+                </p>
+
+            </div>
+
+            <button type="submit">
+                Submit Proposal
+            </button>
+
+            <p id="message" role="status" aria-live="polite"></p>
+
+        </form>
+
+    </main>
+
+    <script>
+        const form = document.getElementById("proposalForm");
+        const topic = document.getElementById("topic");
+        const proposalText = document.getElementById("proposalText");
+        const comparisonInfo = document.getElementById("comparisonInfo");
+        const message = document.getElementById("message");
+
+        function updateComparison() {
+            try {
+                const comparison = JSON.parse(
+                    localStorage.getItem("groupComparison") || "[]"
+                );
+
+                if (!Array.isArray(comparison)) {
+                    comparisonInfo.textContent =
+                        "Comparison information is unavailable.";
+                    return;
+                }
+
+                const selected = comparison.find(function(item) {
+                    return item.category === topic.value;
+                });
+
+                if (selected) {
+                    const mine = Array.isArray(selected.mine)
+                        ? selected.mine.join(", ")
+                        : "";
+
+                    const teammate = Array.isArray(selected.teammate)
+                        ? selected.teammate.join(", ")
+                        : "";
+
+                    comparisonInfo.textContent =
+                        "Your preference: " + (mine || "Not selected") +
+                        "\nExample teammate: " + (teammate || "Not available");
+                } else {
+                    comparisonInfo.textContent =
+                        "Choose a disagreement and describe your solution.";
+                }
+
+            } catch (error) {
+                comparisonInfo.textContent =
+                    "Comparison information could not be loaded.";
+            }
+        }
+
+        try {
+            const selectedDisagreement = localStorage.getItem(
+                "selectedDisagreement"
+            );
+
+            const availableTopics = Array.from(topic.options).map(
+                function(option) {
+                    return option.value;
+                }
+            );
+
+            if (
+                selectedDisagreement &&
+                availableTopics.includes(selectedDisagreement)
+            ) {
+                topic.value = selectedDisagreement;
+            }
+
+            const savedProposal = JSON.parse(
+                localStorage.getItem("groupProposal") || "null"
+            );
+
+            if (savedProposal && typeof savedProposal.text === "string") {
+
+                if (
+                    !topic.value &&
+                    availableTopics.includes(savedProposal.topic)
+                ) {
+                    topic.value = savedProposal.topic;
+                }
+
+                if (savedProposal.topic === topic.value) {
+                    proposalText.value = savedProposal.text;
+                }
+            }
+
+        } catch (error) {
+            message.textContent =
+                "Previous proposal information could not be loaded.";
+        }
+
+        updateComparison();
+
+        topic.addEventListener("change", function() {
+            message.textContent = "";
+            updateComparison();
+        });
+
+        proposalText.addEventListener("input", function() {
+            message.textContent = "";
+        });
+
+        form.addEventListener("submit", function(event) {
+
+            event.preventDefault();
+
+            const selectedTopic = topic.value;
+            const writtenProposal = proposalText.value.trim();
+
+            if (!selectedTopic) {
+                message.textContent =
+                    "Please select a disagreement topic.";
+                topic.focus();
+                return;
+            }
+
+            if (writtenProposal.length < 10) {
+                message.textContent =
+                    "Please write a proposal with at least 10 characters.";
+                proposalText.focus();
+                return;
+            }
+
+            const proposal = {
+                topic: selectedTopic,
+                text: writtenProposal,
+                status: "pending",
+                createdAt: new Date().toISOString()
+            };
+
+            try {
+                localStorage.setItem(
+                    "groupProposal",
+                    JSON.stringify(proposal)
+                );
+
+                localStorage.setItem(
+                    "selectedDisagreement",
+                    selectedTopic
+                );
+
+                window.location.href = "review.html";
+
+            } catch (error) {
+                message.textContent =
+                    "Could not save your proposal. Please try again.";
+            }
+
+        });
+    </script>
+
+</body>
+</html>
