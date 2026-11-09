@@ -8,6 +8,18 @@
 </head>
 <body>
     <main class="welcome">
+        <div class="language-control">
+            <label for="language-select" data-i18n="language">
+                Language
+            </label>
+
+            <select id="language-select" name="language">
+                <option value="en" lang="en">English</option>
+                <option value="hr" lang="hr">Hrvatski</option>
+                <option value="sq" lang="sq">Shqip</option>
+            </select>
+        </div>
+
         <h1>Team members</h1>
         <p id="members-summary">Loading your team...</p>
 
@@ -24,7 +36,9 @@
 
         <p id="members-message" role="status"></p>
 
-        <nav class="welcome-actions" aria-label="Team actions">
+        <nav id="members-navigation" class="welcome-actions"
+            aria-label="Team actions">
+
             <a id="members-invite-link" class="button" hidden>
                 Invite members
             </a>
@@ -38,6 +52,7 @@
         </nav>
     </main>
 
+    <script src="language.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="supabase-client.js"></script>
     <script src="script.js"></script>

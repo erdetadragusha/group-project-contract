@@ -828,3 +828,219 @@
         subtree:true
     });
 })();
+
+(function(){
+    const summary=document.querySelector("#members-summary");
+
+    if(!summary){
+        return;
+    }
+
+    const main=document.querySelector("main");
+    const selector=document.querySelector("#language-select");
+    const message=document.querySelector("#members-message");
+    const textState=new WeakMap();
+
+    const translations={
+        "Team members":["Članovi tima","Anëtarët e ekipit"],
+        "Loading your team...":["Učitavanje tima...","Duke ngarkuar ekipin..."],
+        "Joined members":["Pridruženi članovi","Anëtarët që janë bashkuar"],
+        "Invitations":["Pozivnice","Ftesat"],
+        "Loading invitations...":[
+            "Učitavanje pozivnica...",
+            "Duke ngarkuar ftesat..."
+        ],
+        "Invite members":["Pozovi članove","Fto anëtarë"],
+        "Refresh":["Osvježi","Rifresko"],
+        "Back to welcome":["Natrag na početnu stranicu","Kthehu në faqen kryesore"],
+        "No valid team was selected.":[
+            "Nije odabran valjan tim.",
+            "Nuk është zgjedhur një ekip i vlefshëm."
+        ],
+        "Open this page from your team invitation or Invite members page.":[
+            "Otvorite ovu stranicu putem pozivnice ili stranice za pozivanje članova.",
+            "Hapeni këtë faqe nga ftesa juaj ose nga faqja për të ftuar anëtarë."
+        ],
+        "Please log in to view this team.":[
+            "Prijavite se za pregled ovog tima.",
+            "Hyni për të parë këtë ekip."
+        ],
+        "Your session is unavailable.":[
+            "Vaša prijava nije dostupna.",
+            "Seanca juaj nuk është e disponueshme."
+        ],
+        "Team unavailable or you do not have access.":[
+            "Tim nije dostupan ili nemate pristup.",
+            "Ekipi nuk është i disponueshëm ose nuk keni qasje."
+        ],
+        "No invitation information loaded.":[
+            "Podaci o pozivnicama nisu učitani.",
+            "Informacioni i ftesave nuk është ngarkuar."
+        ],
+        "Could not load team members.":[
+            "Članove tima nije moguće učitati.",
+            "Anëtarët e ekipit nuk mund të ngarkoheshin."
+        ],
+        "Could not load invitations.":[
+            "Pozivnice nije moguće učitati.",
+            "Ftesat nuk mund të ngarkoheshin."
+        ],
+        "No invitations created yet.":[
+            "Još nema izrađenih pozivnica.",
+            "Ende nuk është krijuar asnjë ftesë."
+        ],
+        "Team information loaded.":[
+            "Podaci o timu su učitani.",
+            "Informacioni i ekipit u ngarkua."
+        ],
+        "Could not load all team information. Check your connection and press Refresh.":[
+            "Nije moguće učitati sve podatke o timu. Provjerite vezu i pritisnite Osvježi.",
+            "Nuk mund të ngarkohej i gjithë informacioni i ekipit. Kontrolloni lidhjen dhe shtypni Rifresko."
+        ],
+        "Invitation information may be unavailable.":[
+            "Podaci o pozivnicama možda nisu dostupni.",
+            "Informacioni i ftesave mund të mos jetë i disponueshëm."
+        ],
+        "Please log in first.":["Najprije se prijavite.","Ju lutemi hyni fillimisht."],
+        "You do not have access to this team.":[
+            "Nemate pristup ovom timu.",
+            "Nuk keni qasje në këtë ekip."
+        ],
+        "The request could not be completed. Please try again.":[
+            "Zahtjev nije moguće dovršiti. Pokušajte ponovno.",
+            "Kërkesa nuk mund të përfundohej. Provoni përsëri."
+        ],
+        "Owner":["Vlasnik","Pronar"],
+        "Member":["Član","Anëtar"],
+        "Joined":["Pridružen","I bashkuar"],
+        "pending":["na čekanju","në pritje"],
+        "accepted":["prihvaćeno","pranuar"],
+        "declined":["odbijeno","refuzuar"],
+        "revoked":["opozvano","anuluar"]
+    };
+
+    function currentLanguage(){
+        return selector.value==="hr" || selector.value==="sq"
+            ? selector.value
+            : "en";
+    }
+
+    function translate(text){
+        const language=currentLanguage();
+
+        if(language==="en"){
+            return text;
+        }
+
+        const index=language==="hr" ? 0 : 1;
+
+        if(Object.hasOwn(translations,text)){
+            return translations[text][index];
+        }
+
+        const member=text.match(
+            /^(.*) — (Owner|Member) — Joined$/
+        );
+
+        if(member){
+            return member[1]+" — "+translate(member[2])+
+                " — "+translate("Joined");
+        }
+
+        const invitation=text.match(
+            /^(.*) — (pending|accepted|declined|revoked)$/
+        );
+
+        if(invitation){
+            return invitation[1]+" — "+translate(invitation[2]);
+        }
+
+        return text;
+    }
+
+    function updateTranslations(){
+        const walker=document.createTreeWalker(main,NodeFilter.SHOW_TEXT);
+        const nodes=[];
+
+        while(walker.nextNode()){
+            const node=walker.currentNode;
+            const parent=node.parentElement;
+
+            if(parent && !parent.closest(
+                "script,style,select,.language-control"
+            )){
+                nodes.push(node);
+            }
+        }
+
+        nodes.forEach(function(node){
+            const current=node.textContent;
+            const saved=textState.get(node);
+
+            const source=saved && current===saved.translated
+                ? saved.source
+                : current;
+
+            const trimmed=source.trim();
+
+            if(trimmed===""){
+                return;
+            }
+
+            let translated;
+
+            if(node.parentElement===summary &&
+                !Object.hasOwn(translations,trimmed)){
+                translated=trimmed;
+            }else{
+                translated=translate(trimmed);
+            }
+
+            if(node.parentElement===message &&
+                !Object.hasOwn(translations,trimmed)){
+                translated=translate(
+                    "The request could not be completed. Please try again."
+                );
+            }
+
+            textState.set(node,{
+                source:source,
+                translated:translated
+            });
+
+            if(current!==translated){
+                node.textContent=translated;
+            }
+        });
+
+        const language=currentLanguage();
+        const navigation=document.querySelector("#members-navigation");
+
+        navigation.setAttribute(
+            "aria-label",
+            language==="hr"
+                ? "Radnje tima"
+                : language==="sq"
+                    ? "Veprimet e ekipit"
+                    : "Team actions"
+        );
+
+        document.title=language==="hr"
+            ? "Članovi tima | Ugovor za grupni projekt"
+            : language==="sq"
+                ? "Anëtarët e ekipit | Kontrata e projektit në grup"
+                : "Team members | Group Project Contract";
+    }
+
+    selector.addEventListener("change",updateTranslations);
+
+    updateTranslations();
+
+    const observer=new MutationObserver(updateTranslations);
+
+    observer.observe(main,{
+        childList:true,
+        characterData:true,
+        subtree:true
+    });
+})();
