@@ -109,17 +109,23 @@ const projectDetailsForm=document.querySelector("#project-details-form");
 
 if(projectDetailsForm){
     const params=new URLSearchParams(window.location.search);
-    const teamName=params.get("teamName");
+    const teamName=(params.get("teamName") || "").trim();
     const summary=document.querySelector("#team-summary");
 
-    summary.textContent=teamName ? "Team: "+teamName : "Add your project information.";
+    summary.textContent=teamName ? "Team: "+teamName : "Return to Create team and enter a team name.";
 
-    projectDetailsForm.addEventListener("submit",function(event){
+    projectDetailsForm.addEventListener("submit",async function(event){
         event.preventDefault();
 
         const projectName=document.querySelector("#project-name");
         const description=document.querySelector("#project-description");
         const message=document.querySelector("#project-message");
+        const button=projectDetailsForm.querySelector('button[type="submit"]');
+
+        if(teamName==="" || teamName.length>80){
+            message.textContent="Return to Create team and enter a valid team name.";
+            return;
+        }
 
         if(projectName.value.trim()===""){
             message.textContent="Please enter a project name.";
@@ -133,7 +139,41 @@ if(projectDetailsForm){
             return;
         }
 
-        message.textContent="Project details are not connected yet. Your team and project have not been saved.";
+        button.disabled=true;
+        message.textContent="Saving your team and project...";
+
+        try{
+            const {data:userData,error:userError}=await database.auth.getUser();
+
+            if(userError || !userData.user){
+                message.textContent="Please log in before saving your team.";
+                return;
+            }
+
+            const {data,error}=await database
+                .from("teams")
+                .insert({
+                    owner_id:userData.user.id,
+                    name:teamName,
+                    project_name:projectName.value.trim(),
+                    description:description.value.trim()
+                })
+                .select("id")
+                .single();
+
+            if(error){
+                message.textContent=error.message;
+                return;
+            }
+
+            message.textContent="Team and project saved.";
+
+            window.location.href="invite-members.html?teamId="+encodeURIComponent(data.id);
+        }catch(error){
+            message.textContent="Could not save your team. Check your connection and try again.";
+        }finally{
+            button.disabled=false;
+        }
     });
 }
 
