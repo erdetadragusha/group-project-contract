@@ -8,25 +8,60 @@
 </head>
 <body>
     <main class="welcome">
-        <h1>Team setup</h1>
+        <div class="language-control">
+            <label for="language-select" data-i18n="language">
+                Language
+            </label>
 
-        <section class="status-card" aria-labelledby="setup-heading">
-            <h2 id="setup-heading">Setup not completed yet</h2>
-            <p>
-                Your team and project must be saved before
-                you can continue to team preferences.
-            </p>
+            <select id="language-select" name="language">
+                <option value="en" lang="en">English</option>
+                <option value="hr" lang="hr">Hrvatski</option>
+                <option value="sq" lang="sq">Shqip</option>
+            </select>
+        </div>
+
+        <h1 id="complete-heading">Team setup</h1>
+        <p id="complete-message" role="status">Loading your team...</p>
+
+        <section id="complete-summary" class="status-card" hidden>
+            <h2 id="complete-team-label">Team name</h2>
+            <p id="complete-team-name"></p>
+
+            <h2 id="complete-project-label">Project name</h2>
+            <p id="complete-project-name"></p>
+
+            <p id="complete-member-count"></p>
+            <p id="complete-pending-count"></p>
         </section>
 
-        <div class="welcome-actions">
-            <a href="team-members.html" class="button button-secondary">
+        <nav id="complete-navigation" class="welcome-actions"
+            aria-label="Team navigation" hidden>
+
+            <a id="complete-members-link" class="button button-secondary">
                 View team members
             </a>
 
-            <button type="button" class="button" disabled>
-                Continue to preferences
-            </button>
-        </div>
+            <a id="complete-status-link" class="button button-secondary">
+                View invitation status
+            </a>
+        </nav>
+
+        <p id="complete-preferences-note"></p>
+
+        <button type="button" id="complete-preferences"
+            class="button" disabled>
+            Continue to preferences
+        </button>
+
+        <button type="button" id="complete-refresh"
+            class="button button-secondary">
+            Refresh
+        </button>
     </main>
+
+    <script src="language.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-client.js"></script>
+    <script src="team-complete.js"></script>
 </body>
 </html>
