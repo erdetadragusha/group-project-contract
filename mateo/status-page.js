@@ -1,193 +1,133 @@
 (function(){
     const params=new URLSearchParams(window.location.search);
     const teamId=params.get("teamId");
-    const selector=document.querySelector("#language-select");
 
-    const translations={
-        en:{
-            heading:"Invitation status",
-            listHeading:"Team invitations",
-            deliveryNote:"These statuses track invitation responses. Invitation emails are not sent automatically.",
-            refresh:"Refresh",
-            members:"View team members",
-            invite:"Invite members",
-            statusLink:"View invitation status",
-            loading:"Loading invitations...",
-            loaded:"Invitation information loaded.",
-            noInvitations:"No invitations created yet.",
-            invalidTeam:"No valid team was selected. Open this page from Team members.",
-            loginRequired:"Please log in to view this team.",
-            unavailable:"Team unavailable or you do not have access.",
-            loadError:"Could not load invitation information. Check your connection and press Refresh.",
-            pending:"Awaiting response",
-            accepted:"Accepted",
-            declined:"Declined",
-            revoked:"Revoked",
-            unknown:"Unknown status",
-            navigation:"Invitation navigation"
-        },
-        hr:{
-            heading:"Status pozivnica",
-            listHeading:"Pozivnice tima",
-            deliveryNote:"Ovi statusi prikazuju odgovore na pozivnice. E-poruke s pozivnicama ne šalju se automatski.",
-            refresh:"Osvježi",
-            members:"Prikaži članove tima",
-            invite:"Pozovi članove",
-            statusLink:"Prikaži status pozivnica",
-            loading:"Učitavanje pozivnica...",
-            loaded:"Podaci o pozivnicama su učitani.",
-            noInvitations:"Još nema izrađenih pozivnica.",
-            invalidTeam:"Nije odabran valjan tim. Otvorite ovu stranicu putem stranice Članovi tima.",
-            loginRequired:"Prijavite se za pregled ovog tima.",
-            unavailable:"Tim nije dostupan ili nemate pristup.",
-            loadError:"Podatke o pozivnicama nije moguće učitati. Provjerite vezu i pritisnite Osvježi.",
-            pending:"Čeka se odgovor",
-            accepted:"Prihvaćeno",
-            declined:"Odbijeno",
-            revoked:"Opozvano",
-            unknown:"Nepoznat status",
-            navigation:"Navigacija pozivnica"
-        },
-        sq:{
-            heading:"Statusi i ftesave",
-            listHeading:"Ftesat e ekipit",
-            deliveryNote:"Këto statuse tregojnë përgjigjet ndaj ftesave. Emailet e ftesave nuk dërgohen automatikisht.",
-            refresh:"Rifresko",
-            members:"Shiko anëtarët e ekipit",
-            invite:"Fto anëtarë",
-            statusLink:"Shiko statusin e ftesave",
-            loading:"Duke ngarkuar ftesat...",
-            loaded:"Informacioni i ftesave u ngarkua.",
-            noInvitations:"Ende nuk është krijuar asnjë ftesë.",
-            invalidTeam:"Nuk është zgjedhur një ekip i vlefshëm. Hapeni këtë faqe nga faqja e anëtarëve të ekipit.",
-            loginRequired:"Hyni për të parë këtë ekip.",
-            unavailable:"Ekipi nuk është i disponueshëm ose nuk keni qasje.",
-            loadError:"Informacioni i ftesave nuk mund të ngarkohej. Kontrolloni lidhjen dhe shtypni Rifresko.",
-            pending:"Në pritje të përgjigjes",
-            accepted:"Pranuar",
-            declined:"Refuzuar",
-            revoked:"Anuluar",
-            unknown:"Status i panjohur",
-            navigation:"Navigimi i ftesave"
-        }
-    };
-
-    function currentLanguage(){
-        const selected=selector ? selector.value : "en";
-
-        return Object.hasOwn(translations,selected)
-            ? selected
-            : "en";
-    }
-
-    function text(key){
-        return translations[currentLanguage()][key];
-    }
-
-    function updateLabels(){
-        document.querySelectorAll("[data-status-label]").forEach(function(element){
-            const key=element.getAttribute("data-status-label");
-
-            if(Object.hasOwn(translations.en,key)){
-                element.textContent=text(key);
-            }
-        });
-    }
-
-    document.querySelectorAll("[data-team-page]").forEach(function(link){
-        const page=link.getAttribute("data-team-page");
-
-        if(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(teamId || "")){
-            link.href=page+"?teamId="+encodeURIComponent(teamId);
-        }else{
-            link.hidden=true;
-        }
-    });
-
-    updateLabels();
-
+    const summary=document.querySelector("#status-team");
     const list=document.querySelector("#status-list");
-
-    if(!list){
-        if(selector){
-            selector.addEventListener("change",updateLabels);
-        }
-
-        return;
-    }
-
-    const teamSummary=document.querySelector("#status-team");
     const empty=document.querySelector("#status-empty");
     const message=document.querySelector("#status-message");
     const refreshButton=document.querySelector("#status-refresh");
+    const membersLink=document.querySelector("#status-members-link");
     const inviteLink=document.querySelector("#status-invite-link");
-    const navigation=document.querySelector("#status-navigation");
 
-    let invitations=[];
     let team=null;
+    let invitations=[];
     let owner=false;
     let busy=false;
-    let messageKey="loading";
+    let loaded=false;
+    let started=false;
+    let messageKey="invitationStatus.messages.loading";
+
+    function validId(value){
+        return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+            value || ""
+        );
+    }
+
+    function statusKey(status){
+        const known=["pending","accepted","declined","revoked"];
+
+        if(known.includes(status)){
+            return "invite.status."+status;
+        }
+
+        return "invite.status.unknown";
+    }
 
     function render(){
-        updateLabels();
+        const language=i18next.resolvedLanguage || "en";
+
         list.replaceChildren();
-
-        document.title=text("heading")+" | Group Project Contract";
-        navigation.setAttribute("aria-label",text("navigation"));
-
-        teamSummary.textContent=team
-            ? team.name+" — "+team.project_name
-            : "";
-
         refreshButton.disabled=busy;
-        inviteLink.hidden=!owner;
-        message.textContent=text(messageKey);
+        membersLink.hidden=true;
+        inviteLink.hidden=true;
 
-        empty.hidden=messageKey!=="loaded" || invitations.length>0;
-        empty.textContent=text("noInvitations");
+        message.textContent=i18next.t(messageKey);
+        empty.hidden=!loaded || invitations.length>0;
+
+        if(team){
+            summary.textContent=i18next.t("members.summary",{
+                team:team.name,
+                project:team.project_name
+            });
+
+            membersLink.href="team-members.html?teamId="+
+                encodeURIComponent(teamId);
+            membersLink.hidden=false;
+
+            if(owner){
+                inviteLink.href="invite-members.html?teamId="+
+                    encodeURIComponent(teamId);
+                inviteLink.hidden=false;
+            }
+        }else{
+            summary.textContent="";
+        }
+
+        const dateFormatter=new Intl.DateTimeFormat(language,{
+            dateStyle:"medium",
+            timeStyle:"short"
+        });
 
         invitations.forEach(function(invitation){
             const item=document.createElement("li");
-            const label=document.createElement("span");
+            const details=document.createElement("div");
+            const text=document.createElement("p");
 
-            const knownStatus=["pending","accepted","declined","revoked"]
-                .includes(invitation.status);
+            text.textContent=i18next.t("invite.statusRow",{
+                email:invitation.invited_email,
+                status:i18next.t(statusKey(invitation.status))
+            });
 
-            const status=knownStatus
-                ? text(invitation.status)
-                : text("unknown");
+            details.append(text);
 
-            label.textContent=invitation.invited_email+" — "+status;
-            item.append(label);
+            if(invitation.created_at){
+                const date=new Date(invitation.created_at);
+
+                if(!Number.isNaN(date.getTime())){
+                    const time=document.createElement("time");
+
+                    time.dateTime=date.toISOString();
+                    time.textContent=i18next.t(
+                        "invitationStatus.createdAt",
+                        {
+                            date:dateFormatter.format(date)
+                        }
+                    );
+
+                    details.append(time);
+                }
+            }
+
+            item.append(details);
             list.append(item);
         });
     }
 
-    async function loadStatus(){
+    async function loadInvitations(){
         if(busy){
             return;
         }
 
         busy=true;
+        loaded=false;
         team=null;
         owner=false;
         invitations=[];
-        messageKey="loading";
+        messageKey="invitationStatus.messages.loading";
         render();
 
         try{
-            const validTeam=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(teamId || "");
-
-            if(!validTeam){
-                messageKey="invalidTeam";
+            if(!validId(teamId)){
+                messageKey="invitationStatus.errors.missingTeam";
                 return;
             }
 
-            const {data:userData,error:userError}=await database.auth.getUser();
+            const {data:authData,error:authError}=
+                await database.auth.getUser();
 
-            if(userError || !userData.user){
-                messageKey="loginRequired";
+            if(authError || !authData.user){
+                messageKey="invitationStatus.errors.loginRequired";
                 return;
             }
 
@@ -195,42 +135,66 @@
                 .from("teams")
                 .select("id,name,project_name,owner_id")
                 .eq("id",teamId)
-                .single();
+                .maybeSingle();
 
-            if(teamError || !teamData){
-                messageKey="unavailable";
+            if(teamError){
+                messageKey="invitationStatus.errors.connection";
+                return;
+            }
+
+            if(!teamData){
+                messageKey="invitationStatus.errors.unavailable";
                 return;
             }
 
             team=teamData;
-            owner=team.owner_id===userData.user.id;
+            owner=team.owner_id===authData.user.id;
 
-            const {data,error}=await database
-                .from("invitations")
-                .select("id,invited_email,status")
-                .eq("team_id",teamId)
-                .order("created_at",{ascending:false});
+            const {data:invitationData,error:invitationError}=
+                await database
+                    .from("invitations")
+                    .select("id,invited_email,status,created_at")
+                    .eq("team_id",teamId)
+                    .order("created_at",{ascending:false});
 
-            if(error){
-                messageKey="loadError";
+            if(invitationError || !Array.isArray(invitationData)){
+                messageKey="invitationStatus.errors.connection";
                 return;
             }
 
-            invitations=data;
-            messageKey="loaded";
+            invitations=invitationData;
+            loaded=true;
+            messageKey="invitationStatus.messages.loaded";
+
         }catch(error){
-            messageKey="loadError";
+            messageKey="invitationStatus.errors.connection";
         }finally{
             busy=false;
             render();
         }
     }
 
-    if(selector){
-        selector.addEventListener("change",render);
+    function start(){
+        if(started){
+            return;
+        }
+
+        started=true;
+
+        refreshButton.addEventListener("click",loadInvitations);
+
+        i18next.on("languageChanged",function(){
+            render();
+        });
+
+        loadInvitations();
     }
 
-    refreshButton.addEventListener("click",loadStatus);
-
-    loadStatus();
+    if(window.i18next){
+        if(i18next.isInitialized){
+            start();
+        }else{
+            i18next.on("initialized",start);
+        }
+    }
 })();

@@ -1,69 +1,98 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Invitation status | Group Project Contract</title>
+
+    <title data-i18n="invitationStatus.pageTitle">
+        Invitation status | Group Project Contract
+    </title>
+
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <main class="welcome">
         <div class="language-control">
-            <label for="language-select" data-i18n="language">
+            <label for="language-select" data-i18n="common.language">
                 Language
             </label>
 
-            <select id="language-select" name="language">
-                <option value="en" lang="en">English</option>
-                <option value="hr" lang="hr">Hrvatski</option>
-                <option value="sq" lang="sq">Shqip</option>
+            <select id="language-select" disabled>
+                <option value="en">English</option>
+                <option value="hr">Hrvatski</option>
+                <option value="sq">Shqip</option>
             </select>
         </div>
 
-        <h1 data-status-label="heading">Invitation status</h1>
+        <h1 data-i18n="invitationStatus.heading">
+            Invitation status
+        </h1>
 
         <p id="status-team"></p>
 
-        <section class="status-card">
-            <h2 data-status-label="listHeading">Team invitations</h2>
+        <section class="status-card" aria-labelledby="status-list-heading">
+            <h2 id="status-list-heading"
+                data-i18n="invitationStatus.listHeading">
+                Team invitations
+            </h2>
+
             <ul id="status-list" class="invite-list"></ul>
-            <p id="status-empty" hidden></p>
+
+            <p id="status-empty"
+               data-i18n="invitationStatus.messages.empty"
+               hidden>
+                No invitations created yet.
+            </p>
         </section>
 
-        <p data-status-label="deliveryNote">
+        <p data-i18n="invitationStatus.deliveryNote">
             These statuses track invitation responses.
             Invitation emails are not sent automatically.
         </p>
 
-        <p id="status-message" role="status"></p>
+        <p id="status-message" role="status" aria-live="polite"></p>
 
-        <nav class="welcome-actions"
-            aria-label="Invitation navigation"
-            id="status-navigation">
+        <nav id="status-navigation"
+             class="welcome-actions"
+             data-i18n-aria="invitationStatus.navigation"
+             aria-label="Invitation navigation">
 
-            <button type="button" id="status-refresh"
-                class="button button-secondary"
-                data-status-label="refresh">
+            <button id="status-refresh"
+                    type="button"
+                    class="button"
+                    data-i18n="invitationStatus.refreshButton"
+                    disabled>
                 Refresh
             </button>
 
-            <a class="button button-secondary"
-                data-team-page="team-members.html"
-                data-status-label="members">
+            <a id="status-members-link"
+               class="button button-secondary"
+               data-i18n="invitationStatus.membersButton"
+               hidden>
                 View team members
             </a>
 
-            <a id="status-invite-link" class="button"
-                data-team-page="invite-members.html"
-                data-status-label="invite" hidden>
+            <a id="status-invite-link"
+               class="button button-secondary"
+               data-i18n="invitationStatus.inviteButton"
+               hidden>
                 Invite members
             </a>
         </nav>
+
+        <p id="language-message"
+           role="alert"
+           data-i18n="auth.errors.generic"
+           hidden></p>
     </main>
 
-    <script src="language.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/i18next@23.16.8/dist/umd/i18next.min.js"></script>
+    <script src="i18n.js"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="supabase-client.js"></script>
+
     <script src="status-page.js"></script>
 </body>
 </html>
