@@ -3,11 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title data-i18n="members.pageTitle">
-        Team members | Group Project Contract
+
+    <title data-i18n="invite.pageTitle">
+        Invite members | Group Project Contract
     </title>
+
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <main class="welcome">
         <div class="language-control">
@@ -15,98 +18,77 @@
                 Language
             </label>
 
-            <select id="language-select" name="language" disabled>
-                <option value="en" lang="en">English</option>
-                <option value="hr" lang="hr">Hrvatski</option>
-                <option value="sq" lang="sq">Shqip</option>
+            <select id="language-select" disabled>
+                <option value="en">English</option>
+                <option value="hr">Hrvatski</option>
+                <option value="sq">Shqip</option>
             </select>
         </div>
 
-        <a href="my-teams.html" class="back-link"
-            data-i18n="members.myTeams">
-            My teams
-        </a>
+        <h1 data-i18n="invite.heading">Invite members</h1>
 
-        <h1 data-i18n="members.heading">Team members</h1>
-
-        <p id="members-summary"></p>
-        <p id="members-count" hidden></p>
-
-        <section class="status-card" aria-labelledby="joined-heading">
-            <h2 id="joined-heading" data-i18n="members.joinedHeading">
-                Joined members
-            </h2>
-
-            <p id="members-empty-list"
-                data-i18n="members.emptyMembers" hidden>
-                No members to display.
-            </p>
-
-            <ul id="members-list" class="invite-list"></ul>
-        </section>
-
-        <section class="status-card" aria-labelledby="invitations-heading">
-            <h2 id="invitations-heading"
-                data-i18n="members.invitationsHeading">
-                Invitations
-            </h2>
-
-            <p id="members-empty"
-                data-i18n="members.emptyInvitations" hidden>
-                No invitations created yet.
-            </p>
-
-            <ul id="members-invitations" class="invite-list"></ul>
-        </section>
-
-        <p id="members-message" role="status"></p>
-
-        <nav id="members-navigation" class="welcome-actions"
-            aria-label="Team actions"
-            data-i18n-aria="members.navigation">
-
-            <a id="members-invite-link" class="button"
-                data-i18n="members.inviteButton" hidden>
-                Invite members
-            </a>
-
-            <a id="edit-team-link" class="button button-secondary"
-                data-i18n="members.editButton" hidden>
-                Edit team
-            </a>
-
-            <a id="members-status-link" class="button button-secondary"
-                data-i18n="members.statusButton" hidden>
-                View invitation status
-            </a>
-
-            <a id="open-team-setup" class="button button-secondary"
-                data-i18n="members.setupButton" hidden>
-                Review team setup
-            </a>
-
-            <button type="button" id="refresh-members"
-                class="button button-secondary"
-                data-i18n="members.refreshButton" disabled>
-                Refresh
-            </button>
-
-            <a href="index.html" class="back-link"
-                data-i18n="members.backButton">
-                Back to welcome
-            </a>
-        </nav>
-
-        <p id="language-message" role="alert"
-            data-i18n="auth.errors.generic" hidden>
-            The request could not be completed. Please try again.
+        <p data-i18n="invite.description">
+            Add your teammates' email addresses.
         </p>
+
+        <form id="invite-form" class="account-form">
+            <label for="member-email" data-i18n="invite.email">
+                Email address
+            </label>
+
+            <input type="email"
+                   id="member-email"
+                   name="email"
+                   autocomplete="email"
+                   maxlength="254"
+                   aria-describedby="invite-message"
+                   required>
+
+            <button type="submit"
+                    class="button"
+                    data-i18n="invite.addButton"
+                    disabled>
+                Add
+            </button>
+        </form>
+
+        <section class="status-card"
+                 aria-labelledby="invite-draft-heading">
+
+            <h2 id="invite-draft-heading"
+                data-i18n="invite.draftHeading">
+                Invitations to save
+            </h2>
+
+            <p id="invite-empty" data-i18n="invite.empty">
+                No email addresses added yet.
+            </p>
+
+            <ul id="invite-list" class="invite-list"></ul>
+        </section>
+
+        <button id="send-invites"
+                type="button"
+                class="button"
+                data-i18n="invite.saveButton"
+                disabled>
+            Save invitations
+        </button>
+
+        <p id="invite-message" role="status" aria-live="polite"></p>
+
+        <p id="language-message"
+           role="alert"
+           data-i18n="auth.errors.generic"
+           hidden></p>
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/i18next@23.16.8/dist/umd/i18next.min.js"></script>
     <script src="i18n.js"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="supabase-client.js"></script>
+
     <script src="script.js"></script>
 </body>
 </html>
