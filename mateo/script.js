@@ -6,6 +6,7 @@ const loginForm=document.querySelector("#login-form");
 const createTeamForm=document.querySelector("#create-team-form");
 const projectDetailsForm=document.querySelector("#project-details-form");
 const inviteForm=document.querySelector("#invite-form");
+const joinDetails=document.querySelector("#join-details");
 
 function validId(value){
     return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(value || "");
@@ -36,6 +37,12 @@ function showMessage(element,key,options={}){
     element.textContent=i18next.t(key,options);
 }
 
+function clearMessage(element){
+    element.removeAttribute("data-i18n");
+    element.removeAttribute("data-i18n-options");
+    element.textContent="";
+}
+
 function showAria(element,key,options={}){
     element.setAttribute("data-i18n-aria",key);
     element.setAttribute("data-i18n-options",JSON.stringify(options));
@@ -55,6 +62,19 @@ function requestErrorKey(error){
     };
 
     return keys[error.code] || "auth.errors.generic";
+}
+
+function invitationStatusKey(status){
+    const knownStatus=[
+        "pending",
+        "accepted",
+        "declined",
+        "revoked"
+    ].includes(status);
+
+    return knownStatus
+        ? "invite.status."+status
+        : "invite.status.unknown";
 }
 
 function setupFormValidation(form){
@@ -339,6 +359,10 @@ function setupTranslatedForms(){
         setupFormValidation(inviteForm);
         setupInvitations();
     }
+
+    if(joinDetails){
+        setupJoinTeam();
+    }
 }
 
 function setupInvitations(){
@@ -397,7 +421,6 @@ function setupInvitations(){
             const removeButton=document.createElement("button");
 
             text.textContent=email;
-
             removeButton.type="button";
             removeButton.disabled=busy;
 
@@ -432,20 +455,9 @@ function setupInvitations(){
             const item=document.createElement("li");
             const text=document.createElement("span");
 
-            const knownStatus=[
-                "pending",
-                "accepted",
-                "declined",
-                "revoked"
-            ].includes(invitation.status);
-
-            const statusKey=knownStatus
-                ? "invite.status."+invitation.status
-                : "invite.status.unknown";
-
             showMessage(text,"invite.statusRow",{
                 email:invitation.invited_email,
-                status:i18next.t(statusKey)
+                status:i18next.t(invitationStatusKey(invitation.status))
             });
 
             item.append(text);
@@ -455,7 +467,6 @@ function setupInvitations(){
 
                 link.href="join-team.html?invitationId="+encodeURIComponent(invitation.id);
                 showMessage(link,"invite.openLink");
-
                 item.append(link);
             }
 
@@ -606,35 +617,7 @@ function setupInvitations(){
     loadInvitations();
 }
 
-const translatedForms=[
-    signupForm,
-    loginForm,
-    createTeamForm,
-    projectDetailsForm,
-    inviteForm
-];
-
-if(translatedForms.some(function(form){
-    return form!==null;
-})){
-    translatedForms.forEach(function(form){
-        if(form){
-            form.querySelector('button[type="submit"]').disabled=true;
-        }
-    });
-
-    if(window.i18next){
-        if(i18next.isInitialized){
-            setupTranslatedForms();
-        }else{
-            i18next.on("initialized",setupTranslatedForms);
-        }
-    }
-}
-
-const joinDetails=document.querySelector("#join-details");
-
-if(joinDetails){
+function setupJoinTeam(){
     const acceptButton=document.querySelector("#accept-invitation");
     const declineButton=document.querySelector("#decline-invitation");
     const message=document.querySelector("#join-message");
@@ -643,14 +626,35 @@ if(joinDetails){
     let currentInvitation=null;
     let responding=false;
 
+    function updateInvitationSummary(){
+        if(!currentInvitation){
+            return;
+        }
+
+        showMessage(joinDetails,"join.summary",{
+            email:currentInvitation.invited_email,
+            status:i18next.t(
+                invitationStatusKey(currentInvitation.status)
+            )
+        });
+    }
+
+    function addTranslatedLink(key,address){
+        const link=addLink(links,"",address);
+        showMessage(link,key);
+    }
+
     async function loadInvitation(){
         currentInvitation=null;
         acceptButton.disabled=true;
         declineButton.disabled=true;
         links.replaceChildren();
+        clearMessage(message);
+
+        showMessage(joinDetails,"join.messages.loading");
 
         if(!validId(invitationId)){
-            joinDetails.textContent="No valid invitation link was provided.";
+            showMessage(joinDetails,"join.errors.missingInvitation");
             return;
         }
 
@@ -658,10 +662,18 @@ if(joinDetails){
             const {data:userData,error:userError}=await database.auth.getUser();
 
             if(userError || !userData.user){
-                joinDetails.textContent="Log in with the email address that received this invitation.";
+                showMessage(joinDetails,"join.messages.loginRequired");
 
-                addLink(links,"Log in","login.html?invitationId="+encodeURIComponent(invitationId));
-                addLink(links,"Create account","signup.html?invitationId="+encodeURIComponent(invitationId));
+                addTranslatedLink(
+                    "join.loginButton",
+                    "login.html?invitationId="+encodeURIComponent(invitationId)
+                );
+
+                addTranslatedLink(
+                    "join.signupButton",
+                    "signup.html?invitationId="+encodeURIComponent(invitationId)
+                );
+
                 return;
             }
 
@@ -672,49 +684,57 @@ if(joinDetails){
                 .maybeSingle();
 
             if(error){
-                joinDetails.textContent="Could not load invitation.";
-                message.textContent=error.message;
+                showMessage(joinDetails,"join.errors.load");
                 return;
             }
 
             if(!data){
-                joinDetails.textContent="Invitation unavailable. Check that you logged in with the invited email address.";
+                showMessage(joinDetails,"join.errors.unavailable");
                 return;
             }
 
             if(data.invited_email!==(userData.user.email || "").toLowerCase()){
-                joinDetails.textContent="This invitation belongs to another email address.";
+                showMessage(joinDetails,"join.errors.wrongEmail");
                 return;
             }
 
             currentInvitation=data;
-            joinDetails.textContent="Invitation for "+data.invited_email+". Status: "+data.status+".";
+            updateInvitationSummary();
 
             if(data.status==="pending"){
                 acceptButton.disabled=false;
                 declineButton.disabled=false;
-                message.textContent="Accept to join the team, or decline the invitation.";
-            }else if(data.status==="accepted"){
-                message.textContent="You have accepted this invitation.";
 
-                addLink(links,"View team members","team-members.html?teamId="+encodeURIComponent(data.team_id));
+                showMessage(message,"join.messages.ready");
+            }else if(data.status==="accepted"){
+                showMessage(message,"join.messages.accepted");
+
+                addTranslatedLink(
+                    "join.membersButton",
+                    "team-members.html?teamId="+encodeURIComponent(data.team_id)
+                );
             }else{
-                message.textContent="This invitation is no longer pending.";
+                showMessage(message,"join.messages.closed");
             }
         }catch(error){
-            joinDetails.textContent="Could not load invitation. Check your connection and reload.";
+            showMessage(joinDetails,"join.errors.load");
         }
     }
 
     async function respondToInvitation(accept){
-        if(responding || !currentInvitation || currentInvitation.status!=="pending"){
+        if(responding || !currentInvitation ||
+            currentInvitation.status!=="pending"){
             return;
         }
 
         responding=true;
         acceptButton.disabled=true;
         declineButton.disabled=true;
-        message.textContent=accept ? "Joining team..." : "Declining invitation...";
+
+        showMessage(
+            message,
+            accept ? "join.messages.accepting" : "join.messages.declining"
+        );
 
         try{
             const {error}=await database.rpc("respond_to_invitation",{
@@ -723,15 +743,17 @@ if(joinDetails){
             });
 
             if(error){
-                message.textContent=error.message;
-                acceptButton.disabled=false;
-                declineButton.disabled=false;
+                const key=error.code==="email_not_confirmed"
+                    ? "join.errors.confirmEmail"
+                    : "join.errors.response";
+
+                showMessage(message,key);
                 return;
             }
 
             await loadInvitation();
         }catch(error){
-            message.textContent="Could not confirm your response. Reload to check the invitation status.";
+            showMessage(message,"join.errors.response");
         }finally{
             responding=false;
         }
@@ -745,7 +767,37 @@ if(joinDetails){
         respondToInvitation(false);
     });
 
+    i18next.on("languageChanged",updateInvitationSummary);
+
     loadInvitation();
+}
+
+const translatedForms=[
+    signupForm,
+    loginForm,
+    createTeamForm,
+    projectDetailsForm,
+    inviteForm
+];
+
+const hasTranslatedForm=translatedForms.some(function(form){
+    return form!==null;
+});
+
+if(hasTranslatedForm || joinDetails){
+    translatedForms.forEach(function(form){
+        if(form){
+            form.querySelector('button[type="submit"]').disabled=true;
+        }
+    });
+
+    if(window.i18next){
+        if(i18next.isInitialized){
+            setupTranslatedForms();
+        }else{
+            i18next.on("initialized",setupTranslatedForms);
+        }
+    }
 }
 
 const membersSummary=document.querySelector("#members-summary");

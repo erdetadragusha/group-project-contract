@@ -116,5 +116,34 @@
             "duplicatePending":"Jedna adresa već ima pozivnicu na čekanju. Ponovno učitajte stranicu za provjeru; nespremljeni popis bit će izbrisan.",
             "save":"Spremanje nije moguće potvrditi. Prije ponovnog pokušaja ponovno učitajte stranicu i provjerite spremljene pozivnice."
         }
+    },
+    "join":{
+        "pageTitle":"Pridruživanje timu | Ugovor za grupni projekt",
+        "heading":"Pridružite se timu",
+        "cardHeading":"Pozivnica za tim",
+        "acceptButton":"Prihvati pozivnicu",
+        "declineButton":"Odbij pozivnicu",
+        "loginButton":"Prijavi se",
+        "signupButton":"Izradi račun",
+        "membersButton":"Prikaži članove tima",
+        "navigation":"Navigacija pozivnice",
+        "summary":"Pozivnica za {{email}}. Status: {{status}}.",
+        "messages":{
+            "loading":"Učitavanje pozivnice...",
+            "loginRequired":"Prijavite se adresom e-pošte na koju je poslana ova pozivnica.",
+            "ready":"Prihvatite pozivnicu za pridruživanje timu ili je odbijte.",
+            "accepted":"Prihvatili ste ovu pozivnicu.",
+            "closed":"Ova pozivnica više nije na čekanju.",
+            "accepting":"Pridruživanje timu...",
+            "declining":"Odbijanje pozivnice..."
+        },
+        "errors":{
+            "missingInvitation":"Nije navedena valjana poveznica pozivnice.",
+            "unavailable":"Pozivnica nije dostupna. Provjerite jeste li prijavljeni pozvanom adresom e-pošte.",
+            "wrongEmail":"Ova pozivnica pripada drugoj adresi e-pošte.",
+            "load":"Pozivnicu nije moguće učitati. Provjerite vezu i ponovno učitajte stranicu.",
+            "response":"Odgovor nije moguće potvrditi. Ponovno učitajte stranicu za provjeru statusa pozivnice.",
+            "confirmEmail":"Potvrdite adresu e-pošte prije odgovora."
+        }
     }
 }

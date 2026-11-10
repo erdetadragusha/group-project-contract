@@ -116,5 +116,34 @@
             "duplicatePending":"An address already has a pending invitation. Reload to check; the unsaved list will reset.",
             "save":"Could not confirm saving. Reload to check saved invitations before trying again."
         }
+    },
+    "join":{
+        "pageTitle":"Join team | Group Project Contract",
+        "heading":"Join a team",
+        "cardHeading":"Team invitation",
+        "acceptButton":"Accept invitation",
+        "declineButton":"Decline invitation",
+        "loginButton":"Log in",
+        "signupButton":"Create account",
+        "membersButton":"View team members",
+        "navigation":"Invitation navigation",
+        "summary":"Invitation for {{email}}. Status: {{status}}.",
+        "messages":{
+            "loading":"Loading invitation...",
+            "loginRequired":"Log in with the email address that received this invitation.",
+            "ready":"Accept to join the team, or decline the invitation.",
+            "accepted":"You have accepted this invitation.",
+            "closed":"This invitation is no longer pending.",
+            "accepting":"Joining team...",
+            "declining":"Declining invitation..."
+        },
+        "errors":{
+            "missingInvitation":"No valid invitation link was provided.",
+            "unavailable":"Invitation unavailable. Check that you logged in with the invited email address.",
+            "wrongEmail":"This invitation belongs to another email address.",
+            "load":"Could not load invitation. Check your connection and reload.",
+            "response":"Could not confirm your response. Reload to check the invitation status.",
+            "confirmEmail":"Confirm your email before responding."
+        }
     }
 }

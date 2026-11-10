@@ -116,5 +116,34 @@
             "duplicatePending":"Një adresë ka tashmë një ftesë në pritje. Ringarkoni për ta kontrolluar; lista e paruajtur do të pastrohet.",
             "save":"Ruajtja nuk mund të konfirmohej. Ringarkoni për të kontrolluar ftesat e ruajtura përpara se të provoni përsëri."
         }
+    },
+    "join":{
+        "pageTitle":"Bashkimi me ekipin | Kontrata e projektit në grup",
+        "heading":"Bashkohuni me një ekip",
+        "cardHeading":"Ftesë për ekipin",
+        "acceptButton":"Prano ftesën",
+        "declineButton":"Refuzo ftesën",
+        "loginButton":"Hyr",
+        "signupButton":"Krijo llogari",
+        "membersButton":"Shiko anëtarët e ekipit",
+        "navigation":"Navigimi i ftesës",
+        "summary":"Ftesë për {{email}}. Statusi: {{status}}.",
+        "messages":{
+            "loading":"Duke ngarkuar ftesën...",
+            "loginRequired":"Hyni me adresën e emailit që mori këtë ftesë.",
+            "ready":"Pranoni për t'u bashkuar me ekipin ose refuzoni ftesën.",
+            "accepted":"E keni pranuar këtë ftesë.",
+            "closed":"Kjo ftesë nuk është më në pritje.",
+            "accepting":"Duke u bashkuar me ekipin...",
+            "declining":"Duke refuzuar ftesën..."
+        },
+        "errors":{
+            "missingInvitation":"Nuk është dhënë një lidhje e vlefshme e ftesës.",
+            "unavailable":"Ftesa nuk është e disponueshme. Kontrolloni nëse keni hyrë me emailin e ftuar.",
+            "wrongEmail":"Kjo ftesë i përket një adrese tjetër emaili.",
+            "load":"Ftesa nuk mund të ngarkohej. Kontrolloni lidhjen dhe ringarkoni faqen.",
+            "response":"Përgjigjja nuk mund të konfirmohej. Ringarkoni për të kontrolluar statusin e ftesës.",
+            "confirmEmail":"Konfirmoni emailin përpara se të përgjigjeni."
+        }
     }
 }
