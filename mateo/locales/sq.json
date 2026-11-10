@@ -164,8 +164,8 @@
         "summary":"{{team}} — {{project}}",
         "memberRow":"{{name}} ({{email}}) — {{role}} — {{state}}",
         "joined":"I bashkuar",
-        "count_one":"{{count}} anëtar i bashkuar",
-        "count_other":"{{count}} anëtarë të bashkuar",
+        "count_one":"{{count, number}} anëtar i bashkuar",
+        "count_other":"{{count, number}} anëtarë të bashkuar",
         "roles":{
             "owner":"Pronar",
             "member":"Anëtar"
@@ -182,6 +182,101 @@
             "loadMembers":"Anëtarët e ekipit nuk mund të ngarkoheshin.",
             "loadInvitations":"Ftesat nuk mund të ngarkoheshin.",
             "connection":"Nuk mund të ngarkohej i gjithë informacioni i ekipit. Kontrolloni lidhjen dhe shtypni Rifresko."
+        }
+    },
+    "invitationStatus":{
+        "pageTitle":"Statusi i ftesave | Kontrata e projektit në grup",
+        "heading":"Statusi i ftesave",
+        "listHeading":"Ftesat e ekipit",
+        "deliveryNote":"Këto statuse tregojnë përgjigjet ndaj ftesave. Emailet e ftesave nuk dërgohen automatikisht.",
+        "refreshButton":"Rifresko",
+        "membersButton":"Shiko anëtarët e ekipit",
+        "inviteButton":"Fto anëtarë",
+        "navigation":"Navigimi i ftesave",
+        "createdAt":"Krijuar më {{date}}",
+        "messages":{
+            "loading":"Duke ngarkuar ftesat...",
+            "loaded":"Informacioni i ftesave u ngarkua.",
+            "empty":"Ende nuk është krijuar asnjë ftesë."
+        },
+        "errors":{
+            "missingTeam":"Nuk është zgjedhur një ekip i vlefshëm. Hapeni këtë faqe nga Anëtarët e ekipit.",
+            "loginRequired":"Hyni për të parë këtë ekip.",
+            "unavailable":"Ekipi nuk është i disponueshëm ose nuk keni qasje.",
+            "connection":"Informacioni i ftesave nuk mund të ngarkohej. Kontrolloni lidhjen dhe shtypni Rifresko."
+        }
+    },
+    "completion":{
+        "pageTitle":"Konfigurimi i ekipit | Kontrata e projektit në grup",
+        "heading":"Konfigurimi i ekipit",
+        "completeHeading":"Konfigurimi i ekipit përfundoi",
+        "teamName":"Emri i ekipit",
+        "projectName":"Emri i projektit",
+        "membersButton":"Shiko anëtarët e ekipit",
+        "statusButton":"Shiko statusin e ftesave",
+        "preferencesButton":"Vazhdo te preferencat",
+        "refreshButton":"Rifresko",
+        "navigation":"Navigimi i ekipit",
+        "pending":"Ftesat në pritje: {{count, number}}",
+        "preferencesNote":"Më pas zgjidhni preferencat tuaja të punës. Përgjigjet tuaja aktualisht ruhen vetëm në këtë shfletues.",
+        "messages":{
+            "loading":"Duke ngarkuar ekipin...",
+            "saved":"Ekipi dhe projekti juaj janë ruajtur."
+        },
+        "errors":{
+            "missingTeam":"Nuk është zgjedhur një ekip i vlefshëm.",
+            "loginRequired":"Hyni për të parë ekipin tuaj.",
+            "unavailable":"Ekipi nuk është i disponueshëm ose nuk keni qasje.",
+            "connection":"Përmbledhja e ekipit nuk mund të ngarkohej. Kontrolloni lidhjen dhe shtypni Rifresko."
+        }
+    },
+    "myTeams":{
+        "pageTitle":"Ekipet e mia | Kontrata e projektit në grup",
+        "heading":"Ekipet e mia",
+        "createButton":"Krijo një ekip",
+        "loginButton":"Hyr",
+        "logoutButton":"Dil",
+        "refreshButton":"Rifresko",
+        "openButton":"Hap ekipin",
+        "navigation":"Navigimi i ekipeve të mia",
+        "messages":{
+            "loading":"Duke ngarkuar ekipet tuaja...",
+            "empty":"Ende nuk keni krijuar ose nuk jeni bashkuar me ndonjë ekip.",
+            "loaded":"Ekipet tuaja janë renditur më poshtë.",
+            "loggingOut":"Duke dalë..."
+        },
+        "errors":{
+            "loginRequired":"Hyni për të parë ekipet tuaja.",
+            "connection":"Ekipet nuk mund të ngarkoheshin. Kontrolloni lidhjen dhe shtypni Rifresko.",
+            "logout":"Dalja nuk mund të përfundohej. Provoni përsëri."
+        }
+    },
+    "editTeam":{
+        "pageTitle":"Ndryshimi i ekipit | Kontrata e projektit në grup",
+        "heading":"Ndrysho ekipin",
+        "teamName":"Emri i ekipit",
+        "projectName":"Emri i projektit",
+        "description":"Përshkrimi i projektit",
+        "saveButton":"Ruaj ndryshimet",
+        "deleteButton":"Fshi ekipin",
+        "retryButton":"Provo përsëri",
+        "backButton":"Kthehu te ekipet e mia",
+        "deleteConfirmation":"Ta fshini përgjithmonë ekipin \"{{name}}\"?\n\nDo të fshihen edhe detajet e projektit, ftesat dhe anëtarësimet në ekip. Ky veprim nuk mund të zhbëhet.",
+        "messages":{
+            "loading":"Duke ngarkuar detajet e ekipit...",
+            "ready":"Ndryshoni detajet më poshtë.",
+            "saving":"Duke ruajtur ndryshimet...",
+            "saved":"Ndryshimet u ruajtën.",
+            "deleting":"Duke fshirë ekipin..."
+        },
+        "errors":{
+            "missingTeam":"Nuk është zgjedhur një ekip i vlefshëm.",
+            "loginRequired":"Ju lutemi hyni fillimisht.",
+            "ownerOnly":"Vetëm pronari mund ta ndryshojë këtë ekip.",
+            "connection":"Ekipi nuk mund të ngarkohej. Kontrolloni lidhjen dhe provoni përsëri.",
+            "save":"Ruajtja nuk mund të konfirmohej. Kontrolloni ekipin e ruajtur përpara se të provoni përsëri.",
+            "delete":"Fshirja nuk mund të konfirmohej. Kontrolloni Ekipet e mia përpara se të provoni përsëri.",
+            "required":"Plotësoni të gjitha fushat."
         }
     }
 }

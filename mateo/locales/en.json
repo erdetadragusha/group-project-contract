@@ -164,8 +164,8 @@
         "summary":"{{team}} — {{project}}",
         "memberRow":"{{name}} ({{email}}) — {{role}} — {{state}}",
         "joined":"Joined",
-        "count_one":"{{count}} joined member",
-        "count_other":"{{count}} joined members",
+        "count_one":"{{count, number}} joined member",
+        "count_other":"{{count, number}} joined members",
         "roles":{
             "owner":"Owner",
             "member":"Member"
@@ -182,6 +182,101 @@
             "loadMembers":"Could not load team members.",
             "loadInvitations":"Could not load invitations.",
             "connection":"Could not load all team information. Check your connection and press Refresh."
+        }
+    },
+    "invitationStatus":{
+        "pageTitle":"Invitation status | Group Project Contract",
+        "heading":"Invitation status",
+        "listHeading":"Team invitations",
+        "deliveryNote":"These statuses track invitation responses. Invitation emails are not sent automatically.",
+        "refreshButton":"Refresh",
+        "membersButton":"View team members",
+        "inviteButton":"Invite members",
+        "navigation":"Invitation navigation",
+        "createdAt":"Created {{date}}",
+        "messages":{
+            "loading":"Loading invitations...",
+            "loaded":"Invitation information loaded.",
+            "empty":"No invitations created yet."
+        },
+        "errors":{
+            "missingTeam":"No valid team was selected. Open this page from Team members.",
+            "loginRequired":"Please log in to view this team.",
+            "unavailable":"Team unavailable or you do not have access.",
+            "connection":"Could not load invitation information. Check your connection and press Refresh."
+        }
+    },
+    "completion":{
+        "pageTitle":"Team setup | Group Project Contract",
+        "heading":"Team setup",
+        "completeHeading":"Team setup complete",
+        "teamName":"Team name",
+        "projectName":"Project name",
+        "membersButton":"View team members",
+        "statusButton":"View invitation status",
+        "preferencesButton":"Continue to preferences",
+        "refreshButton":"Refresh",
+        "navigation":"Team navigation",
+        "pending":"Pending invitations: {{count, number}}",
+        "preferencesNote":"Next, choose your working preferences. Your preference answers are currently saved only in this browser.",
+        "messages":{
+            "loading":"Loading your team...",
+            "saved":"Your team and project are saved."
+        },
+        "errors":{
+            "missingTeam":"No valid team was selected.",
+            "loginRequired":"Please log in to view your team.",
+            "unavailable":"Team unavailable or you do not have access.",
+            "connection":"Could not load the team summary. Check your connection and press Refresh."
+        }
+    },
+    "myTeams":{
+        "pageTitle":"My teams | Group Project Contract",
+        "heading":"My teams",
+        "createButton":"Create a team",
+        "loginButton":"Log in",
+        "logoutButton":"Log out",
+        "refreshButton":"Refresh",
+        "openButton":"Open team",
+        "navigation":"My teams navigation",
+        "messages":{
+            "loading":"Loading your teams...",
+            "empty":"You have not created or joined a team yet.",
+            "loaded":"Your teams are listed below.",
+            "loggingOut":"Logging out..."
+        },
+        "errors":{
+            "loginRequired":"Please log in to view your teams.",
+            "connection":"Could not load your teams. Check your connection and press Refresh.",
+            "logout":"Could not complete logout. Please try again."
+        }
+    },
+    "editTeam":{
+        "pageTitle":"Edit team | Group Project Contract",
+        "heading":"Edit team",
+        "teamName":"Team name",
+        "projectName":"Project name",
+        "description":"Project description",
+        "saveButton":"Save changes",
+        "deleteButton":"Delete team",
+        "retryButton":"Try again",
+        "backButton":"Back to my teams",
+        "deleteConfirmation":"Delete \"{{name}}\" permanently?\n\nIts project details, invitations, and team memberships will also be deleted. This cannot be undone.",
+        "messages":{
+            "loading":"Loading team details...",
+            "ready":"Update the details below.",
+            "saving":"Saving changes...",
+            "saved":"Changes saved.",
+            "deleting":"Deleting team..."
+        },
+        "errors":{
+            "missingTeam":"No valid team was selected.",
+            "loginRequired":"Please log in first.",
+            "ownerOnly":"Only the team owner can edit this team.",
+            "connection":"Could not load the team. Check your connection and try again.",
+            "save":"Could not confirm saving. Check the saved team before trying again.",
+            "delete":"Could not confirm deletion. Check My teams before trying again.",
+            "required":"Please complete all fields."
         }
     }
 }

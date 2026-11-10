@@ -164,9 +164,9 @@
         "summary":"{{team}} — {{project}}",
         "memberRow":"{{name}} ({{email}}) — {{role}} — {{state}}",
         "joined":"Pridružen",
-        "count_one":"{{count}} pridruženi član",
-        "count_few":"{{count}} pridružena člana",
-        "count_other":"{{count}} pridruženih članova",
+        "count_one":"{{count, number}} pridruženi član",
+        "count_few":"{{count, number}} pridružena člana",
+        "count_other":"{{count, number}} pridruženih članova",
         "roles":{
             "owner":"Vlasnik",
             "member":"Član"
@@ -183,6 +183,101 @@
             "loadMembers":"Članove tima nije moguće učitati.",
             "loadInvitations":"Pozivnice nije moguće učitati.",
             "connection":"Nije moguće učitati sve podatke o timu. Provjerite vezu i pritisnite Osvježi."
+        }
+    },
+    "invitationStatus":{
+        "pageTitle":"Status pozivnica | Ugovor za grupni projekt",
+        "heading":"Status pozivnica",
+        "listHeading":"Pozivnice tima",
+        "deliveryNote":"Ovi statusi prikazuju odgovore na pozivnice. E-poruke s pozivnicama ne šalju se automatski.",
+        "refreshButton":"Osvježi",
+        "membersButton":"Prikaži članove tima",
+        "inviteButton":"Pozovi članove",
+        "navigation":"Navigacija pozivnica",
+        "createdAt":"Izrađeno {{date}}",
+        "messages":{
+            "loading":"Učitavanje pozivnica...",
+            "loaded":"Podaci o pozivnicama su učitani.",
+            "empty":"Još nema izrađenih pozivnica."
+        },
+        "errors":{
+            "missingTeam":"Nije odabran valjan tim. Otvorite ovu stranicu putem stranice Članovi tima.",
+            "loginRequired":"Prijavite se za pregled ovog tima.",
+            "unavailable":"Tim nije dostupan ili nemate pristup.",
+            "connection":"Podatke o pozivnicama nije moguće učitati. Provjerite vezu i pritisnite Osvježi."
+        }
+    },
+    "completion":{
+        "pageTitle":"Postavljanje tima | Ugovor za grupni projekt",
+        "heading":"Postavljanje tima",
+        "completeHeading":"Postavljanje tima je dovršeno",
+        "teamName":"Naziv tima",
+        "projectName":"Naziv projekta",
+        "membersButton":"Prikaži članove tima",
+        "statusButton":"Prikaži status pozivnica",
+        "preferencesButton":"Nastavi na preferencije",
+        "refreshButton":"Osvježi",
+        "navigation":"Navigacija tima",
+        "pending":"Pozivnice na čekanju: {{count, number}}",
+        "preferencesNote":"Zatim odaberite svoje radne preferencije. Vaši odgovori trenutačno se spremaju samo u ovom pregledniku.",
+        "messages":{
+            "loading":"Učitavanje tima...",
+            "saved":"Vaš tim i projekt su spremljeni."
+        },
+        "errors":{
+            "missingTeam":"Nije odabran valjan tim.",
+            "loginRequired":"Prijavite se za pregled svojeg tima.",
+            "unavailable":"Tim nije dostupan ili nemate pristup.",
+            "connection":"Sažetak tima nije moguće učitati. Provjerite vezu i pritisnite Osvježi."
+        }
+    },
+    "myTeams":{
+        "pageTitle":"Moji timovi | Ugovor za grupni projekt",
+        "heading":"Moji timovi",
+        "createButton":"Stvori tim",
+        "loginButton":"Prijavi se",
+        "logoutButton":"Odjavi se",
+        "refreshButton":"Osvježi",
+        "openButton":"Otvori tim",
+        "navigation":"Navigacija mojih timova",
+        "messages":{
+            "loading":"Učitavanje vaših timova...",
+            "empty":"Još niste stvorili tim niti se pridružili timu.",
+            "loaded":"Vaši timovi prikazani su u nastavku.",
+            "loggingOut":"Odjava u tijeku..."
+        },
+        "errors":{
+            "loginRequired":"Prijavite se za pregled svojih timova.",
+            "connection":"Timove nije moguće učitati. Provjerite vezu i pritisnite Osvježi.",
+            "logout":"Odjavu nije moguće dovršiti. Pokušajte ponovno."
+        }
+    },
+    "editTeam":{
+        "pageTitle":"Uređivanje tima | Ugovor za grupni projekt",
+        "heading":"Uredi tim",
+        "teamName":"Naziv tima",
+        "projectName":"Naziv projekta",
+        "description":"Opis projekta",
+        "saveButton":"Spremi promjene",
+        "deleteButton":"Izbriši tim",
+        "retryButton":"Pokušaj ponovno",
+        "backButton":"Natrag na moje timove",
+        "deleteConfirmation":"Trajno izbrisati tim \"{{name}}\"?\n\nIzbrisat će se i detalji projekta, pozivnice i članstva u timu. Ovu radnju nije moguće poništiti.",
+        "messages":{
+            "loading":"Učitavanje podataka o timu...",
+            "ready":"Uredite podatke u nastavku.",
+            "saving":"Spremanje promjena...",
+            "saved":"Promjene su spremljene.",
+            "deleting":"Brisanje tima..."
+        },
+        "errors":{
+            "missingTeam":"Nije odabran valjan tim.",
+            "loginRequired":"Najprije se prijavite.",
+            "ownerOnly":"Samo vlasnik tima može uređivati ovaj tim.",
+            "connection":"Tim nije moguće učitati. Provjerite vezu i pokušajte ponovno.",
+            "save":"Spremanje nije moguće potvrditi. Provjerite spremljeni tim prije ponovnog pokušaja.",
+            "delete":"Brisanje nije moguće potvrditi. Provjerite Moje timove prije ponovnog pokušaja.",
+            "required":"Ispunite sva polja."
         }
     }
 }
