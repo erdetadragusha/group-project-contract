@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weekly Availability</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6fb;
+            margin: 0;
+            padding: 20px;
+            color: #222;
+        }
+
+        .container {
+            background: white;
+            max-width: 500px;
+            margin: 40px auto;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            font-size: 25px;
+            text-align: center;
+            color: #263b63;
+        }
+
+        p {
+            text-align: center;
+            color: #555;
+        }
+
+        .back {
+            color: #3458a4;
+            text-decoration: none;
+        }
+
+        h2 {
+            font-size: 18px;
+            margin-top: 30px;
+        }
+
+        .schedule {
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: center;
+        }
+
+        th, td {
+            padding: 10px 4px;
+            border: 1px solid #ddd;
+            font-size: 12px;
+        }
+
+        th {
+            background-color: #eef3ff;
+        }
+
+        input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #3458a4;
+            cursor: pointer;
+        }
+
+        .flexible {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 25px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background-color: #3458a4;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 17px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #263b63;
+        }
+
+        button:focus-visible,
+        input:focus-visible,
+        a:focus-visible {
+            outline: 3px solid #e09b24;
+            outline-offset: 3px;
+        }
+
+        #message {
+            margin-top: 15px;
+            color: #b42318;
+        }
+
+        @media (max-width: 450px) {
+            .container {
+                padding: 18px;
+            }
+
+            th, td {
+                padding: 8px 2px;
+                font-size: 11px;
+            }
+
+            input[type="checkbox"] {
+                width: 16px;
+                height: 16px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <main class="container">
+
+        <a href="communication.html" class="back">
+            ← Back
+        </a>
+
+        <h1>Weekly Availability</h1>
+
+        <p>When are you usually available to work on your group project?</p>
+
+        <form id="availabilityForm">
+
+            <h2>Select your available times</h2>
+
+            <div class="schedule">
+                <table>
+                    <thead>
+                        <tr>
+                            <th scope="col">Time</th>
+                            <th scope="col">Mon</th>
+                            <th scope="col">Tue</th>
+                            <th scope="col">Wed</th>
+                            <th scope="col">Thu</th>
+                            <th scope="col">Fri</th>
+                            <th scope="col">Sat</th>
+                            <th scope="col">Sun</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="scheduleBody"></tbody>
+                </table>
+            </div>
+
+            <label class="flexible">
+                <input type="checkbox" id="flexible">
+                I have a flexible schedule
+            </label>
+
+            <button type="submit">Next</button>
+
+            <p id="message" role="status" aria-live="polite"></p>
+
+        </form>
+
+    </main>
+
+    <script>
+        const days = [
+            "Monday", "Tuesday", "Wednesday",
+            "Thursday", "Friday", "Saturday", "Sunday"
+        ];
+
+        const times = [
+            "Morning",
+            "Afternoon",
+            "Evening"
+        ];
+
+        const scheduleBody = document.getElementById("scheduleBody");
+        const flexibleInput = document.getElementById("flexible");
+        const message = document.getElementById("message");
+
+        times.forEach(function(time) {
+            const row = document.createElement("tr");
+
+            const heading = document.createElement("th");
+            heading.scope = "row";
+            heading.textContent = time;
+            row.appendChild(heading);
+
+            days.forEach(function(day) {
+                const cell = document.createElement("td");
+                const checkbox = document.createElement("input");
+
+                checkbox.type = "checkbox";
+                checkbox.name = "availability";
+                checkbox.value = day + "-" + time;
+                checkbox.setAttribute("aria-label", day + " " + time);
+
+                cell.appendChild(checkbox);
+                row.appendChild(cell);
+            });
+
+            scheduleBody.appendChild(row);
+        });
+
+        try {
+            const saved = JSON.parse(
+                localStorage.getItem("weeklyAvailability") || "null"
+            );
+
+            if (saved && Array.isArray(saved.times)) {
+                document.querySelectorAll(
+                    'input[name="availability"]'
+                ).forEach(function(input) {
+                    input.checked = saved.times.includes(input.value);
+                });
+
+                flexibleInput.checked = saved.flexible === true;
+            }
+
+        } catch (error) {
+            message.textContent = "Previous choices could not be loaded.";
+        }
+
+        document.getElementById("availabilityForm")
+            .addEventListener("submit", function(event) {
+
+                event.preventDefault();
+
+                const selected = Array.from(
+                    document.querySelectorAll(
+                        'input[name="availability"]:checked'
+                    )
+                ).map(function(input) {
+                    return input.value;
+                });
+
+                const flexible = flexibleInput.checked;
+
+                if (selected.length === 0 && !flexible) {
+                    message.textContent =
+                        "Please select a time or choose a flexible schedule.";
+                    return;
+                }
+
+                try {
+                    localStorage.setItem(
+                        "weeklyAvailability",
+                        JSON.stringify({
+                            times: selected,
+                            flexible: flexible
+                        })
+                    );
+
+                    window.location.href = "roles.html";
+
+                } catch (error) {
+                    message.textContent =
+                        "Could not save availability. Please try again.";
+                }
+            });
+    </script>
+<script src="https://cdn.jsdelivr.net/npm/i18next@23.16.8/dist/umd/i18next.min.js"></script>
+
+<script>
+(function () {
+    if (!window.i18next) return;
+
+    const resources = {
+        en: {
+            translation: {
+                title: "Weekly Availability",
+                question: "When are you usually available to work on your group project?",
+                instruction: "Select your available times",
+                time: "Time",
+                days: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+                fullDays: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+                times: ["Morning", "Afternoon", "Evening"],
+                flexible: "I have a flexible schedule",
+                back: "Back",
+                next: "Next",
+                language: "Language",
+                selectError: "Please select a time or choose a flexible schedule.",
+                loadError: "Previous choices could not be loaded.",
+                saveError: "Could not save availability. Please try again."
+            }
+        },
+        hr: {
+            translation: {
+                title: "Tjedna dostupnost",
+                question: "Kada ste obično dostupni za rad na grupnom projektu?",
+                instruction: "Odaberite termine kada ste dostupni",
+                time: "Vrijeme",
+                days: ["Pon", "Uto", "Sri", "Čet", "Pet", "Sub", "Ned"],
+                fullDays: ["Ponedjeljak", "Utorak", "Srijeda", "Četvrtak", "Petak", "Subota", "Nedjelja"],
+                times: ["Jutro", "Poslijepodne", "Večer"],
+                flexible: "Imam fleksibilan raspored",
+                back: "Natrag",
+                next: "Dalje",
+                language: "Jezik",
+                selectError: "Odaberite barem jedan termin ili fleksibilan raspored.",
+                loadError: "Prethodne odabire nije moguće učitati.",
+                saveError: "Dostupnost nije moguće spremiti. Pokušajte ponovno."
+            }
+        },
+        sq: {
+            translation: {
+                title: "Disponueshmëria javore",
+                question: "Kur jeni zakonisht të lirë për të punuar në projektin në grup?",
+                instruction: "Zgjidhni oraret kur jeni të lirë",
+                time: "Koha",
+                days: ["Hën", "Mar", "Mër", "Enj", "Pre", "Sht", "Die"],
+                fullDays: ["E hënë", "E martë", "E mërkurë", "E enjte", "E premte", "E shtunë", "E diel"],
+                times: ["Mëngjes", "Pasdite", "Mbrëmje"],
+                flexible: "Kam një orar fleksibël",
+                back: "Kthehu",
+                next: "Vazhdo",
+                language: "Gjuha",
+                selectError: "Zgjidhni të paktën një orar ose orarin fleksibël.",
+                loadError: "Zgjedhjet e mëparshme nuk mund të ngarkohen.",
+                saveError: "Disponueshmëria nuk u ruajt. Provoni përsëri."
+            }
+        }
+    };
+
+    const main = document.querySelector(".container");
+    const heading = main.querySelector("h1");
+    const question = main.querySelector("p");
+    const instruction = main.querySelector("h2");
+    const backLink = main.querySelector(".back");
+    const nextButton = main.querySelector('button[type="submit"]');
+    const flexibleLabel = main.querySelector(".flexible");
+    const message = document.getElementById("message");
+
+    const languageBox = document.createElement("div");
+    languageBox.style.margin = "20px 0";
+
+    const languageLabel = document.createElement("label");
+    languageLabel.htmlFor = "languageSelector";
+    languageLabel.style.display = "block";
+    languageLabel.style.marginBottom = "8px";
+    languageLabel.style.fontWeight = "bold";
+
+    const selector = document.createElement("select");
+    selector.id = "languageSelector";
+    selector.style.width = "100%";
+    selector.style.padding = "12px";
+    selector.style.border = "1px solid #ccc";
+    selector.style.borderRadius = "10px";
+    selector.style.fontSize = "15px";
+
+    [
+        ["en", "English"],
+        ["hr", "Hrvatski"],
+        ["sq", "Shqip"]
+    ].forEach(function (entry) {
+        const option = document.createElement("option");
+        option.value = entry[0];
+        option.textContent = entry[1];
+        selector.appendChild(option);
+    });
+
+    languageBox.appendChild(languageLabel);
+    languageBox.appendChild(selector);
+    main.insertBefore(languageBox, heading);
+
+    const errorKeys = {
+        "Please select a time or choose a flexible schedule.": "selectError",
+        "Previous choices could not be loaded.": "loadError",
+        "Could not save availability. Please try again.": "saveError"
+    };
+
+    let currentError = null;
+
+    function updateText() {
+        const language = i18next.language;
+        const translation = resources[language].translation;
+
+        document.documentElement.lang = language;
+        document.title = i18next.t("title");
+
+        heading.textContent = i18next.t("title");
+        question.textContent = i18next.t("question");
+        instruction.textContent = i18next.t("instruction");
+        backLink.textContent = "← " + i18next.t("back");
+        nextButton.textContent = i18next.t("next");
+        languageLabel.textContent = i18next.t("language");
+
+        const headerCells = main.querySelectorAll("thead th");
+
+        headerCells[0].textContent = i18next.t("time");
+
+        translation.days.forEach(function (day, index) {
+            headerCells[index + 1].textContent = day;
+        });
+
+        const rows = document.querySelectorAll("#scheduleBody tr");
+
+        rows.forEach(function (row, timeIndex) {
+            const rowHeading = row.querySelector("th");
+            rowHeading.textContent = translation.times[timeIndex];
+
+            const checkboxes = row.querySelectorAll(
+                'input[name="availability"]'
+            );
+
+            checkboxes.forEach(function (checkbox, dayIndex) {
+                checkbox.setAttribute(
+                    "aria-label",
+                    translation.fullDays[dayIndex] + " " +
+                    translation.times[timeIndex]
+                );
+            });
+        });
+
+        const flexibleText = Array.from(
+            flexibleLabel.childNodes
+        ).find(function (node) {
+            return node.nodeType === 3 && node.textContent.trim();
+        });
+
+        if (flexibleText) {
+            flexibleText.textContent = " " + i18next.t("flexible");
+        }
+
+        if (currentError) {
+            message.textContent = i18next.t(currentError);
+        }
+    }
+
+    const observer = new MutationObserver(function () {
+        const text = message.textContent.trim();
+
+        if (!text) {
+            currentError = null;
+            return;
+        }
+
+        if (errorKeys[text]) {
+            currentError = errorKeys[text];
+        }
+
+        if (currentError) {
+            const translated = i18next.t(currentError);
+
+            if (text !== translated) {
+                message.textContent = translated;
+            }
+        }
+    });
+
+    let savedLanguage = "en";
+
+    try {
+        savedLanguage = localStorage.getItem("appLanguage") || "en";
+    } catch (error) {
+        savedLanguage = "en";
+    }
+
+    if (!resources[savedLanguage]) {
+        savedLanguage = "en";
+    }
+
+    i18next.init({
+        lng: savedLanguage,
+        fallbackLng: "en",
+        resources: resources,
+        returnObjects: true
+    }).then(function () {
+        selector.value = savedLanguage;
+
+        observer.observe(message, {
+            childList: true,
+            characterData: true,
+            subtree: true
+        });
+
+        if (errorKeys[message.textContent.trim()]) {
+            currentError = errorKeys[message.textContent.trim()];
+        }
+
+        updateText();
+
+        selector.addEventListener("change", function () {
+            const selected = selector.value;
+
+            i18next.changeLanguage(selected).then(function () {
+                try {
+                    localStorage.setItem("appLanguage", selected);
+                } catch (error) {
+                }
+
+                updateText();
+            });
+        });
+    });
+})();
+</script>
+</body>
+</html>

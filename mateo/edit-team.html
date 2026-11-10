@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title data-i18n="editTeam.pageTitle">
+        Edit team | Group Project Contract
+    </title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <main class="welcome">
+        <div class="language-control">
+            <label for="language-select" data-i18n="common.language">
+                Language
+            </label>
+
+            <select id="language-select" disabled>
+                <option value="en">English</option>
+                <option value="hr">Hrvatski</option>
+                <option value="sq">Shqip</option>
+            </select>
+        </div>
+
+        <h1 data-i18n="editTeam.heading">Edit team</h1>
+
+        <p id="edit-message" role="status" aria-live="polite"></p>
+
+        <form id="edit-team-form" class="account-form" hidden>
+            <label for="edit-team-name" data-i18n="editTeam.teamName">
+                Team name
+            </label>
+
+            <input type="text"
+                   id="edit-team-name"
+                   name="teamName"
+                   maxlength="80"
+                   required>
+
+            <label for="edit-project-name"
+                   data-i18n="editTeam.projectName">
+                Project name
+            </label>
+
+            <input type="text"
+                   id="edit-project-name"
+                   name="projectName"
+                   maxlength="100"
+                   required>
+
+            <label for="edit-description"
+                   data-i18n="editTeam.description">
+                Project description
+            </label>
+
+            <textarea id="edit-description"
+                      name="description"
+                      maxlength="1000"
+                      rows="4"
+                      required></textarea>
+
+            <button id="edit-save"
+                    type="submit"
+                    class="button"
+                    data-i18n="editTeam.saveButton"
+                    disabled>
+                Save changes
+            </button>
+
+            <button id="edit-delete"
+                    type="button"
+                    class="button button-secondary"
+                    data-i18n="editTeam.deleteButton"
+                    disabled>
+                Delete team
+            </button>
+        </form>
+
+        <div class="welcome-actions">
+            <button id="edit-retry"
+                    type="button"
+                    class="button button-secondary"
+                    data-i18n="editTeam.retryButton"
+                    disabled>
+                Try again
+            </button>
+
+            <a href="my-teams.html"
+               class="back-link"
+               data-i18n="editTeam.backButton">
+                Back to my teams
+            </a>
+        </div>
+
+        <p id="language-message"
+           role="alert"
+           data-i18n="auth.errors.generic"
+           hidden></p>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/i18next@23.16.8/dist/umd/i18next.min.js"></script>
+    <script src="i18n.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-client.js"></script>
+
+    <script src="edit-team.js"></script>
+</body>
+</html>

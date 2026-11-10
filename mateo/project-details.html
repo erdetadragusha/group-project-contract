@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="project.pageTitle">
+        Project details | Group Project Contract
+    </title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <main class="welcome">
+        <div class="language-control">
+            <label for="language-select" data-i18n="common.language">
+                Language
+            </label>
+
+            <select id="language-select" name="language" disabled>
+                <option value="en" lang="en">English</option>
+                <option value="hr" lang="hr">Hrvatski</option>
+                <option value="sq" lang="sq">Shqip</option>
+            </select>
+        </div>
+
+        <a href="create-team.html" class="back-link"
+            data-i18n="project.backButton">
+            Back to create team
+        </a>
+
+        <h1 data-i18n="project.heading">Project details</h1>
+        <p id="team-summary"></p>
+
+        <form id="project-details-form" class="account-form">
+            <label for="project-name" data-i18n="project.name">
+                Project name
+            </label>
+
+            <input type="text" id="project-name" name="projectName"
+                maxlength="100" aria-describedby="project-message" required>
+
+            <label for="project-description"
+                data-i18n="project.description">
+                Project description
+            </label>
+
+            <textarea id="project-description" name="description"
+                rows="4" maxlength="1000"
+                aria-describedby="project-message" required></textarea>
+
+            <button type="submit" class="button"
+                data-i18n="project.continueButton">
+                Continue
+            </button>
+
+            <p id="project-message" role="status"></p>
+        </form>
+
+        <p id="language-message" role="alert"
+            data-i18n="auth.errors.generic" hidden>
+            The request could not be completed. Please try again.
+        </p>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/i18next@23.16.8/dist/umd/i18next.min.js"></script>
+    <script src="i18n.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-client.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
