@@ -1,51 +1,74 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title data-i18n="teamTitle">Create team | Group Project Contract</title>
+
+    <title data-i18n="team.pageTitle">
+        Create team | Group Project Contract
+    </title>
+
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <main class="welcome">
         <div class="language-control">
-            <label for="language-select" data-i18n="language">
+            <label for="language-select" data-i18n="common.language">
                 Language
             </label>
 
-            <select id="language-select" name="language">
+            <select id="language-select" name="language" disabled>
                 <option value="en" lang="en">English</option>
                 <option value="hr" lang="hr">Hrvatski</option>
                 <option value="sq" lang="sq">Shqip</option>
             </select>
         </div>
 
-        <a href="my-teams.html" class="back-link" data-my-teams-link>
+        <a href="my-teams.html"
+           class="back-link"
+           data-i18n="team.myTeams">
             My teams
         </a>
 
-        <h1 data-i18n="createTeam">Create your team</h1>
+        <h1 data-i18n="team.heading">Create your team</h1>
 
-        <p data-i18n="teamIntroduction">
+        <p data-i18n="team.description">
             Choose a name for your project team.
         </p>
 
         <form id="create-team-form" class="account-form">
-            <label for="team-name" data-i18n="teamName">Team name</label>
+            <label for="team-name" data-i18n="team.name">
+                Team name
+            </label>
 
-            <input type="text" id="team-name" name="teamName"
-                maxlength="80" required>
+            <input type="text"
+                   id="team-name"
+                   name="teamName"
+                   maxlength="80"
+                   aria-describedby="team-message"
+                   required>
 
-            <button type="submit" class="button" data-i18n="continueButton">
+            <button type="submit"
+                    class="button"
+                    data-i18n="team.continueButton"
+                    disabled>
                 Continue
             </button>
 
-            <p id="team-message" role="status"></p>
+            <p id="team-message" role="status" aria-live="polite"></p>
         </form>
+
+        <p id="language-message"
+           role="alert"
+           data-i18n="auth.errors.generic"
+           hidden>
+            The request could not be completed. Please try again.
+        </p>
     </main>
 
-    <script src="language.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/i18next@23.16.8/dist/umd/i18next.min.js"></script>
+    <script src="i18n.js"></script>
     <script src="script.js"></script>
-    <script src="my-teams.js"></script>
 </body>
 </html>
