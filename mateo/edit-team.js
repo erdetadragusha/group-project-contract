@@ -1,177 +1,43 @@
 (function(){
-    const selector=document.querySelector("#language-select");
     const params=new URLSearchParams(window.location.search);
     const teamId=params.get("teamId");
-    const editLink=document.querySelector("#edit-team-link");
-
-    const translations={
-        en:{
-            heading:"Edit team",
-            teamName:"Team name",
-            projectName:"Project name",
-            description:"Project description",
-            save:"Save changes",
-            delete:"Delete team",
-            retry:"Try again",
-            back:"Back to my teams",
-            loading:"Loading team details...",
-            ready:"Update the details below.",
-            saving:"Saving changes...",
-            saved:"Changes saved.",
-            deleting:"Deleting team...",
-            invalid:"No valid team was selected.",
-            loginRequired:"Please log in first.",
-            ownerOnly:"Only the team owner can edit this team.",
-            loadError:"Could not load the team. Check your connection and try again.",
-            saveError:"Could not confirm saving. Check the saved team before trying again.",
-            deleteError:"Could not confirm deletion. Check My teams before trying again.",
-            required:"Please complete all fields.",
-            confirm:'Delete "{name}" permanently?\n\nIts project details, invitations, and team memberships will also be deleted. This cannot be undone.'
-        },
-        hr:{
-            heading:"Uredi tim",
-            teamName:"Naziv tima",
-            projectName:"Naziv projekta",
-            description:"Opis projekta",
-            save:"Spremi promjene",
-            delete:"Izbriši tim",
-            retry:"Pokušaj ponovno",
-            back:"Natrag na moje timove",
-            loading:"Učitavanje podataka o timu...",
-            ready:"Uredite podatke u nastavku.",
-            saving:"Spremanje promjena...",
-            saved:"Promjene su spremljene.",
-            deleting:"Brisanje tima...",
-            invalid:"Nije odabran valjan tim.",
-            loginRequired:"Najprije se prijavite.",
-            ownerOnly:"Samo vlasnik tima može uređivati ovaj tim.",
-            loadError:"Tim nije moguće učitati. Provjerite vezu i pokušajte ponovno.",
-            saveError:"Spremanje nije moguće potvrditi. Provjerite spremljeni tim prije ponovnog pokušaja.",
-            deleteError:"Brisanje nije moguće potvrditi. Provjerite Moje timove prije ponovnog pokušaja.",
-            required:"Ispunite sva polja.",
-            confirm:'Trajno izbrisati tim "{name}"?\n\nIzbrisat će se i detalji projekta, pozivnice i članstva u timu. Ovu radnju nije moguće poništiti.'
-        },
-        sq:{
-            heading:"Ndrysho ekipin",
-            teamName:"Emri i ekipit",
-            projectName:"Emri i projektit",
-            description:"Përshkrimi i projektit",
-            save:"Ruaj ndryshimet",
-            delete:"Fshi ekipin",
-            retry:"Provo përsëri",
-            back:"Kthehu te ekipet e mia",
-            loading:"Duke ngarkuar detajet e ekipit...",
-            ready:"Ndryshoni detajet më poshtë.",
-            saving:"Duke ruajtur ndryshimet...",
-            saved:"Ndryshimet u ruajtën.",
-            deleting:"Duke fshirë ekipin...",
-            invalid:"Nuk është zgjedhur një ekip i vlefshëm.",
-            loginRequired:"Ju lutemi hyni fillimisht.",
-            ownerOnly:"Vetëm pronari mund ta ndryshojë këtë ekip.",
-            loadError:"Ekipi nuk mund të ngarkohej. Kontrolloni lidhjen dhe provoni përsëri.",
-            saveError:"Ruajtja nuk mund të konfirmohej. Kontrolloni ekipin e ruajtur përpara se të provoni përsëri.",
-            deleteError:"Fshirja nuk mund të konfirmohej. Kontrolloni Ekipet e mia përpara se të provoni përsëri.",
-            required:"Plotësoni të gjitha fushat.",
-            confirm:'Ta fshini përgjithmonë ekipin "{name}"?\n\nDo të fshihen edhe detajet e projektit, ftesat dhe anëtarësimet në ekip. Ky veprim nuk mund të zhbëhet.'
-        }
-    };
-
-    function language(){
-        const selected=selector ? selector.value : "en";
-
-        return Object.hasOwn(translations,selected)
-            ? selected
-            : "en";
-    }
-
-    function text(key){
-        return translations[language()][key];
-    }
-
-    function validTeam(){
-        return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(teamId || "");
-    }
-
-    async function getOwnedTeam(){
-        if(!validTeam()){
-            throw new Error("invalid");
-        }
-
-        const {data:userData,error:userError}=await database.auth.getUser();
-
-        if(userError || !userData.user){
-            throw new Error("loginRequired");
-        }
-
-        const {data,error}=await database
-            .from("teams")
-            .select("id,name,project_name,description,owner_id")
-            .eq("id",teamId)
-            .single();
-
-        if(error || !data || data.owner_id!==userData.user.id){
-            throw new Error("ownerOnly");
-        }
-
-        return data;
-    }
-
-    function updateEditLink(){
-        if(editLink){
-            editLink.textContent=text("heading");
-        }
-    }
-
-    updateEditLink();
 
     const form=document.querySelector("#edit-team-form");
-
-    if(!form){
-        if(editLink){
-            getOwnedTeam().then(function(){
-                editLink.href="edit-team.html?teamId="+encodeURIComponent(teamId);
-                editLink.hidden=false;
-            }).catch(function(){
-                editLink.hidden=true;
-            });
-        }
-
-        if(selector){
-            selector.addEventListener("change",updateEditLink);
-        }
-
-        return;
-    }
-
-    const nameInput=document.querySelector("#edit-team-name");
-    const projectInput=document.querySelector("#edit-project-name");
-    const descriptionInput=document.querySelector("#edit-description");
+    const teamName=document.querySelector("#edit-team-name");
+    const projectName=document.querySelector("#edit-project-name");
+    const description=document.querySelector("#edit-description");
     const message=document.querySelector("#edit-message");
+
     const saveButton=document.querySelector("#edit-save");
     const deleteButton=document.querySelector("#edit-delete");
     const retryButton=document.querySelector("#edit-retry");
 
+    const fields=[teamName,projectName,description];
+
     let team=null;
+    let ownerId=null;
     let busy=false;
-    let messageKey="loading";
+    let started=false;
+    let messageKey="editTeam.messages.loading";
+
+    function validId(value){
+        return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+            value || ""
+        );
+    }
 
     function render(){
-        document.title=text("heading")+" | Group Project Contract";
+        message.textContent=i18next.t(messageKey);
 
-        document.querySelectorAll("[data-edit-label]").forEach(function(element){
-            const key=element.getAttribute("data-edit-label");
-            element.textContent=text(key);
-        });
-
-        message.textContent=text(messageKey);
         form.hidden=!team;
-        retryButton.hidden=Boolean(team);
-        retryButton.disabled=busy;
-        saveButton.disabled=busy;
-        deleteButton.disabled=busy;
+        saveButton.disabled=busy || !team;
+        deleteButton.disabled=busy || !team;
 
-        [nameInput,projectInput,descriptionInput].forEach(function(input){
-            input.disabled=busy;
+        retryButton.hidden=!!team;
+        retryButton.disabled=busy;
+
+        fields.forEach(function(field){
+            field.disabled=busy;
         });
     }
 
@@ -182,92 +48,138 @@
 
         busy=true;
         team=null;
-        messageKey="loading";
+        ownerId=null;
+        messageKey="editTeam.messages.loading";
         render();
 
         try{
-            team=await getOwnedTeam();
+            if(!validId(teamId)){
+                messageKey="editTeam.errors.missingTeam";
+                return;
+            }
 
-            nameInput.value=team.name;
-            projectInput.value=team.project_name;
-            descriptionInput.value=team.description;
-            messageKey="ready";
+            const {data:authData,error:authError}=
+                await database.auth.getUser();
+
+            if(authError || !authData.user){
+                messageKey="editTeam.errors.loginRequired";
+                return;
+            }
+
+            const {data,error}=await database
+                .from("teams")
+                .select("id,name,project_name,description,owner_id")
+                .eq("id",teamId)
+                .maybeSingle();
+
+            if(error){
+                messageKey="editTeam.errors.connection";
+                return;
+            }
+
+            if(!data || data.owner_id!==authData.user.id){
+                messageKey="editTeam.errors.ownerOnly";
+                return;
+            }
+
+            team=data;
+            ownerId=authData.user.id;
+
+            teamName.value=team.name;
+            projectName.value=team.project_name;
+            description.value=team.description;
+
+            messageKey="editTeam.messages.ready";
+
         }catch(error){
-            messageKey=Object.hasOwn(translations.en,error.message)
-                ? error.message
-                : "loadError";
+            messageKey="editTeam.errors.connection";
         }finally{
             busy=false;
             render();
         }
     }
 
-    form.addEventListener("submit",async function(event){
+    async function saveTeam(event){
         event.preventDefault();
 
         if(busy || !team){
             return;
         }
 
-        const fields=[nameInput,projectInput,descriptionInput];
-        const missing=fields.find(function(input){
-            return input.value.trim()==="";
+        const values={
+            name:teamName.value.trim(),
+            project_name:projectName.value.trim(),
+            description:description.value.trim()
+        };
+
+        const emptyField=fields.find(function(field){
+            return field.value.trim()==="";
         });
 
-        if(missing){
-            messageKey="required";
+        if(emptyField){
+            messageKey="editTeam.errors.required";
             render();
-            missing.focus();
+
+            emptyField.setAttribute("aria-invalid","true");
+            emptyField.focus();
+            return;
+        }
+
+        if(!form.reportValidity()){
             return;
         }
 
         busy=true;
-        messageKey="saving";
+        messageKey="editTeam.messages.saving";
         render();
 
         try{
             const {data,error}=await database
                 .from("teams")
-                .update({
-                    name:nameInput.value.trim(),
-                    project_name:projectInput.value.trim(),
-                    description:descriptionInput.value.trim()
-                })
+                .update(values)
                 .eq("id",teamId)
-                .eq("owner_id",team.owner_id)
+                .eq("owner_id",ownerId)
                 .select("id,name,project_name,description,owner_id")
                 .single();
 
             if(error || !data){
-                messageKey="saveError";
+                messageKey="editTeam.errors.save";
                 return;
             }
 
             team=data;
-            messageKey="saved";
+
+            teamName.value=team.name;
+            projectName.value=team.project_name;
+            description.value=team.description;
+
+            messageKey="editTeam.messages.saved";
+
         }catch(error){
-            messageKey="saveError";
+            messageKey="editTeam.errors.save";
         }finally{
             busy=false;
             render();
         }
-    });
+    }
 
-    deleteButton.addEventListener("click",async function(){
+    async function deleteTeam(){
         if(busy || !team){
             return;
         }
 
-        const confirmation=text("confirm").replace("{name}",function(){
-            return team.name;
-        });
+        const confirmed=window.confirm(
+            i18next.t("editTeam.deleteConfirmation",{
+                name:team.name
+            })
+        );
 
-        if(!window.confirm(confirmation)){
+        if(!confirmed){
             return;
         }
 
         busy=true;
-        messageKey="deleting";
+        messageKey="editTeam.messages.deleting";
         render();
 
         try{
@@ -275,48 +187,67 @@
                 .from("teams")
                 .delete()
                 .eq("id",teamId)
-                .eq("owner_id",team.owner_id)
+                .eq("owner_id",ownerId)
                 .select("id");
 
-            if(error || !data || data.length!==1){
-                messageKey="deleteError";
+            if(error || !Array.isArray(data) || data.length!==1){
+                messageKey="editTeam.errors.delete";
                 return;
             }
 
             window.location.replace("my-teams.html");
+
         }catch(error){
-            messageKey="deleteError";
+            messageKey="editTeam.errors.delete";
         }finally{
             busy=false;
             render();
         }
-    });
+    }
 
-    [nameInput,projectInput,descriptionInput].forEach(function(input){
-        input.addEventListener("input",function(){
-            input.setCustomValidity("");
+    function start(){
+        if(started){
+            return;
+        }
+
+        started=true;
+
+        fields.forEach(function(field){
+            field.addEventListener("input",function(){
+                field.setCustomValidity("");
+                field.removeAttribute("aria-invalid");
+            });
+
+            field.addEventListener("invalid",function(){
+                field.setCustomValidity(
+                    i18next.t("editTeam.errors.required")
+                );
+
+                field.setAttribute("aria-invalid","true");
+            });
         });
 
-        input.addEventListener("invalid",function(){
-            input.setCustomValidity("");
+        form.addEventListener("submit",saveTeam);
+        deleteButton.addEventListener("click",deleteTeam);
+        retryButton.addEventListener("click",loadTeam);
 
-            if(input.validity.valueMissing){
-                input.setCustomValidity(text("required"));
-            }
-        });
-    });
-
-    if(selector){
-        selector.addEventListener("change",function(){
-            [nameInput,projectInput,descriptionInput].forEach(function(input){
-                input.setCustomValidity("");
+        i18next.on("languageChanged",function(){
+            fields.forEach(function(field){
+                field.setCustomValidity("");
+                field.removeAttribute("aria-invalid");
             });
 
             render();
         });
+
+        loadTeam();
     }
 
-    retryButton.addEventListener("click",loadTeam);
-
-    loadTeam();
+    if(window.i18next){
+        if(i18next.isInitialized){
+            start();
+        }else{
+            i18next.on("initialized",start);
+        }
+    }
 })();
