@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My teams | Group Project Contract</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <main class="welcome">
+        <div class="language-control">
+            <label for="language-select" data-i18n="language">
+                Language
+            </label>
+
+            <select id="language-select" name="language">
+                <option value="en" lang="en">English</option>
+                <option value="hr" lang="hr">Hrvatski</option>
+                <option value="sq" lang="sq">Shqip</option>
+            </select>
+        </div>
+
+        <h1 data-teams-label="heading">My teams</h1>
+        <p id="teams-account"></p>
+        <p id="teams-message" role="status"></p>
+
+        <div id="teams-list"></div>
+
+        <nav class="welcome-actions" id="teams-navigation"
+            aria-label="My teams navigation">
+
+            <a href="create-team.html" id="teams-create"
+                class="button" data-teams-label="create" hidden>
+                Create a team
+            </a>
+
+            <a href="login.html" id="teams-login"
+                class="button" data-teams-label="login" hidden>
+                Log in
+            </a>
+
+            <button type="button" id="teams-refresh"
+                class="button button-secondary" data-teams-label="refresh">
+                Refresh
+            </button>
+
+            <button type="button" id="teams-logout"
+                class="button button-secondary" data-teams-label="logout" hidden>
+                Log out
+            </button>
+        </nav>
+    </main>
+
+    <script src="language.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-client.js"></script>
+    <script src="my-teams.js"></script>
+</body>
+</html>
