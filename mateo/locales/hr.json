@@ -49,5 +49,31 @@
             "signupDisabled":"Registracija računa trenutačno nije dostupna.",
             "generic":"Zahtjev nije moguće dovršiti. Pokušajte ponovno."
         }
+    },
+    "team":{
+        "pageTitle":"Izrada tima | Ugovor za grupni projekt",
+        "heading":"Stvorite svoj tim",
+        "description":"Odaberite naziv svojeg projektnog tima.",
+        "name":"Naziv tima",
+        "continueButton":"Nastavi",
+        "myTeams":"Moji timovi",
+        "nameRequired":"Unesite naziv tima."
+    },
+    "project":{
+        "pageTitle":"Detalji projekta | Ugovor za grupni projekt",
+        "heading":"Detalji projekta",
+        "backButton":"Natrag na izradu tima",
+        "teamSummary":"Tim: {{name}}",
+        "name":"Naziv projekta",
+        "description":"Opis projekta",
+        "continueButton":"Nastavi",
+        "saving":"Spremanje tima i projekta...",
+        "errors":{
+            "missingTeam":"Vratite se na izradu tima i unesite valjan naziv tima.",
+            "nameRequired":"Unesite naziv projekta.",
+            "descriptionRequired":"Unesite opis projekta.",
+            "loginRequired":"Prijavite se prije spremanja tima.",
+            "connection":"Spremanje tima nije uspjelo. Provjerite vezu i pokušajte ponovno."
+        }
     }
 }

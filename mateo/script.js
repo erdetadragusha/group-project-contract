@@ -1,6 +1,11 @@
 const pageParams=new URLSearchParams(window.location.search);
 const invitationId=pageParams.get("invitationId");
 
+const signupForm=document.querySelector("#signup-form");
+const loginForm=document.querySelector("#login-form");
+const createTeamForm=document.querySelector("#create-team-form");
+const projectDetailsForm=document.querySelector("#project-details-form");
+
 function validId(value){
     return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(value || "");
 }
@@ -24,15 +29,12 @@ function addLink(container,text,address){
     return link;
 }
 
-const signupForm=document.querySelector("#signup-form");
-const loginForm=document.querySelector("#login-form");
-
-function showAuthMessage(element,key){
+function showMessage(element,key){
     element.setAttribute("data-i18n",key);
     element.textContent=i18next.t(key);
 }
 
-function authErrorKey(error){
+function requestErrorKey(error){
     const keys={
         invalid_credentials:"auth.errors.invalidCredentials",
         email_not_confirmed:"auth.errors.emailUnconfirmed",
@@ -47,8 +49,8 @@ function authErrorKey(error){
     return keys[error.code] || "auth.errors.generic";
 }
 
-function setupAuthValidation(form){
-    const inputs=form.querySelectorAll("input");
+function setupFormValidation(form){
+    const inputs=form.querySelectorAll("input,textarea");
 
     inputs.forEach(function(input){
         input.addEventListener("input",function(){
@@ -84,17 +86,17 @@ function setupAuthValidation(form){
     });
 }
 
-let authReady=false;
+let translatedFormsReady=false;
 
-function setupAuth(){
-    if(authReady){
+function setupTranslatedForms(){
+    if(translatedFormsReady){
         return;
     }
 
-    authReady=true;
+    translatedFormsReady=true;
 
     if(signupForm){
-        setupAuthValidation(signupForm);
+        setupFormValidation(signupForm);
 
         const button=signupForm.querySelector('button[type="submit"]');
         button.disabled=false;
@@ -120,14 +122,14 @@ function setupAuth(){
             const message=document.querySelector("#signup-message");
 
             if(name.value.trim()===""){
-                showAuthMessage(message,"auth.errors.nameRequired");
+                showMessage(message,"auth.errors.nameRequired");
                 name.setAttribute("aria-invalid","true");
                 name.focus();
                 return;
             }
 
             button.disabled=true;
-            showAuthMessage(message,"auth.status.creating");
+            showMessage(message,"auth.status.creating");
 
             try{
                 const {data,error}=await database.auth.signUp({
@@ -143,7 +145,7 @@ function setupAuth(){
                 });
 
                 if(error){
-                    showAuthMessage(message,authErrorKey(error));
+                    showMessage(message,requestErrorKey(error));
                     return;
                 }
 
@@ -152,10 +154,10 @@ function setupAuth(){
                 if(data.session){
                     window.location.href=afterLogin();
                 }else{
-                    showAuthMessage(message,"auth.status.checkEmail");
+                    showMessage(message,"auth.status.checkEmail");
                 }
             }catch(error){
-                showAuthMessage(message,"auth.errors.signupConnection");
+                showMessage(message,"auth.errors.signupConnection");
             }finally{
                 button.disabled=false;
             }
@@ -163,7 +165,7 @@ function setupAuth(){
     }
 
     if(loginForm){
-        setupAuthValidation(loginForm);
+        setupFormValidation(loginForm);
 
         const button=loginForm.querySelector('button[type="submit"]');
         button.disabled=false;
@@ -188,7 +190,7 @@ function setupAuth(){
             const message=document.querySelector("#login-message");
 
             button.disabled=true;
-            showAuthMessage(message,"auth.status.loggingIn");
+            showMessage(message,"auth.status.loggingIn");
 
             try{
                 const {error}=await database.auth.signInWithPassword({
@@ -197,14 +199,127 @@ function setupAuth(){
                 });
 
                 if(error){
-                    showAuthMessage(message,authErrorKey(error));
+                    showMessage(message,requestErrorKey(error));
                     return;
                 }
 
                 password.value="";
                 window.location.href=afterLogin();
             }catch(error){
-                showAuthMessage(message,"auth.errors.loginConnection");
+                showMessage(message,"auth.errors.loginConnection");
+            }finally{
+                button.disabled=false;
+            }
+        });
+    }
+
+    if(createTeamForm){
+        setupFormValidation(createTeamForm);
+
+        const button=createTeamForm.querySelector('button[type="submit"]');
+        button.disabled=false;
+
+        createTeamForm.addEventListener("submit",function(event){
+            event.preventDefault();
+
+            const teamName=document.querySelector("#team-name");
+            const message=document.querySelector("#team-message");
+
+            if(teamName.value.trim()===""){
+                showMessage(message,"team.nameRequired");
+                teamName.setAttribute("aria-invalid","true");
+                teamName.focus();
+                return;
+            }
+
+            window.location.href="project-details.html?teamName="+encodeURIComponent(teamName.value.trim());
+        });
+    }
+
+    if(projectDetailsForm){
+        setupFormValidation(projectDetailsForm);
+
+        const teamName=(pageParams.get("teamName") || "").trim();
+        const summary=document.querySelector("#team-summary");
+        const button=projectDetailsForm.querySelector('button[type="submit"]');
+
+        button.disabled=false;
+
+        function updateTeamSummary(){
+            if(teamName!=="" && teamName.length<=80){
+                summary.removeAttribute("data-i18n");
+
+                summary.textContent=i18next.t("project.teamSummary",{
+                    name:teamName
+                });
+            }else{
+                showMessage(summary,"project.errors.missingTeam");
+            }
+        }
+
+        updateTeamSummary();
+        i18next.on("languageChanged",updateTeamSummary);
+
+        projectDetailsForm.addEventListener("submit",async function(event){
+            event.preventDefault();
+
+            if(button.disabled){
+                return;
+            }
+
+            const projectName=document.querySelector("#project-name");
+            const description=document.querySelector("#project-description");
+            const message=document.querySelector("#project-message");
+
+            if(teamName==="" || teamName.length>80){
+                showMessage(message,"project.errors.missingTeam");
+                return;
+            }
+
+            if(projectName.value.trim()===""){
+                showMessage(message,"project.errors.nameRequired");
+                projectName.setAttribute("aria-invalid","true");
+                projectName.focus();
+                return;
+            }
+
+            if(description.value.trim()===""){
+                showMessage(message,"project.errors.descriptionRequired");
+                description.setAttribute("aria-invalid","true");
+                description.focus();
+                return;
+            }
+
+            button.disabled=true;
+            showMessage(message,"project.saving");
+
+            try{
+                const {data:userData,error:userError}=await database.auth.getUser();
+
+                if(userError || !userData.user){
+                    showMessage(message,"project.errors.loginRequired");
+                    return;
+                }
+
+                const {data,error}=await database
+                    .from("teams")
+                    .insert({
+                        owner_id:userData.user.id,
+                        name:teamName,
+                        project_name:projectName.value.trim(),
+                        description:description.value.trim()
+                    })
+                    .select("id")
+                    .single();
+
+                if(error){
+                    showMessage(message,requestErrorKey(error));
+                    return;
+                }
+
+                window.location.href="invite-members.html?teamId="+encodeURIComponent(data.id);
+            }catch(error){
+                showMessage(message,"project.errors.connection");
             }finally{
                 button.disabled=false;
             }
@@ -212,8 +327,17 @@ function setupAuth(){
     }
 }
 
-if(signupForm || loginForm){
-    [signupForm,loginForm].forEach(function(form){
+const translatedForms=[
+    signupForm,
+    loginForm,
+    createTeamForm,
+    projectDetailsForm
+];
+
+if(translatedForms.some(function(form){
+    return form!==null;
+})){
+    translatedForms.forEach(function(form){
         if(form){
             form.querySelector('button[type="submit"]').disabled=true;
         }
@@ -221,99 +345,11 @@ if(signupForm || loginForm){
 
     if(window.i18next){
         if(i18next.isInitialized){
-            setupAuth();
+            setupTranslatedForms();
         }else{
-            i18next.on("initialized",setupAuth);
+            i18next.on("initialized",setupTranslatedForms);
         }
     }
-}
-
-const createTeamForm=document.querySelector("#create-team-form");
-
-if(createTeamForm){
-    createTeamForm.addEventListener("submit",function(event){
-        event.preventDefault();
-
-        const teamName=document.querySelector("#team-name");
-        const message=document.querySelector("#team-message");
-
-        if(teamName.value.trim()===""){
-            message.textContent="Please enter a team name.";
-            teamName.focus();
-            return;
-        }
-
-        window.location.href="project-details.html?teamName="+encodeURIComponent(teamName.value.trim());
-    });
-}
-
-const projectDetailsForm=document.querySelector("#project-details-form");
-
-if(projectDetailsForm){
-    const teamName=(pageParams.get("teamName") || "").trim();
-    const summary=document.querySelector("#team-summary");
-
-    summary.textContent=teamName ? "Team: "+teamName : "Return to Create team and enter a team name.";
-
-    projectDetailsForm.addEventListener("submit",async function(event){
-        event.preventDefault();
-
-        const projectName=document.querySelector("#project-name");
-        const description=document.querySelector("#project-description");
-        const message=document.querySelector("#project-message");
-        const button=projectDetailsForm.querySelector('button[type="submit"]');
-
-        if(teamName==="" || teamName.length>80){
-            message.textContent="Return to Create team and enter a valid team name.";
-            return;
-        }
-
-        if(projectName.value.trim()===""){
-            message.textContent="Please enter a project name.";
-            projectName.focus();
-            return;
-        }
-
-        if(description.value.trim()===""){
-            message.textContent="Please enter a project description.";
-            description.focus();
-            return;
-        }
-
-        button.disabled=true;
-        message.textContent="Saving your team and project...";
-
-        try{
-            const {data:userData,error:userError}=await database.auth.getUser();
-
-            if(userError || !userData.user){
-                message.textContent="Please log in before saving your team.";
-                return;
-            }
-
-            const {data,error}=await database
-                .from("teams")
-                .insert({
-                    owner_id:userData.user.id,
-                    name:teamName,
-                    project_name:projectName.value.trim(),
-                    description:description.value.trim()
-                })
-                .select("id")
-                .single();
-
-            if(error){
-                message.textContent=error.message;
-                return;
-            }
-
-            window.location.href="invite-members.html?teamId="+encodeURIComponent(data.id);
-        }catch(error){
-            message.textContent="Could not save your team. Check your connection and try again.";
-        }finally{
-            button.disabled=false;
-        }
-    });
 }
 
 const inviteForm=document.querySelector("#invite-form");

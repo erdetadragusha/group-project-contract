@@ -1,74 +1,62 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit team | Group Project Contract</title>
+    <title data-i18n="team.pageTitle">
+        Create team | Group Project Contract
+    </title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <main class="welcome">
         <div class="language-control">
-            <label for="language-select" data-i18n="language">
+            <label for="language-select" data-i18n="common.language">
                 Language
             </label>
 
-            <select id="language-select" name="language">
+            <select id="language-select" name="language" disabled>
                 <option value="en" lang="en">English</option>
                 <option value="hr" lang="hr">Hrvatski</option>
                 <option value="sq" lang="sq">Shqip</option>
             </select>
         </div>
 
-        <h1 data-edit-label="heading">Edit team</h1>
-        <p id="edit-message" role="status"></p>
+        <a href="my-teams.html" class="back-link"
+            data-i18n="team.myTeams">
+            My teams
+        </a>
 
-        <form id="edit-team-form" class="account-form" hidden>
-            <label for="edit-team-name" data-edit-label="teamName">
+        <h1 data-i18n="team.heading">Create your team</h1>
+
+        <p data-i18n="team.description">
+            Choose a name for your project team.
+        </p>
+
+        <form id="create-team-form" class="account-form">
+            <label for="team-name" data-i18n="team.name">
                 Team name
             </label>
 
-            <input type="text" id="edit-team-name"
-                name="teamName" maxlength="80" required>
+            <input type="text" id="team-name" name="teamName"
+                maxlength="80" aria-describedby="team-message" required>
 
-            <label for="edit-project-name" data-edit-label="projectName">
-                Project name
-            </label>
-
-            <input type="text" id="edit-project-name"
-                name="projectName" maxlength="100" required>
-
-            <label for="edit-description" data-edit-label="description">
-                Project description
-            </label>
-
-            <textarea id="edit-description" name="description"
-                rows="4" maxlength="1000" required></textarea>
-
-            <button type="submit" id="edit-save"
-                class="button" data-edit-label="save">
-                Save changes
+            <button type="submit" class="button"
+                data-i18n="team.continueButton">
+                Continue
             </button>
 
-            <button type="button" id="edit-delete"
-                class="button button-secondary" data-edit-label="delete">
-                Delete team
-            </button>
+            <p id="team-message" role="status"></p>
         </form>
 
-        <button type="button" id="edit-retry"
-            class="button button-secondary" data-edit-label="retry">
-            Try again
-        </button>
-
-        <a href="my-teams.html" class="back-link" data-edit-label="back">
-            Back to my teams
-        </a>
+        <p id="language-message" role="alert"
+            data-i18n="auth.errors.generic" hidden>
+            The request could not be completed. Please try again.
+        </p>
     </main>
 
-    <script src="language.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="supabase-client.js"></script>
-    <script src="edit-team.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/i18next@23.16.8/dist/umd/i18next.min.js"></script>
+    <script src="i18n.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>

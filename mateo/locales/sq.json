@@ -49,5 +49,31 @@
             "signupDisabled":"Regjistrimi i llogarive aktualisht nuk është i disponueshëm.",
             "generic":"Kërkesa nuk mund të përfundohej. Provoni përsëri."
         }
+    },
+    "team":{
+        "pageTitle":"Krijimi i ekipit | Kontrata e projektit në grup",
+        "heading":"Krijoni ekipin tuaj",
+        "description":"Zgjidhni një emër për ekipin tuaj të projektit.",
+        "name":"Emri i ekipit",
+        "continueButton":"Vazhdo",
+        "myTeams":"Ekipet e mia",
+        "nameRequired":"Shkruani emrin e ekipit."
+    },
+    "project":{
+        "pageTitle":"Detajet e projektit | Kontrata e projektit në grup",
+        "heading":"Detajet e projektit",
+        "backButton":"Kthehu te krijimi i ekipit",
+        "teamSummary":"Ekipi: {{name}}",
+        "name":"Emri i projektit",
+        "description":"Përshkrimi i projektit",
+        "continueButton":"Vazhdo",
+        "saving":"Duke ruajtur ekipin dhe projektin...",
+        "errors":{
+            "missingTeam":"Kthehuni te krijimi i ekipit dhe shkruani një emër të vlefshëm.",
+            "nameRequired":"Shkruani emrin e projektit.",
+            "descriptionRequired":"Shkruani përshkrimin e projektit.",
+            "loginRequired":"Hyni përpara se të ruani ekipin.",
+            "connection":"Ekipi nuk u ruajt. Kontrolloni lidhjen dhe provoni përsëri."
+        }
     }
 }

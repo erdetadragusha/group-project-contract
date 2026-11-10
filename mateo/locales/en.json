@@ -49,5 +49,31 @@
             "signupDisabled":"Account registration is currently unavailable.",
             "generic":"The request could not be completed. Please try again."
         }
+    },
+    "team":{
+        "pageTitle":"Create team | Group Project Contract",
+        "heading":"Create your team",
+        "description":"Choose a name for your project team.",
+        "name":"Team name",
+        "continueButton":"Continue",
+        "myTeams":"My teams",
+        "nameRequired":"Please enter a team name."
+    },
+    "project":{
+        "pageTitle":"Project details | Group Project Contract",
+        "heading":"Project details",
+        "backButton":"Back to create team",
+        "teamSummary":"Team: {{name}}",
+        "name":"Project name",
+        "description":"Project description",
+        "continueButton":"Continue",
+        "saving":"Saving your team and project...",
+        "errors":{
+            "missingTeam":"Return to Create team and enter a valid team name.",
+            "nameRequired":"Please enter a project name.",
+            "descriptionRequired":"Please enter a project description.",
+            "loginRequired":"Please log in before saving your team.",
+            "connection":"Could not save your team. Check your connection and try again."
+        }
     }
 }
