@@ -1,59 +1,88 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My teams | Group Project Contract</title>
+
+    <title data-i18n="myTeams.pageTitle">
+        My teams | Group Project Contract
+    </title>
+
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <main class="welcome">
         <div class="language-control">
-            <label for="language-select" data-i18n="language">
+            <label for="language-select" data-i18n="common.language">
                 Language
             </label>
 
-            <select id="language-select" name="language">
-                <option value="en" lang="en">English</option>
-                <option value="hr" lang="hr">Hrvatski</option>
-                <option value="sq" lang="sq">Shqip</option>
+            <select id="language-select" disabled>
+                <option value="en">English</option>
+                <option value="hr">Hrvatski</option>
+                <option value="sq">Shqip</option>
             </select>
         </div>
 
-        <h1 data-teams-label="heading">My teams</h1>
+        <h1 data-i18n="myTeams.heading">My teams</h1>
+
         <p id="teams-account"></p>
-        <p id="teams-message" role="status"></p>
+
+        <p id="teams-message" role="status" aria-live="polite"></p>
 
         <div id="teams-list"></div>
 
-        <nav class="welcome-actions" id="teams-navigation"
-            aria-label="My teams navigation">
+        <nav class="welcome-actions"
+             data-i18n-aria="myTeams.navigation"
+             aria-label="My teams navigation">
 
-            <a href="create-team.html" id="teams-create"
-                class="button" data-teams-label="create" hidden>
+            <a id="teams-create"
+               href="create-team.html"
+               class="button"
+               data-i18n="myTeams.createButton"
+               hidden>
                 Create a team
             </a>
 
-            <a href="login.html" id="teams-login"
-                class="button" data-teams-label="login" hidden>
+            <a id="teams-login"
+               href="login.html"
+               class="button"
+               data-i18n="myTeams.loginButton"
+               hidden>
                 Log in
             </a>
 
-            <button type="button" id="teams-refresh"
-                class="button button-secondary" data-teams-label="refresh">
+            <button id="teams-refresh"
+                    type="button"
+                    class="button button-secondary"
+                    data-i18n="myTeams.refreshButton"
+                    disabled>
                 Refresh
             </button>
 
-            <button type="button" id="teams-logout"
-                class="button button-secondary" data-teams-label="logout" hidden>
+            <button id="teams-logout"
+                    type="button"
+                    class="button button-secondary"
+                    data-i18n="myTeams.logoutButton"
+                    hidden
+                    disabled>
                 Log out
             </button>
         </nav>
+
+        <p id="language-message"
+           role="alert"
+           data-i18n="auth.errors.generic"
+           hidden></p>
     </main>
 
-    <script src="language.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/i18next@23.16.8/dist/umd/i18next.min.js"></script>
+    <script src="i18n.js"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="supabase-client.js"></script>
+
     <script src="my-teams.js"></script>
 </body>
 </html>
