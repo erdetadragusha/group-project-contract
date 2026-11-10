@@ -9,5 +9,45 @@
         "navigation":"Get started",
         "startButton":"Get started",
         "loginButton":"Log in"
+    },
+    "auth":{
+        "backWelcome":"Back to welcome",
+        "fullName":"Full name",
+        "email":"Email",
+        "password":"Password",
+        "passwordHelp":"Use at least 8 characters.",
+        "signup":{
+            "pageTitle":"Sign up | Group Project Contract",
+            "heading":"Create an account",
+            "description":"Sign up to start working with your team.",
+            "button":"Sign up",
+            "alreadyAccount":"Already have an account?"
+        },
+        "login":{
+            "pageTitle":"Log in | Group Project Contract",
+            "heading":"Log in",
+            "description":"Continue working with your team.",
+            "button":"Log in",
+            "noAccount":"Don't have an account?"
+        },
+        "status":{
+            "creating":"Creating your account...",
+            "loggingIn":"Logging in...",
+            "checkEmail":"Check your email for a confirmation link. If joining a team, reopen your invitation link after confirming."
+        },
+        "errors":{
+            "nameRequired":"Please enter your name.",
+            "required":"Please fill in this field.",
+            "invalidEmail":"Please enter a valid email address.",
+            "shortPassword":"Use at least 8 characters.",
+            "signupConnection":"Could not reach the signup service. Check your connection and try again.",
+            "loginConnection":"Could not reach the login service. Check your connection and try again.",
+            "invalidCredentials":"Incorrect email or password.",
+            "emailUnconfirmed":"Please confirm your email before logging in.",
+            "alreadyRegistered":"An account already exists for this email. Please log in.",
+            "rateLimit":"Too many requests. Please wait before trying again.",
+            "signupDisabled":"Account registration is currently unavailable.",
+            "generic":"The request could not be completed. Please try again."
+        }
     }
 }

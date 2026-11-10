@@ -9,5 +9,45 @@
         "navigation":"Filloni",
         "startButton":"Fillo",
         "loginButton":"Hyr"
+    },
+    "auth":{
+        "backWelcome":"Kthehu në faqen kryesore",
+        "fullName":"Emri dhe mbiemri",
+        "email":"Email",
+        "password":"Fjalëkalimi",
+        "passwordHelp":"Përdorni të paktën 8 karaktere.",
+        "signup":{
+            "pageTitle":"Regjistrimi | Kontrata e projektit në grup",
+            "heading":"Krijoni një llogari",
+            "description":"Regjistrohuni për të filluar punën me ekipin tuaj.",
+            "button":"Regjistrohu",
+            "alreadyAccount":"Keni tashmë një llogari?"
+        },
+        "login":{
+            "pageTitle":"Hyrja | Kontrata e projektit në grup",
+            "heading":"Hyr",
+            "description":"Vazhdoni punën me ekipin tuaj.",
+            "button":"Hyr",
+            "noAccount":"Nuk keni llogari?"
+        },
+        "status":{
+            "creating":"Duke krijuar llogarinë...",
+            "loggingIn":"Duke hyrë...",
+            "checkEmail":"Kontrolloni emailin për lidhjen e konfirmimit. Nëse po bashkoheni me një ekip, hapni përsëri lidhjen e ftesës pas konfirmimit."
+        },
+        "errors":{
+            "nameRequired":"Shkruani emrin dhe mbiemrin tuaj.",
+            "required":"Plotësoni këtë fushë.",
+            "invalidEmail":"Shkruani një adresë emaili të vlefshme.",
+            "shortPassword":"Përdorni të paktën 8 karaktere.",
+            "signupConnection":"Nuk u lidhëm me shërbimin e regjistrimit. Kontrolloni lidhjen dhe provoni përsëri.",
+            "loginConnection":"Nuk u lidhëm me shërbimin e hyrjes. Kontrolloni lidhjen dhe provoni përsëri.",
+            "invalidCredentials":"Emaili ose fjalëkalimi është i pasaktë.",
+            "emailUnconfirmed":"Konfirmoni emailin përpara se të hyni.",
+            "alreadyRegistered":"Një llogari me këtë email ekziston tashmë. Ju lutemi hyni.",
+            "rateLimit":"Shumë kërkesa. Prisni përpara se të provoni përsëri.",
+            "signupDisabled":"Regjistrimi i llogarive aktualisht nuk është i disponueshëm.",
+            "generic":"Kërkesa nuk mund të përfundohej. Provoni përsëri."
+        }
     }
 }

@@ -9,5 +9,45 @@
         "navigation":"Početak",
         "startButton":"Započni",
         "loginButton":"Prijavi se"
+    },
+    "auth":{
+        "backWelcome":"Natrag na početnu stranicu",
+        "fullName":"Ime i prezime",
+        "email":"E-pošta",
+        "password":"Lozinka",
+        "passwordHelp":"Upotrijebite najmanje 8 znakova.",
+        "signup":{
+            "pageTitle":"Registracija | Ugovor za grupni projekt",
+            "heading":"Izradite račun",
+            "description":"Registrirajte se kako biste započeli rad sa svojim timom.",
+            "button":"Registriraj se",
+            "alreadyAccount":"Već imate račun?"
+        },
+        "login":{
+            "pageTitle":"Prijava | Ugovor za grupni projekt",
+            "heading":"Prijavi se",
+            "description":"Nastavite raditi sa svojim timom.",
+            "button":"Prijavi se",
+            "noAccount":"Nemate račun?"
+        },
+        "status":{
+            "creating":"Izrada računa...",
+            "loggingIn":"Prijava u tijeku...",
+            "checkEmail":"Provjerite e-poštu i otvorite poveznicu za potvrdu. Ako se pridružujete timu, nakon potvrde ponovno otvorite pozivnicu."
+        },
+        "errors":{
+            "nameRequired":"Unesite svoje ime i prezime.",
+            "required":"Ispunite ovo polje.",
+            "invalidEmail":"Unesite valjanu adresu e-pošte.",
+            "shortPassword":"Upotrijebite najmanje 8 znakova.",
+            "signupConnection":"Povezivanje s uslugom registracije nije uspjelo. Provjerite vezu i pokušajte ponovno.",
+            "loginConnection":"Povezivanje s uslugom prijave nije uspjelo. Provjerite vezu i pokušajte ponovno.",
+            "invalidCredentials":"Netočna adresa e-pošte ili lozinka.",
+            "emailUnconfirmed":"Potvrdite adresu e-pošte prije prijave.",
+            "alreadyRegistered":"Račun s ovom adresom e-pošte već postoji. Prijavite se.",
+            "rateLimit":"Previše zahtjeva. Pričekajte prije ponovnog pokušaja.",
+            "signupDisabled":"Registracija računa trenutačno nije dostupna.",
+            "generic":"Zahtjev nije moguće dovršiti. Pokušajte ponovno."
+        }
     }
 }

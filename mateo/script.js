@@ -25,105 +25,207 @@ function addLink(container,text,address){
 }
 
 const signupForm=document.querySelector("#signup-form");
+const loginForm=document.querySelector("#login-form");
 
-if(signupForm){
-    if(validId(invitationId)){
-        const loginLink=document.querySelector('a[href="login.html"]');
+function showAuthMessage(element,key){
+    element.setAttribute("data-i18n",key);
+    element.textContent=i18next.t(key);
+}
 
-        if(loginLink){
-            loginLink.href="login.html?invitationId="+encodeURIComponent(invitationId);
-        }
-    }
+function authErrorKey(error){
+    const keys={
+        invalid_credentials:"auth.errors.invalidCredentials",
+        email_not_confirmed:"auth.errors.emailUnconfirmed",
+        user_already_exists:"auth.errors.alreadyRegistered",
+        email_exists:"auth.errors.alreadyRegistered",
+        email_address_invalid:"auth.errors.invalidEmail",
+        over_email_send_rate_limit:"auth.errors.rateLimit",
+        over_request_rate_limit:"auth.errors.rateLimit",
+        signup_disabled:"auth.errors.signupDisabled"
+    };
 
-    signupForm.addEventListener("submit",async function(event){
-        event.preventDefault();
+    return keys[error.code] || "auth.errors.generic";
+}
 
-        const name=document.querySelector("#name");
-        const email=document.querySelector("#email");
-        const password=document.querySelector("#password");
-        const message=document.querySelector("#signup-message");
-        const button=signupForm.querySelector('button[type="submit"]');
+function setupAuthValidation(form){
+    const inputs=form.querySelectorAll("input");
 
-        if(name.value.trim()===""){
-            message.textContent="Please enter your name.";
-            name.focus();
-            return;
-        }
+    inputs.forEach(function(input){
+        input.addEventListener("input",function(){
+            input.setCustomValidity("");
+            input.removeAttribute("aria-invalid");
+        });
 
-        button.disabled=true;
-        message.textContent="Creating your account...";
+        input.addEventListener("invalid",function(){
+            input.setCustomValidity("");
 
-        try{
-            const {data,error}=await database.auth.signUp({
-                email:email.value.trim(),
-                password:password.value,
-                options:{
-                    data:{full_name:name.value.trim()},
-                    emailRedirectTo:new URL("login.html",window.location.href).href
-                }
-            });
-
-            if(error){
-                message.textContent=error.message;
-                return;
+            if(input.validity.valueMissing){
+                input.setCustomValidity(
+                    i18next.t("auth.errors.required")
+                );
+            }else if(input.type==="email" && input.validity.typeMismatch){
+                input.setCustomValidity(
+                    i18next.t("auth.errors.invalidEmail")
+                );
+            }else if(input.type==="password" && input.validity.tooShort){
+                input.setCustomValidity(
+                    i18next.t("auth.errors.shortPassword")
+                );
             }
 
-            password.value="";
+            input.setAttribute("aria-invalid","true");
+        });
+    });
 
-            if(data.session){
-                window.location.href=afterLogin();
-            }else{
-                message.textContent="Check your email for a confirmation link. If joining a team, reopen your invitation link after confirming.";
-            }
-        }catch(error){
-            message.textContent="Could not reach the signup service. Check your connection and try again.";
-        }finally{
-            button.disabled=false;
-        }
+    i18next.on("languageChanged",function(){
+        inputs.forEach(function(input){
+            input.setCustomValidity("");
+        });
     });
 }
 
-const loginForm=document.querySelector("#login-form");
+let authReady=false;
 
-if(loginForm){
-    if(validId(invitationId)){
-        const signupLink=document.querySelector('a[href="signup.html"]');
-
-        if(signupLink){
-            signupLink.href="signup.html?invitationId="+encodeURIComponent(invitationId);
-        }
+function setupAuth(){
+    if(authReady){
+        return;
     }
 
-    loginForm.addEventListener("submit",async function(event){
-        event.preventDefault();
+    authReady=true;
 
-        const email=document.querySelector("#email");
-        const password=document.querySelector("#password");
-        const message=document.querySelector("#login-message");
-        const button=loginForm.querySelector('button[type="submit"]');
+    if(signupForm){
+        setupAuthValidation(signupForm);
 
-        button.disabled=true;
-        message.textContent="Logging in...";
+        const button=signupForm.querySelector('button[type="submit"]');
+        button.disabled=false;
 
-        try{
-            const {error}=await database.auth.signInWithPassword({
-                email:email.value.trim(),
-                password:password.value
-            });
+        if(validId(invitationId)){
+            const loginLink=document.querySelector('a[href="login.html"]');
 
-            if(error){
-                message.textContent=error.message;
+            if(loginLink){
+                loginLink.href="login.html?invitationId="+encodeURIComponent(invitationId);
+            }
+        }
+
+        signupForm.addEventListener("submit",async function(event){
+            event.preventDefault();
+
+            if(button.disabled){
                 return;
             }
 
-            password.value="";
-            window.location.href=afterLogin();
-        }catch(error){
-            message.textContent="Could not reach the login service. Check your connection and try again.";
-        }finally{
-            button.disabled=false;
+            const name=document.querySelector("#name");
+            const email=document.querySelector("#email");
+            const password=document.querySelector("#password");
+            const message=document.querySelector("#signup-message");
+
+            if(name.value.trim()===""){
+                showAuthMessage(message,"auth.errors.nameRequired");
+                name.setAttribute("aria-invalid","true");
+                name.focus();
+                return;
+            }
+
+            button.disabled=true;
+            showAuthMessage(message,"auth.status.creating");
+
+            try{
+                const {data,error}=await database.auth.signUp({
+                    email:email.value.trim(),
+                    password:password.value,
+                    options:{
+                        data:{
+                            full_name:name.value.trim(),
+                            preferred_locale:i18next.resolvedLanguage
+                        },
+                        emailRedirectTo:new URL("login.html",window.location.href).href
+                    }
+                });
+
+                if(error){
+                    showAuthMessage(message,authErrorKey(error));
+                    return;
+                }
+
+                password.value="";
+
+                if(data.session){
+                    window.location.href=afterLogin();
+                }else{
+                    showAuthMessage(message,"auth.status.checkEmail");
+                }
+            }catch(error){
+                showAuthMessage(message,"auth.errors.signupConnection");
+            }finally{
+                button.disabled=false;
+            }
+        });
+    }
+
+    if(loginForm){
+        setupAuthValidation(loginForm);
+
+        const button=loginForm.querySelector('button[type="submit"]');
+        button.disabled=false;
+
+        if(validId(invitationId)){
+            const signupLink=document.querySelector('a[href="signup.html"]');
+
+            if(signupLink){
+                signupLink.href="signup.html?invitationId="+encodeURIComponent(invitationId);
+            }
+        }
+
+        loginForm.addEventListener("submit",async function(event){
+            event.preventDefault();
+
+            if(button.disabled){
+                return;
+            }
+
+            const email=document.querySelector("#email");
+            const password=document.querySelector("#password");
+            const message=document.querySelector("#login-message");
+
+            button.disabled=true;
+            showAuthMessage(message,"auth.status.loggingIn");
+
+            try{
+                const {error}=await database.auth.signInWithPassword({
+                    email:email.value.trim(),
+                    password:password.value
+                });
+
+                if(error){
+                    showAuthMessage(message,authErrorKey(error));
+                    return;
+                }
+
+                password.value="";
+                window.location.href=afterLogin();
+            }catch(error){
+                showAuthMessage(message,"auth.errors.loginConnection");
+            }finally{
+                button.disabled=false;
+            }
+        });
+    }
+}
+
+if(signupForm || loginForm){
+    [signupForm,loginForm].forEach(function(form){
+        if(form){
+            form.querySelector('button[type="submit"]').disabled=true;
         }
     });
+
+    if(window.i18next){
+        if(i18next.isInitialized){
+            setupAuth();
+        }else{
+            i18next.on("initialized",setupAuth);
+        }
+    }
 }
 
 const createTeamForm=document.querySelector("#create-team-form");
