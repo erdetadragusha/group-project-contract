@@ -5,6 +5,7 @@ const signupForm=document.querySelector("#signup-form");
 const loginForm=document.querySelector("#login-form");
 const createTeamForm=document.querySelector("#create-team-form");
 const projectDetailsForm=document.querySelector("#project-details-form");
+const inviteForm=document.querySelector("#invite-form");
 
 function validId(value){
     return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(value || "");
@@ -29,9 +30,16 @@ function addLink(container,text,address){
     return link;
 }
 
-function showMessage(element,key){
+function showMessage(element,key,options={}){
     element.setAttribute("data-i18n",key);
-    element.textContent=i18next.t(key);
+    element.setAttribute("data-i18n-options",JSON.stringify(options));
+    element.textContent=i18next.t(key,options);
+}
+
+function showAria(element,key,options={}){
+    element.setAttribute("data-i18n-aria",key);
+    element.setAttribute("data-i18n-options",JSON.stringify(options));
+    element.setAttribute("aria-label",i18next.t(key,options));
 }
 
 function requestErrorKey(error){
@@ -248,6 +256,7 @@ function setupTranslatedForms(){
         function updateTeamSummary(){
             if(teamName!=="" && teamName.length<=80){
                 summary.removeAttribute("data-i18n");
+                summary.removeAttribute("data-i18n-options");
 
                 summary.textContent=i18next.t("project.teamSummary",{
                     name:teamName
@@ -325,13 +334,284 @@ function setupTranslatedForms(){
             }
         });
     }
+
+    if(inviteForm){
+        setupFormValidation(inviteForm);
+        setupInvitations();
+    }
+}
+
+function setupInvitations(){
+    const teamId=pageParams.get("teamId");
+    const emails=[];
+
+    let savedInvitations=[];
+    let busy=true;
+    let teamReady=false;
+
+    const emailInput=document.querySelector("#member-email");
+    const list=document.querySelector("#invite-list");
+    const empty=document.querySelector("#invite-empty");
+    const sendButton=document.querySelector("#send-invites");
+    const addButton=inviteForm.querySelector('button[type="submit"]');
+    const message=document.querySelector("#invite-message");
+
+    const savedSection=document.createElement("section");
+    const savedHeading=document.createElement("h2");
+    const savedList=document.createElement("ul");
+    const teamNav=document.createElement("nav");
+
+    showMessage(savedHeading,"invite.savedHeading");
+
+    savedList.className="invite-list";
+    teamNav.className="welcome-actions";
+
+    showAria(teamNav,"invite.navigation");
+
+    savedSection.append(savedHeading,savedList);
+    message.after(savedSection);
+    savedSection.after(teamNav);
+
+    const membersLink=addLink(
+        teamNav,
+        "",
+        "team-members.html?teamId="+encodeURIComponent(teamId || "")
+    );
+
+    showMessage(membersLink,"invite.membersLink");
+    showMessage(sendButton,"invite.saveButton");
+
+    function renderInvites(){
+        list.replaceChildren();
+        savedList.replaceChildren();
+
+        empty.hidden=emails.length>0;
+        emailInput.disabled=busy || !teamReady;
+        addButton.disabled=busy || !teamReady;
+        sendButton.disabled=busy || !teamReady || emails.length===0;
+        teamNav.hidden=!teamReady;
+
+        emails.forEach(function(email){
+            const item=document.createElement("li");
+            const text=document.createElement("span");
+            const removeButton=document.createElement("button");
+
+            text.textContent=email;
+
+            removeButton.type="button";
+            removeButton.disabled=busy;
+
+            showMessage(removeButton,"invite.removeButton");
+            showAria(removeButton,"invite.removeLabel",{email:email});
+
+            removeButton.addEventListener("click",function(){
+                if(busy){
+                    return;
+                }
+
+                const index=emails.indexOf(email);
+
+                if(index!==-1){
+                    emails.splice(index,1);
+                }
+
+                renderInvites();
+
+                showMessage(message,"invite.messages.removed",{
+                    email:email
+                });
+
+                emailInput.focus();
+            });
+
+            item.append(text,removeButton);
+            list.append(item);
+        });
+
+        savedInvitations.forEach(function(invitation){
+            const item=document.createElement("li");
+            const text=document.createElement("span");
+
+            const knownStatus=[
+                "pending",
+                "accepted",
+                "declined",
+                "revoked"
+            ].includes(invitation.status);
+
+            const statusKey=knownStatus
+                ? "invite.status."+invitation.status
+                : "invite.status.unknown";
+
+            showMessage(text,"invite.statusRow",{
+                email:invitation.invited_email,
+                status:i18next.t(statusKey)
+            });
+
+            item.append(text);
+
+            if(invitation.status==="pending"){
+                const link=document.createElement("a");
+
+                link.href="join-team.html?invitationId="+encodeURIComponent(invitation.id);
+                showMessage(link,"invite.openLink");
+
+                item.append(link);
+            }
+
+            savedList.append(item);
+        });
+
+        savedSection.hidden=savedInvitations.length===0;
+    }
+
+    async function loadInvitations(){
+        renderInvites();
+
+        if(!validId(teamId)){
+            busy=false;
+            showMessage(message,"invite.errors.missingTeam");
+            renderInvites();
+            return;
+        }
+
+        showMessage(message,"invite.messages.loading");
+
+        try{
+            const {data:userData,error:userError}=await database.auth.getUser();
+
+            if(userError || !userData.user){
+                showMessage(message,"invite.errors.loginRequired");
+                return;
+            }
+
+            const {data:team,error:teamError}=await database
+                .from("teams")
+                .select("id,owner_id")
+                .eq("id",teamId)
+                .single();
+
+            if(teamError || !team || team.owner_id!==userData.user.id){
+                showMessage(message,"invite.errors.notOwner");
+                return;
+            }
+
+            const {data,error}=await database
+                .from("invitations")
+                .select("id,invited_email,status")
+                .eq("team_id",teamId)
+                .order("created_at",{ascending:false});
+
+            if(error){
+                showMessage(message,"invite.errors.load");
+                return;
+            }
+
+            savedInvitations=data;
+            teamReady=true;
+            showMessage(message,"invite.messages.ready");
+        }catch(error){
+            showMessage(message,"invite.errors.load");
+        }finally{
+            busy=false;
+            renderInvites();
+        }
+    }
+
+    inviteForm.addEventListener("submit",function(event){
+        event.preventDefault();
+
+        if(busy || !teamReady){
+            return;
+        }
+
+        const email=emailInput.value.trim().toLowerCase();
+
+        const alreadyPending=savedInvitations.some(function(invitation){
+            return invitation.invited_email===email &&
+                invitation.status==="pending";
+        });
+
+        if(emails.includes(email) || alreadyPending){
+            showMessage(message,"invite.errors.duplicate");
+            emailInput.setAttribute("aria-invalid","true");
+            emailInput.focus();
+            return;
+        }
+
+        emails.push(email);
+        renderInvites();
+
+        showMessage(message,"invite.messages.added",{
+            email:email
+        });
+
+        emailInput.value="";
+        emailInput.focus();
+    });
+
+    sendButton.addEventListener("click",async function(){
+        if(busy || !teamReady || emails.length===0){
+            return;
+        }
+
+        busy=true;
+        renderInvites();
+        showMessage(message,"invite.messages.saving");
+
+        try{
+            const {data:userData,error:userError}=await database.auth.getUser();
+
+            if(userError || !userData.user){
+                showMessage(message,"invite.errors.loginRequired");
+                return;
+            }
+
+            const invitations=emails.map(function(email){
+                return {
+                    team_id:teamId,
+                    invited_email:email,
+                    created_by:userData.user.id
+                };
+            });
+
+            const {data,error}=await database
+                .from("invitations")
+                .insert(invitations)
+                .select("id,invited_email,status");
+
+            if(error){
+                const key=error.code==="23505"
+                    ? "invite.errors.duplicatePending"
+                    : "invite.errors.save";
+
+                showMessage(message,key);
+                return;
+            }
+
+            savedInvitations=data.concat(savedInvitations);
+            emails.length=0;
+
+            showMessage(message,"invite.messages.saved");
+        }catch(error){
+            showMessage(message,"invite.errors.save");
+        }finally{
+            busy=false;
+            renderInvites();
+        }
+    });
+
+    i18next.on("languageChanged",renderInvites);
+
+    loadInvitations();
 }
 
 const translatedForms=[
     signupForm,
     loginForm,
     createTeamForm,
-    projectDetailsForm
+    projectDetailsForm,
+    inviteForm
 ];
 
 if(translatedForms.some(function(form){
@@ -350,227 +630,6 @@ if(translatedForms.some(function(form){
             i18next.on("initialized",setupTranslatedForms);
         }
     }
-}
-
-const inviteForm=document.querySelector("#invite-form");
-
-if(inviteForm){
-    const teamId=pageParams.get("teamId");
-    const emails=[];
-    let savedInvitations=[];
-    let busy=true;
-    let teamReady=false;
-
-    const emailInput=document.querySelector("#member-email");
-    const list=document.querySelector("#invite-list");
-    const empty=document.querySelector("#invite-empty");
-    const sendButton=document.querySelector("#send-invites");
-    const addButton=inviteForm.querySelector('button[type="submit"]');
-    const message=document.querySelector("#invite-message");
-
-    const savedSection=document.createElement("section");
-    const savedHeading=document.createElement("h2");
-    const savedList=document.createElement("ul");
-    const teamNav=document.createElement("nav");
-
-    savedHeading.textContent="Saved invitations";
-    savedList.className="invite-list";
-    teamNav.className="welcome-actions";
-    teamNav.setAttribute("aria-label","Team navigation");
-
-    savedSection.append(savedHeading,savedList);
-    message.after(savedSection);
-    savedSection.after(teamNav);
-
-    addLink(
-        teamNav,
-        "View team members",
-        "team-members.html?teamId="+encodeURIComponent(teamId || "")
-    );
-
-    sendButton.textContent="Save invitations";
-
-    function renderInvites(){
-        list.replaceChildren();
-        savedList.replaceChildren();
-
-        empty.hidden=emails.length>0;
-        emailInput.disabled=busy || !teamReady;
-        addButton.disabled=busy || !teamReady;
-        sendButton.disabled=busy || !teamReady || emails.length===0;
-        teamNav.hidden=!teamReady;
-
-        emails.forEach(function(email){
-            const item=document.createElement("li");
-            const text=document.createElement("span");
-            const removeButton=document.createElement("button");
-
-            text.textContent=email;
-            removeButton.type="button";
-            removeButton.textContent="Remove";
-            removeButton.disabled=busy;
-            removeButton.setAttribute("aria-label","Remove "+email);
-
-            removeButton.addEventListener("click",function(){
-                emails.splice(emails.indexOf(email),1);
-                renderInvites();
-                message.textContent=email+" removed from the draft list.";
-                emailInput.focus();
-            });
-
-            item.append(text,removeButton);
-            list.append(item);
-        });
-
-        savedInvitations.forEach(function(invitation){
-            const item=document.createElement("li");
-            const text=document.createElement("span");
-
-            text.textContent=invitation.invited_email+" — "+invitation.status;
-            item.append(text);
-
-            if(invitation.status==="pending"){
-                const link=document.createElement("a");
-
-                link.textContent="Open invitation";
-                link.href="join-team.html?invitationId="+encodeURIComponent(invitation.id);
-                item.append(link);
-            }
-
-            savedList.append(item);
-        });
-
-        savedSection.hidden=savedInvitations.length===0;
-    }
-
-    async function loadInvitations(){
-        renderInvites();
-
-        if(!validId(teamId)){
-            busy=false;
-            message.textContent="Open this page after saving a team and project.";
-            renderInvites();
-            return;
-        }
-
-        message.textContent="Loading your team...";
-
-        try{
-            const {data:userData,error:userError}=await database.auth.getUser();
-
-            if(userError || !userData.user){
-                message.textContent="Please log in before managing invitations.";
-                return;
-            }
-
-            const {data:team,error:teamError}=await database
-                .from("teams")
-                .select("id,owner_id")
-                .eq("id",teamId)
-                .single();
-
-            if(teamError || !team || team.owner_id!==userData.user.id){
-                message.textContent="This team could not be loaded or you are not its owner.";
-                return;
-            }
-
-            const {data,error}=await database
-                .from("invitations")
-                .select("id,invited_email,status")
-                .eq("team_id",teamId)
-                .order("created_at",{ascending:false});
-
-            if(error){
-                message.textContent=error.message;
-                return;
-            }
-
-            savedInvitations=data;
-            teamReady=true;
-            message.textContent="Save invitations, then copy their links for your teammates. Emails are not sent automatically.";
-        }catch(error){
-            message.textContent="Could not load invitations. Check your connection and reload.";
-        }finally{
-            busy=false;
-            renderInvites();
-        }
-    }
-
-    inviteForm.addEventListener("submit",function(event){
-        event.preventDefault();
-
-        if(busy || !teamReady){
-            return;
-        }
-
-        const email=emailInput.value.trim().toLowerCase();
-
-        const alreadyPending=savedInvitations.some(function(invitation){
-            return invitation.invited_email===email && invitation.status==="pending";
-        });
-
-        if(emails.includes(email) || alreadyPending){
-            message.textContent="This email is already in the draft list or has a pending invitation.";
-            emailInput.focus();
-            return;
-        }
-
-        emails.push(email);
-        renderInvites();
-        message.textContent=email+" added to the draft list.";
-        emailInput.value="";
-        emailInput.focus();
-    });
-
-    sendButton.addEventListener("click",async function(){
-        if(busy || !teamReady || emails.length===0){
-            return;
-        }
-
-        busy=true;
-        renderInvites();
-        message.textContent="Saving invitations...";
-
-        try{
-            const {data:userData,error:userError}=await database.auth.getUser();
-
-            if(userError || !userData.user){
-                message.textContent="Please log in before saving invitations.";
-                return;
-            }
-
-            const invitations=emails.map(function(email){
-                return {
-                    team_id:teamId,
-                    invited_email:email,
-                    created_by:userData.user.id
-                };
-            });
-
-            const {data,error}=await database
-                .from("invitations")
-                .insert(invitations)
-                .select("id,invited_email,status");
-
-            if(error){
-                message.textContent=error.code==="23505"
-                    ? "An email already has a pending invitation. Reload to check; the draft list will reset."
-                    : error.message;
-                return;
-            }
-
-            savedInvitations=data.concat(savedInvitations);
-            emails.length=0;
-            message.textContent="Invitations saved. Copy the invitation links for your teammates. No emails have been sent.";
-        }catch(error){
-            message.textContent="Could not confirm saving. Reload to check saved invitations before trying again.";
-        }finally{
-            busy=false;
-            renderInvites();
-        }
-    });
-
-    loadInvitations();
 }
 
 const joinDetails=document.querySelector("#join-details");

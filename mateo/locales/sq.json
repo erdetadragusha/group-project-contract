@@ -75,5 +75,46 @@
             "loginRequired":"Hyni përpara se të ruani ekipin.",
             "connection":"Ekipi nuk u ruajt. Kontrolloni lidhjen dhe provoni përsëri."
         }
+    },
+    "invite":{
+        "pageTitle":"Ftoni anëtarë | Kontrata e projektit në grup",
+        "heading":"Ftoni anëtarë",
+        "description":"Shtoni adresat e emailit të anëtarëve të ekipit.",
+        "email":"Adresa e emailit",
+        "addButton":"Shto anëtar",
+        "draftHeading":"Lista e ftesave",
+        "empty":"Ende nuk është shtuar asnjë anëtar.",
+        "saveButton":"Ruaj ftesat",
+        "savedHeading":"Ftesat e ruajtura",
+        "removeButton":"Hiq",
+        "removeLabel":"Hiq {{email}}",
+        "openLink":"Hap ftesën",
+        "membersLink":"Shiko anëtarët e ekipit",
+        "navigation":"Navigimi i ekipit",
+        "statusRow":"{{email}} — {{status}}",
+        "status":{
+            "pending":"Në pritje",
+            "accepted":"Pranuar",
+            "declined":"Refuzuar",
+            "revoked":"Anuluar",
+            "unknown":"Status i panjohur"
+        },
+        "messages":{
+            "loading":"Duke ngarkuar ekipin...",
+            "saving":"Duke ruajtur ftesat...",
+            "ready":"Shtoni adresat e emailit, ruani ftesat dhe ndani lidhjet e tyre. Emailet nuk dërgohen automatikisht.",
+            "saved":"Ftesat u ruajtën. Kopjoni lidhjet për anëtarët e ekipit. Asnjë email nuk është dërguar.",
+            "added":"{{email}} u shtua në listën e paruajtur të ftesave.",
+            "removed":"{{email}} u hoq nga lista e paruajtur e ftesave."
+        },
+        "errors":{
+            "missingTeam":"Hapeni këtë faqe pasi të ruani ekipin dhe projektin.",
+            "loginRequired":"Hyni përpara se të menaxhoni ftesat.",
+            "notOwner":"Ekipi nuk mund të ngarkohej ose nuk jeni pronari i tij.",
+            "load":"Ftesat nuk mund të ngarkoheshin. Kontrolloni lidhjen dhe ringarkoni faqen.",
+            "duplicate":"Ky email është tashmë në listë ose ka një ftesë në pritje.",
+            "duplicatePending":"Një adresë ka tashmë një ftesë në pritje. Ringarkoni për ta kontrolluar; lista e paruajtur do të pastrohet.",
+            "save":"Ruajtja nuk mund të konfirmohej. Ringarkoni për të kontrolluar ftesat e ruajtura përpara se të provoni përsëri."
+        }
     }
 }

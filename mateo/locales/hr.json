@@ -75,5 +75,46 @@
             "loginRequired":"Prijavite se prije spremanja tima.",
             "connection":"Spremanje tima nije uspjelo. Provjerite vezu i pokušajte ponovno."
         }
+    },
+    "invite":{
+        "pageTitle":"Pozivanje članova | Ugovor za grupni projekt",
+        "heading":"Pozovite članove",
+        "description":"Dodajte adrese e-pošte svojih kolega.",
+        "email":"Adresa e-pošte",
+        "addButton":"Dodaj člana",
+        "draftHeading":"Popis pozivnica",
+        "empty":"Još nisu dodani članovi.",
+        "saveButton":"Spremi pozivnice",
+        "savedHeading":"Spremljene pozivnice",
+        "removeButton":"Ukloni",
+        "removeLabel":"Ukloni {{email}}",
+        "openLink":"Otvori pozivnicu",
+        "membersLink":"Prikaži članove tima",
+        "navigation":"Navigacija tima",
+        "statusRow":"{{email}} — {{status}}",
+        "status":{
+            "pending":"Na čekanju",
+            "accepted":"Prihvaćeno",
+            "declined":"Odbijeno",
+            "revoked":"Opozvano",
+            "unknown":"Nepoznat status"
+        },
+        "messages":{
+            "loading":"Učitavanje tima...",
+            "saving":"Spremanje pozivnica...",
+            "ready":"Dodajte adrese e-pošte, spremite pozivnice i podijelite njihove poveznice. E-poruke ne šalju se automatski.",
+            "saved":"Pozivnice su spremljene. Kopirajte poveznice za kolege. E-poruke nisu poslane.",
+            "added":"{{email}} dodano na nespremljeni popis pozivnica.",
+            "removed":"{{email}} uklonjeno s nespremljenog popisa pozivnica."
+        },
+        "errors":{
+            "missingTeam":"Otvorite ovu stranicu nakon spremanja tima i projekta.",
+            "loginRequired":"Prijavite se prije upravljanja pozivnicama.",
+            "notOwner":"Tim nije moguće učitati ili niste njegov vlasnik.",
+            "load":"Pozivnice nije moguće učitati. Provjerite vezu i ponovno učitajte stranicu.",
+            "duplicate":"Ova adresa već je na popisu ili ima pozivnicu na čekanju.",
+            "duplicatePending":"Jedna adresa već ima pozivnicu na čekanju. Ponovno učitajte stranicu za provjeru; nespremljeni popis bit će izbrisan.",
+            "save":"Spremanje nije moguće potvrditi. Prije ponovnog pokušaja ponovno učitajte stranicu i provjerite spremljene pozivnice."
+        }
     }
 }

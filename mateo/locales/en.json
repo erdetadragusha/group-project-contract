@@ -75,5 +75,46 @@
             "loginRequired":"Please log in before saving your team.",
             "connection":"Could not save your team. Check your connection and try again."
         }
+    },
+    "invite":{
+        "pageTitle":"Invite members | Group Project Contract",
+        "heading":"Invite members",
+        "description":"Add your teammates' email addresses.",
+        "email":"Email address",
+        "addButton":"Add member",
+        "draftHeading":"Invitation list",
+        "empty":"No teammates added yet.",
+        "saveButton":"Save invitations",
+        "savedHeading":"Saved invitations",
+        "removeButton":"Remove",
+        "removeLabel":"Remove {{email}}",
+        "openLink":"Open invitation",
+        "membersLink":"View team members",
+        "navigation":"Team navigation",
+        "statusRow":"{{email}} — {{status}}",
+        "status":{
+            "pending":"Pending",
+            "accepted":"Accepted",
+            "declined":"Declined",
+            "revoked":"Revoked",
+            "unknown":"Unknown status"
+        },
+        "messages":{
+            "loading":"Loading your team...",
+            "saving":"Saving invitations...",
+            "ready":"Add email addresses, save invitations, then share their links. Emails are not sent automatically.",
+            "saved":"Invitations saved. Copy the links for your teammates. No emails have been sent.",
+            "added":"{{email}} added to the unsaved invitation list.",
+            "removed":"{{email}} removed from the unsaved invitation list."
+        },
+        "errors":{
+            "missingTeam":"Open this page after saving a team and project.",
+            "loginRequired":"Please log in before managing invitations.",
+            "notOwner":"This team could not be loaded or you are not its owner.",
+            "load":"Could not load invitations. Check your connection and reload.",
+            "duplicate":"This email is already in the list or has a pending invitation.",
+            "duplicatePending":"An address already has a pending invitation. Reload to check; the unsaved list will reset.",
+            "save":"Could not confirm saving. Reload to check saved invitations before trying again."
+        }
     }
 }

@@ -1,51 +1,71 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Invite members | Group Project Contract</title>
+    <title data-i18n="invite.pageTitle">
+        Invite members | Group Project Contract
+    </title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <main class="welcome">
         <div class="language-control">
-            <label for="language-select" data-i18n="language">
+            <label for="language-select" data-i18n="common.language">
                 Language
             </label>
 
-            <select id="language-select" name="language">
+            <select id="language-select" name="language" disabled>
                 <option value="en" lang="en">English</option>
                 <option value="hr" lang="hr">Hrvatski</option>
                 <option value="sq" lang="sq">Shqip</option>
             </select>
         </div>
 
-        <h1>Invite members</h1>
-        <p>Add your teammates' email addresses.</p>
+        <h1 data-i18n="invite.heading">Invite members</h1>
+
+        <p data-i18n="invite.description">
+            Add your teammates' email addresses.
+        </p>
 
         <form id="invite-form" class="account-form">
-            <label for="member-email">Email address</label>
+            <label for="member-email" data-i18n="invite.email">
+                Email address
+            </label>
 
             <input type="email" id="member-email" name="email"
-                autocomplete="email" maxlength="254" required>
+                autocomplete="email" maxlength="254"
+                aria-describedby="invite-message" required>
 
-            <button type="submit" class="button button-secondary">
+            <button type="submit" class="button button-secondary"
+                data-i18n="invite.addButton" disabled>
                 Add member
             </button>
         </form>
 
-        <h2>Invitation list</h2>
-        <p id="invite-empty">No teammates added yet.</p>
+        <h2 data-i18n="invite.draftHeading">Invitation list</h2>
+
+        <p id="invite-empty" data-i18n="invite.empty">
+            No teammates added yet.
+        </p>
+
         <ul id="invite-list" class="invite-list"></ul>
 
-        <button type="button" id="send-invites" class="button" disabled>
+        <button type="button" id="send-invites" class="button"
+            data-i18n="invite.saveButton" disabled>
             Save invitations
         </button>
 
         <p id="invite-message" role="status"></p>
+
+        <p id="language-message" role="alert"
+            data-i18n="auth.errors.generic" hidden>
+            The request could not be completed. Please try again.
+        </p>
     </main>
 
-    <script src="language.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/i18next@23.16.8/dist/umd/i18next.min.js"></script>
+    <script src="i18n.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="supabase-client.js"></script>
     <script src="script.js"></script>
