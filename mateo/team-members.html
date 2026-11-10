@@ -1,82 +1,130 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Team members | Group Project Contract</title>
+
+    <title data-i18n="members.pageTitle">
+        Team members | Group Project Contract
+    </title>
+
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <main class="welcome">
         <div class="language-control">
-            <label for="language-select" data-i18n="language">
+            <label for="language-select" data-i18n="common.language">
                 Language
             </label>
 
-            <select id="language-select" name="language">
-                <option value="en" lang="en">English</option>
-                <option value="hr" lang="hr">Hrvatski</option>
-                <option value="sq" lang="sq">Shqip</option>
+            <select id="language-select" disabled>
+                <option value="en">English</option>
+                <option value="hr">Hrvatski</option>
+                <option value="sq">Shqip</option>
             </select>
         </div>
 
-        <a href="my-teams.html" class="back-link" data-my-teams-link>
+        <a href="my-teams.html"
+           class="back-link"
+           data-i18n="members.myTeams">
             My teams
         </a>
 
-        <h1>Team members</h1>
-        <p id="members-summary">Loading your team...</p>
+        <h1 data-i18n="members.heading">Team members</h1>
+
+        <p id="members-summary"></p>
+        <p id="members-count" hidden></p>
 
         <section class="status-card" aria-labelledby="joined-heading">
-            <h2 id="joined-heading">Joined members</h2>
+            <h2 id="joined-heading" data-i18n="members.joinedHeading">
+                Joined members
+            </h2>
+
+            <p id="members-empty-list"
+               data-i18n="members.emptyMembers"
+               hidden></p>
+
             <ul id="members-list" class="invite-list"></ul>
         </section>
 
-        <section class="status-card" aria-labelledby="invitations-heading">
-            <h2 id="invitations-heading">Invitations</h2>
-            <p id="members-empty">Loading invitations...</p>
+        <section class="status-card"
+                 aria-labelledby="invitations-heading">
+
+            <h2 id="invitations-heading"
+                data-i18n="members.invitationsHeading">
+                Invitations
+            </h2>
+
+            <p id="members-empty"
+               data-i18n="members.emptyInvitations"
+               hidden></p>
+
             <ul id="members-invitations" class="invite-list"></ul>
         </section>
 
-        <p id="members-message" role="status"></p>
+        <p id="members-message" role="status" aria-live="polite"></p>
 
-        <nav id="members-navigation" class="welcome-actions"
-            aria-label="Team actions">
+        <nav id="members-navigation"
+             class="welcome-actions"
+             data-i18n-aria="members.navigation"
+             aria-label="Team actions">
 
-            <a id="members-invite-link" class="button" hidden>
+            <a id="members-invite-link"
+               class="button"
+               data-i18n="members.inviteButton"
+               hidden>
                 Invite members
             </a>
 
-            <a id="edit-team-link" class="button button-secondary" hidden>
+            <a id="edit-team-link"
+               class="button button-secondary"
+               data-i18n="members.editButton"
+               hidden>
                 Edit team
             </a>
 
-            <a class="button button-secondary"
-                data-team-page="invitation-status.html"
-                data-status-label="statusLink">
+            <a id="members-status-link"
+               class="button button-secondary"
+               data-i18n="members.statusButton"
+               hidden>
                 View invitation status
             </a>
 
-            <a id="open-team-setup" class="button button-secondary" hidden>
+            <a id="open-team-setup"
+               class="button button-secondary"
+               data-i18n="members.setupButton"
+               hidden>
                 Review team setup
             </a>
 
-            <button type="button" id="refresh-members"
-                class="button button-secondary">
+            <button id="refresh-members"
+                    type="button"
+                    class="button button-secondary"
+                    data-i18n="members.refreshButton"
+                    disabled>
                 Refresh
             </button>
 
-            <a href="index.html" class="back-link">Back to welcome</a>
+            <a href="index.html"
+               class="back-link"
+               data-i18n="members.backButton">
+                Back to welcome
+            </a>
         </nav>
+
+        <p id="language-message"
+           role="alert"
+           data-i18n="auth.errors.generic"
+           hidden></p>
     </main>
 
-    <script src="language.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/i18next@23.16.8/dist/umd/i18next.min.js"></script>
+    <script src="i18n.js"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="supabase-client.js"></script>
+
     <script src="script.js"></script>
-    <script src="status-page.js"></script>
-    <script src="team-complete.js"></script>
-    <script src="my-teams.js"></script>
-    <script src="edit-team.js"></script>
 </body>
 </html>
