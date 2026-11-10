@@ -7,6 +7,7 @@ const createTeamForm=document.querySelector("#create-team-form");
 const projectDetailsForm=document.querySelector("#project-details-form");
 const inviteForm=document.querySelector("#invite-form");
 const joinDetails=document.querySelector("#join-details");
+const membersSummary=document.querySelector("#members-summary");
 
 function validId(value){
     return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(value || "");
@@ -114,14 +115,14 @@ function setupFormValidation(form){
     });
 }
 
-let translatedFormsReady=false;
+let translatedPagesReady=false;
 
-function setupTranslatedForms(){
-    if(translatedFormsReady){
+function setupTranslatedPages(){
+    if(translatedPagesReady){
         return;
     }
 
-    translatedFormsReady=true;
+    translatedPagesReady=true;
 
     if(signupForm){
         setupFormValidation(signupForm);
@@ -363,6 +364,10 @@ function setupTranslatedForms(){
     if(joinDetails){
         setupJoinTeam();
     }
+
+    if(membersSummary){
+        setupMembers();
+    }
 }
 
 function setupInvitations(){
@@ -602,7 +607,6 @@ function setupInvitations(){
 
             savedInvitations=data.concat(savedInvitations);
             emails.length=0;
-
             showMessage(message,"invite.messages.saved");
         }catch(error){
             showMessage(message,"invite.errors.save");
@@ -704,7 +708,6 @@ function setupJoinTeam(){
             if(data.status==="pending"){
                 acceptButton.disabled=false;
                 declineButton.disabled=false;
-
                 showMessage(message,"join.messages.ready");
             }else if(data.status==="accepted"){
                 showMessage(message,"join.messages.accepted");
@@ -772,6 +775,228 @@ function setupJoinTeam(){
     loadInvitation();
 }
 
+function setupMembers(){
+    const teamId=pageParams.get("teamId");
+
+    const membersList=document.querySelector("#members-list");
+    const invitationList=document.querySelector("#members-invitations");
+    const emptyMembers=document.querySelector("#members-empty-list");
+    const emptyInvitations=document.querySelector("#members-empty");
+    const counter=document.querySelector("#members-count");
+    const message=document.querySelector("#members-message");
+
+    const inviteLink=document.querySelector("#members-invite-link");
+    const editLink=document.querySelector("#edit-team-link");
+    const statusLink=document.querySelector("#members-status-link");
+    const setupLink=document.querySelector("#open-team-setup");
+    const refreshButton=document.querySelector("#refresh-members");
+
+    let team=null;
+    let user=null;
+    let members=[];
+    let invitations=[];
+
+    let busy=false;
+    let membersReady=false;
+    let invitationsReady=false;
+    let loadingInvitations=false;
+    let messageKey="members.messages.loading";
+
+    function renderMembers(){
+        refreshButton.disabled=busy;
+        membersList.replaceChildren();
+        invitationList.replaceChildren();
+
+        inviteLink.hidden=true;
+        editLink.hidden=true;
+        statusLink.hidden=true;
+        setupLink.hidden=true;
+
+        showMessage(message,messageKey);
+
+        if(team){
+            showMessage(membersSummary,"members.summary",{
+                team:team.name,
+                project:team.project_name
+            });
+
+            const owner=user && team.owner_id===user.id;
+            const suffix="?teamId="+encodeURIComponent(team.id);
+
+            if(owner){
+                inviteLink.href="invite-members.html"+suffix;
+                editLink.href="edit-team.html"+suffix;
+                inviteLink.hidden=false;
+                editLink.hidden=false;
+            }
+
+            statusLink.href="invitation-status.html"+suffix;
+            setupLink.href="team-complete.html"+suffix;
+            statusLink.hidden=false;
+            setupLink.hidden=false;
+        }else{
+            clearMessage(membersSummary);
+        }
+
+        counter.hidden=!membersReady;
+        emptyMembers.hidden=!membersReady || members.length>0;
+
+        if(membersReady){
+            counter.textContent=i18next.t("members.count",{
+                count:members.length
+            });
+
+            const collator=new Intl.Collator(
+                i18next.resolvedLanguage,
+                {sensitivity:"base",numeric:true}
+            );
+
+            const sortedMembers=[...members].sort(function(first,second){
+                return collator.compare(
+                    first.full_name || "",
+                    second.full_name || ""
+                );
+            });
+
+            sortedMembers.forEach(function(member){
+                const item=document.createElement("li");
+                const text=document.createElement("span");
+
+                showMessage(text,"members.memberRow",{
+                    name:member.full_name || member.email,
+                    email:member.email,
+                    role:i18next.t(
+                        member.is_owner
+                            ? "members.roles.owner"
+                            : "members.roles.member"
+                    ),
+                    state:i18next.t("members.joined")
+                });
+
+                item.append(text);
+                membersList.append(item);
+            });
+        }
+
+        emptyInvitations.hidden=!loadingInvitations &&
+            (!invitationsReady || invitations.length>0);
+
+        showMessage(
+            emptyInvitations,
+            loadingInvitations
+                ? "members.messages.loadingInvitations"
+                : "members.emptyInvitations"
+        );
+
+        if(invitationsReady){
+            invitations.forEach(function(invitation){
+                const item=document.createElement("li");
+                const text=document.createElement("span");
+
+                showMessage(text,"invite.statusRow",{
+                    email:invitation.invited_email,
+                    status:i18next.t(
+                        invitationStatusKey(invitation.status)
+                    )
+                });
+
+                item.append(text);
+                invitationList.append(item);
+            });
+        }
+    }
+
+    async function loadMembers(){
+        if(busy){
+            return;
+        }
+
+        busy=true;
+        team=null;
+        user=null;
+        members=[];
+        invitations=[];
+        membersReady=false;
+        invitationsReady=false;
+        loadingInvitations=false;
+        messageKey="members.messages.loading";
+
+        renderMembers();
+
+        try{
+            if(!validId(teamId)){
+                messageKey="members.errors.missingTeam";
+                return;
+            }
+
+            const {data:userData,error:userError}=await database.auth.getUser();
+
+            if(userError || !userData.user){
+                messageKey="members.errors.loginRequired";
+                return;
+            }
+
+            user=userData.user;
+
+            const {data:teamData,error:teamError}=await database
+                .from("teams")
+                .select("id,name,project_name,owner_id")
+                .eq("id",teamId)
+                .single();
+
+            if(teamError || !teamData){
+                messageKey="members.errors.unavailable";
+                return;
+            }
+
+            team=teamData;
+
+            const {data:memberData,error:memberError}=await database.rpc(
+                "get_team_members",
+                {p_team_id:teamId}
+            );
+
+            if(memberError || !Array.isArray(memberData)){
+                messageKey="members.errors.loadMembers";
+                return;
+            }
+
+            members=memberData;
+            membersReady=true;
+            loadingInvitations=true;
+            renderMembers();
+
+            const {data:invitationData,error:invitationError}=await database
+                .from("invitations")
+                .select("id,invited_email,status")
+                .eq("team_id",teamId)
+                .order("created_at",{ascending:false});
+
+            loadingInvitations=false;
+
+            if(invitationError || !Array.isArray(invitationData)){
+                messageKey="members.errors.loadInvitations";
+                return;
+            }
+
+            invitations=invitationData;
+            invitationsReady=true;
+            messageKey="members.messages.loaded";
+        }catch(error){
+            messageKey="members.errors.connection";
+        }finally{
+            busy=false;
+            loadingInvitations=false;
+            renderMembers();
+        }
+    }
+
+    refreshButton.addEventListener("click",loadMembers);
+    i18next.on("languageChanged",renderMembers);
+
+    loadMembers();
+}
+
 const translatedForms=[
     signupForm,
     loginForm,
@@ -784,7 +1009,7 @@ const hasTranslatedForm=translatedForms.some(function(form){
     return form!==null;
 });
 
-if(hasTranslatedForm || joinDetails){
+if(hasTranslatedForm || joinDetails || membersSummary){
     translatedForms.forEach(function(form){
         if(form){
             form.querySelector('button[type="submit"]').disabled=true;
@@ -793,128 +1018,9 @@ if(hasTranslatedForm || joinDetails){
 
     if(window.i18next){
         if(i18next.isInitialized){
-            setupTranslatedForms();
+            setupTranslatedPages();
         }else{
-            i18next.on("initialized",setupTranslatedForms);
+            i18next.on("initialized",setupTranslatedPages);
         }
     }
-}
-
-const membersSummary=document.querySelector("#members-summary");
-
-if(membersSummary){
-    const teamId=pageParams.get("teamId");
-    const membersList=document.querySelector("#members-list");
-    const invitationList=document.querySelector("#members-invitations");
-    const empty=document.querySelector("#members-empty");
-    const message=document.querySelector("#members-message");
-    const inviteLink=document.querySelector("#members-invite-link");
-    const refreshButton=document.querySelector("#refresh-members");
-
-    async function loadMembers(){
-        refreshButton.disabled=true;
-        inviteLink.hidden=true;
-        membersList.replaceChildren();
-        invitationList.replaceChildren();
-        membersSummary.textContent="Loading your team...";
-        empty.textContent="Loading invitations...";
-        empty.hidden=false;
-        message.textContent="";
-
-        if(!validId(teamId)){
-            membersSummary.textContent="No valid team was selected.";
-            empty.textContent="Open this page from your team invitation or Invite members page.";
-            refreshButton.disabled=false;
-            return;
-        }
-
-        try{
-            const {data:userData,error:userError}=await database.auth.getUser();
-
-            if(userError || !userData.user){
-                membersSummary.textContent="Please log in to view this team.";
-                empty.textContent="Your session is unavailable.";
-                return;
-            }
-
-            const {data:team,error:teamError}=await database
-                .from("teams")
-                .select("id,name,project_name,owner_id")
-                .eq("id",teamId)
-                .single();
-
-            if(teamError || !team){
-                membersSummary.textContent="Team unavailable or you do not have access.";
-                empty.textContent="No invitation information loaded.";
-                return;
-            }
-
-            const {data:members,error:membersError}=await database.rpc(
-                "get_team_members",
-                {p_team_id:teamId}
-            );
-
-            if(membersError){
-                membersSummary.textContent="Could not load team members.";
-                empty.textContent="No invitation information loaded.";
-                message.textContent=membersError.message;
-                return;
-            }
-
-            membersSummary.textContent=team.name+" — "+team.project_name;
-
-            members.forEach(function(member){
-                const item=document.createElement("li");
-                const text=document.createElement("span");
-
-                const role=member.is_owner ? "Owner" : "Member";
-
-                text.textContent=member.full_name+" ("+member.email+") — "+role+" — Joined";
-
-                item.append(text);
-                membersList.append(item);
-            });
-
-            if(team.owner_id===userData.user.id){
-                inviteLink.href="invite-members.html?teamId="+encodeURIComponent(teamId);
-                inviteLink.hidden=false;
-            }
-
-            const {data:invitations,error:invitationsError}=await database
-                .from("invitations")
-                .select("id,invited_email,status")
-                .eq("team_id",teamId)
-                .order("created_at",{ascending:false});
-
-            if(invitationsError){
-                empty.textContent="Could not load invitations.";
-                message.textContent=invitationsError.message;
-                return;
-            }
-
-            empty.hidden=invitations.length>0;
-            empty.textContent="No invitations created yet.";
-
-            invitations.forEach(function(invitation){
-                const item=document.createElement("li");
-                const text=document.createElement("span");
-
-                text.textContent=invitation.invited_email+" — "+invitation.status;
-
-                item.append(text);
-                invitationList.append(item);
-            });
-
-            message.textContent="Team information loaded.";
-        }catch(error){
-            message.textContent="Could not load all team information. Check your connection and press Refresh.";
-            empty.textContent="Invitation information may be unavailable.";
-        }finally{
-            refreshButton.disabled=false;
-        }
-    }
-
-    refreshButton.addEventListener("click",loadMembers);
-
-    loadMembers();
 }

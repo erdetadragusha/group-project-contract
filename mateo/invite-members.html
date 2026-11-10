@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title data-i18n="invite.pageTitle">
-        Invite members | Group Project Contract
+    <title data-i18n="members.pageTitle">
+        Team members | Group Project Contract
     </title>
     <link rel="stylesheet" href="style.css">
 </head>
@@ -22,41 +22,80 @@
             </select>
         </div>
 
-        <h1 data-i18n="invite.heading">Invite members</h1>
+        <a href="my-teams.html" class="back-link"
+            data-i18n="members.myTeams">
+            My teams
+        </a>
 
-        <p data-i18n="invite.description">
-            Add your teammates' email addresses.
-        </p>
+        <h1 data-i18n="members.heading">Team members</h1>
 
-        <form id="invite-form" class="account-form">
-            <label for="member-email" data-i18n="invite.email">
-                Email address
-            </label>
+        <p id="members-summary"></p>
+        <p id="members-count" hidden></p>
 
-            <input type="email" id="member-email" name="email"
-                autocomplete="email" maxlength="254"
-                aria-describedby="invite-message" required>
+        <section class="status-card" aria-labelledby="joined-heading">
+            <h2 id="joined-heading" data-i18n="members.joinedHeading">
+                Joined members
+            </h2>
 
-            <button type="submit" class="button button-secondary"
-                data-i18n="invite.addButton" disabled>
-                Add member
+            <p id="members-empty-list"
+                data-i18n="members.emptyMembers" hidden>
+                No members to display.
+            </p>
+
+            <ul id="members-list" class="invite-list"></ul>
+        </section>
+
+        <section class="status-card" aria-labelledby="invitations-heading">
+            <h2 id="invitations-heading"
+                data-i18n="members.invitationsHeading">
+                Invitations
+            </h2>
+
+            <p id="members-empty"
+                data-i18n="members.emptyInvitations" hidden>
+                No invitations created yet.
+            </p>
+
+            <ul id="members-invitations" class="invite-list"></ul>
+        </section>
+
+        <p id="members-message" role="status"></p>
+
+        <nav id="members-navigation" class="welcome-actions"
+            aria-label="Team actions"
+            data-i18n-aria="members.navigation">
+
+            <a id="members-invite-link" class="button"
+                data-i18n="members.inviteButton" hidden>
+                Invite members
+            </a>
+
+            <a id="edit-team-link" class="button button-secondary"
+                data-i18n="members.editButton" hidden>
+                Edit team
+            </a>
+
+            <a id="members-status-link" class="button button-secondary"
+                data-i18n="members.statusButton" hidden>
+                View invitation status
+            </a>
+
+            <a id="open-team-setup" class="button button-secondary"
+                data-i18n="members.setupButton" hidden>
+                Review team setup
+            </a>
+
+            <button type="button" id="refresh-members"
+                class="button button-secondary"
+                data-i18n="members.refreshButton" disabled>
+                Refresh
             </button>
-        </form>
 
-        <h2 data-i18n="invite.draftHeading">Invitation list</h2>
-
-        <p id="invite-empty" data-i18n="invite.empty">
-            No teammates added yet.
-        </p>
-
-        <ul id="invite-list" class="invite-list"></ul>
-
-        <button type="button" id="send-invites" class="button"
-            data-i18n="invite.saveButton" disabled>
-            Save invitations
-        </button>
-
-        <p id="invite-message" role="status"></p>
+            <a href="index.html" class="back-link"
+                data-i18n="members.backButton">
+                Back to welcome
+            </a>
+        </nav>
 
         <p id="language-message" role="alert"
             data-i18n="auth.errors.generic" hidden>

@@ -145,5 +145,43 @@
             "response":"Could not confirm your response. Reload to check the invitation status.",
             "confirmEmail":"Confirm your email before responding."
         }
+    },
+    "members":{
+        "pageTitle":"Team members | Group Project Contract",
+        "heading":"Team members",
+        "joinedHeading":"Joined members",
+        "invitationsHeading":"Invitations",
+        "emptyMembers":"No members to display.",
+        "emptyInvitations":"No invitations created yet.",
+        "inviteButton":"Invite members",
+        "editButton":"Edit team",
+        "statusButton":"View invitation status",
+        "setupButton":"Review team setup",
+        "refreshButton":"Refresh",
+        "backButton":"Back to welcome",
+        "myTeams":"My teams",
+        "navigation":"Team actions",
+        "summary":"{{team}} — {{project}}",
+        "memberRow":"{{name}} ({{email}}) — {{role}} — {{state}}",
+        "joined":"Joined",
+        "count_one":"{{count}} joined member",
+        "count_other":"{{count}} joined members",
+        "roles":{
+            "owner":"Owner",
+            "member":"Member"
+        },
+        "messages":{
+            "loading":"Loading your team...",
+            "loadingInvitations":"Loading invitations...",
+            "loaded":"Team information loaded."
+        },
+        "errors":{
+            "missingTeam":"No valid team was selected. Open a team through My teams.",
+            "loginRequired":"Please log in to view this team.",
+            "unavailable":"Team unavailable or you do not have access.",
+            "loadMembers":"Could not load team members.",
+            "loadInvitations":"Could not load invitations.",
+            "connection":"Could not load all team information. Check your connection and press Refresh."
+        }
     }
 }

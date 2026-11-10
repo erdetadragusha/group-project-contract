@@ -145,5 +145,43 @@
             "response":"Përgjigjja nuk mund të konfirmohej. Ringarkoni për të kontrolluar statusin e ftesës.",
             "confirmEmail":"Konfirmoni emailin përpara se të përgjigjeni."
         }
+    },
+    "members":{
+        "pageTitle":"Anëtarët e ekipit | Kontrata e projektit në grup",
+        "heading":"Anëtarët e ekipit",
+        "joinedHeading":"Anëtarët që janë bashkuar",
+        "invitationsHeading":"Ftesat",
+        "emptyMembers":"Nuk ka anëtarë për t'u shfaqur.",
+        "emptyInvitations":"Ende nuk është krijuar asnjë ftesë.",
+        "inviteButton":"Fto anëtarë",
+        "editButton":"Ndrysho ekipin",
+        "statusButton":"Shiko statusin e ftesave",
+        "setupButton":"Shiko konfigurimin e ekipit",
+        "refreshButton":"Rifresko",
+        "backButton":"Kthehu në faqen kryesore",
+        "myTeams":"Ekipet e mia",
+        "navigation":"Veprimet e ekipit",
+        "summary":"{{team}} — {{project}}",
+        "memberRow":"{{name}} ({{email}}) — {{role}} — {{state}}",
+        "joined":"I bashkuar",
+        "count_one":"{{count}} anëtar i bashkuar",
+        "count_other":"{{count}} anëtarë të bashkuar",
+        "roles":{
+            "owner":"Pronar",
+            "member":"Anëtar"
+        },
+        "messages":{
+            "loading":"Duke ngarkuar ekipin...",
+            "loadingInvitations":"Duke ngarkuar ftesat...",
+            "loaded":"Informacioni i ekipit u ngarkua."
+        },
+        "errors":{
+            "missingTeam":"Nuk është zgjedhur një ekip i vlefshëm. Hapni një ekip nga Ekipet e mia.",
+            "loginRequired":"Hyni për të parë këtë ekip.",
+            "unavailable":"Ekipi nuk është i disponueshëm ose nuk keni qasje.",
+            "loadMembers":"Anëtarët e ekipit nuk mund të ngarkoheshin.",
+            "loadInvitations":"Ftesat nuk mund të ngarkoheshin.",
+            "connection":"Nuk mund të ngarkohej i gjithë informacioni i ekipit. Kontrolloni lidhjen dhe shtypni Rifresko."
+        }
     }
 }

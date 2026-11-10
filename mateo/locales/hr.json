@@ -145,5 +145,44 @@
             "response":"Odgovor nije moguće potvrditi. Ponovno učitajte stranicu za provjeru statusa pozivnice.",
             "confirmEmail":"Potvrdite adresu e-pošte prije odgovora."
         }
+    },
+    "members":{
+        "pageTitle":"Članovi tima | Ugovor za grupni projekt",
+        "heading":"Članovi tima",
+        "joinedHeading":"Pridruženi članovi",
+        "invitationsHeading":"Pozivnice",
+        "emptyMembers":"Nema članova za prikaz.",
+        "emptyInvitations":"Još nema izrađenih pozivnica.",
+        "inviteButton":"Pozovi članove",
+        "editButton":"Uredi tim",
+        "statusButton":"Prikaži status pozivnica",
+        "setupButton":"Pregled postavljanja tima",
+        "refreshButton":"Osvježi",
+        "backButton":"Natrag na početnu stranicu",
+        "myTeams":"Moji timovi",
+        "navigation":"Radnje tima",
+        "summary":"{{team}} — {{project}}",
+        "memberRow":"{{name}} ({{email}}) — {{role}} — {{state}}",
+        "joined":"Pridružen",
+        "count_one":"{{count}} pridruženi član",
+        "count_few":"{{count}} pridružena člana",
+        "count_other":"{{count}} pridruženih članova",
+        "roles":{
+            "owner":"Vlasnik",
+            "member":"Član"
+        },
+        "messages":{
+            "loading":"Učitavanje tima...",
+            "loadingInvitations":"Učitavanje pozivnica...",
+            "loaded":"Podaci o timu su učitani."
+        },
+        "errors":{
+            "missingTeam":"Nije odabran valjan tim. Otvorite tim putem stranice Moji timovi.",
+            "loginRequired":"Prijavite se za pregled ovog tima.",
+            "unavailable":"Tim nije dostupan ili nemate pristup.",
+            "loadMembers":"Članove tima nije moguće učitati.",
+            "loadInvitations":"Pozivnice nije moguće učitati.",
+            "connection":"Nije moguće učitati sve podatke o timu. Provjerite vezu i pritisnite Osvježi."
+        }
     }
 }
