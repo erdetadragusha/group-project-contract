@@ -1,0 +1,13 @@
+{
+    "common":{
+        "language":"Language",
+        "appName":"Group Project Contract"
+    },
+    "welcome":{
+        "pageTitle":"Welcome | Group Project Contract",
+        "description":"Create your team and agree on how you will work together.",
+        "navigation":"Get started",
+        "startButton":"Get started",
+        "loginButton":"Log in"
+    }
+}

@@ -1,0 +1,13 @@
+{
+    "common":{
+        "language":"Gjuha",
+        "appName":"Kontrata e projektit në grup"
+    },
+    "welcome":{
+        "pageTitle":"Mirë se vini | Kontrata e projektit në grup",
+        "description":"Krijoni ekipin tuaj dhe bini dakord se si do të punoni së bashku.",
+        "navigation":"Filloni",
+        "startButton":"Fillo",
+        "loginButton":"Hyr"
+    }
+}

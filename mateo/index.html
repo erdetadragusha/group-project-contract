@@ -1,45 +1,54 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title data-i18n="pageTitle">Welcome | Group Project Contract</title>
+    <title data-i18n="welcome.pageTitle">
+        Welcome | Group Project Contract
+    </title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <main class="welcome">
         <div class="language-control">
-            <label for="language-select" data-i18n="language">
+            <label for="language-select" data-i18n="common.language">
                 Language
             </label>
 
-            <select id="language-select" name="language">
+            <select id="language-select" name="language" disabled>
                 <option value="en" lang="en">English</option>
                 <option value="hr" lang="hr">Hrvatski</option>
                 <option value="sq" lang="sq">Shqip</option>
             </select>
         </div>
 
-        <h1 data-i18n="heading">Group Project Contract</h1>
+        <h1 data-i18n="common.appName">Group Project Contract</h1>
 
-        <p data-i18n="introduction">
+        <p data-i18n="welcome.description">
             Create your team and agree on how you will work together.
         </p>
 
         <nav class="welcome-actions"
-            aria-label="Get started" data-i18n-aria="navigation">
+            aria-label="Get started"
+            data-i18n-aria="welcome.navigation">
 
-            <a href="signup.html" class="button" data-i18n="signup">
+            <a href="signup.html" class="button"
+                data-i18n="welcome.startButton">
                 Get started
             </a>
 
             <a href="login.html" class="button button-secondary"
-                data-i18n="login">
+                data-i18n="welcome.loginButton">
                 Log in
             </a>
         </nav>
+
+        <p id="language-message" role="alert" hidden>
+            Language files could not be loaded. Please reload the page.
+        </p>
     </main>
 
-    <script src="language.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/i18next@23.16.8/dist/umd/i18next.min.js"></script>
+    <script src="i18n.js"></script>
 </body>
 </html>

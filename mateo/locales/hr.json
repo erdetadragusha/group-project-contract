@@ -1,0 +1,13 @@
+{
+    "common":{
+        "language":"Jezik",
+        "appName":"Ugovor za grupni projekt"
+    },
+    "welcome":{
+        "pageTitle":"Dobro došli | Ugovor za grupni projekt",
+        "description":"Stvorite svoj tim i dogovorite kako ćete zajedno raditi.",
+        "navigation":"Početak",
+        "startButton":"Započni",
+        "loginButton":"Prijavi se"
+    }
+}
