@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit team | Group Project Contract</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <main class="welcome">
+        <div class="language-control">
+            <label for="language-select" data-i18n="language">
+                Language
+            </label>
+
+            <select id="language-select" name="language">
+                <option value="en" lang="en">English</option>
+                <option value="hr" lang="hr">Hrvatski</option>
+                <option value="sq" lang="sq">Shqip</option>
+            </select>
+        </div>
+
+        <h1 data-edit-label="heading">Edit team</h1>
+        <p id="edit-message" role="status"></p>
+
+        <form id="edit-team-form" class="account-form" hidden>
+            <label for="edit-team-name" data-edit-label="teamName">
+                Team name
+            </label>
+
+            <input type="text" id="edit-team-name"
+                name="teamName" maxlength="80" required>
+
+            <label for="edit-project-name" data-edit-label="projectName">
+                Project name
+            </label>
+
+            <input type="text" id="edit-project-name"
+                name="projectName" maxlength="100" required>
+
+            <label for="edit-description" data-edit-label="description">
+                Project description
+            </label>
+
+            <textarea id="edit-description" name="description"
+                rows="4" maxlength="1000" required></textarea>
+
+            <button type="submit" id="edit-save"
+                class="button" data-edit-label="save">
+                Save changes
+            </button>
+
+            <button type="button" id="edit-delete"
+                class="button button-secondary" data-edit-label="delete">
+                Delete team
+            </button>
+        </form>
+
+        <button type="button" id="edit-retry"
+            class="button button-secondary" data-edit-label="retry">
+            Try again
+        </button>
+
+        <a href="my-teams.html" class="back-link" data-edit-label="back">
+            Back to my teams
+        </a>
+    </main>
+
+    <script src="language.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-client.js"></script>
+    <script src="edit-team.js"></script>
+</body>
+</html>
