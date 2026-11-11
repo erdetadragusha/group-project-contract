@@ -443,6 +443,378 @@
 
         });
     </script>
+<script src="https://cdn.jsdelivr.net/npm/i18next@23.16.8/dist/umd/i18next.min.js"></script>
 
+<script>
+(function () {
+    if (!window.i18next) return;
+
+    const resources = {
+        en: {
+            translation: {
+                title: "Review Proposal",
+                subtitle: "Review your proposed agreement before making a decision.",
+                notice: "Demo mode: This review is stored only in your browser. Approval by other team members will be added when the shared database is connected.",
+                information: "Proposal Information",
+                topic: "Disagreement Topic",
+                status: "Status",
+                agreement: "Proposed Agreement",
+                preferences: "Your Current Preferences",
+                deadlines: "Deadlines",
+                roles: "Preferred Roles",
+                quality: "Quality Expectations",
+                back: "Back",
+                change: "Request Changes",
+                approve: "Approve",
+                language: "Language",
+                pending: "Pending Review",
+                approved: "Approved",
+                changesRequested: "Changes Requested",
+                noDeadline: "No deadline preference selected.",
+                noRoles: "No preferred roles selected.",
+                noQuality: "No quality expectations selected.",
+                noProposal: "No valid proposal found. Please go back and create a proposal first.",
+                loadError: "The proposal could not be loaded. Please return to the previous screen.",
+                changeUnavailable: "No proposal is available to change.",
+                approveUnavailable: "No proposal is available to approve.",
+                changeError: "Could not save the change request. Please try again.",
+                approveError: "Could not save the approval. Please try again.",
+                categories: {
+                    Communication: "Communication",
+                    Availability: "Availability",
+                    "Preferred Roles": "Preferred Roles",
+                    Deadlines: "Deadlines",
+                    Quality: "Quality"
+                },
+                values: {
+                    Research: "Research",
+                    Design: "Design",
+                    Development: "Development",
+                    Testing: "Testing",
+                    Documentation: "Documentation",
+                    Other: "Other",
+                    "Strict deadlines": "Strict deadlines",
+                    "Some flexibility": "Some flexibility",
+                    Flexible: "Flexible",
+                    Accuracy: "Accuracy",
+                    "Good design / usability": "Good design / usability",
+                    "Clean work": "Clean work",
+                    "Detailed documentation": "Detailed documentation"
+                }
+            }
+        },
+        hr: {
+            translation: {
+                title: "Pregled prijedloga",
+                subtitle: "Pregledajte svoj predloženi dogovor prije donošenja odluke.",
+                notice: "Demonstracijski način rada: Ovaj pregled pohranjen je samo u vašem pregledniku. Odobravanje ostalih članova tima bit će dodano nakon povezivanja zajedničke baze podataka.",
+                information: "Informacije o prijedlogu",
+                topic: "Tema neslaganja",
+                status: "Status",
+                agreement: "Predloženi dogovor",
+                preferences: "Vaše trenutačne preferencije",
+                deadlines: "Rokovi",
+                roles: "Željene uloge",
+                quality: "Očekivanja kvalitete",
+                back: "Natrag",
+                change: "Zatraži izmjene",
+                approve: "Odobri",
+                language: "Jezik",
+                pending: "Čeka pregled",
+                approved: "Odobreno",
+                changesRequested: "Zatražene izmjene",
+                noDeadline: "Nije odabrana preferencija rokova.",
+                noRoles: "Nisu odabrane željene uloge.",
+                noQuality: "Nisu odabrana očekivanja kvalitete.",
+                noProposal: "Nije pronađen valjan prijedlog. Vratite se i prvo izradite prijedlog.",
+                loadError: "Prijedlog nije moguće učitati. Vratite se na prethodni zaslon.",
+                changeUnavailable: "Nema dostupnog prijedloga za izmjenu.",
+                approveUnavailable: "Nema dostupnog prijedloga za odobravanje.",
+                changeError: "Zahtjev za izmjene nije moguće spremiti. Pokušajte ponovno.",
+                approveError: "Odobrenje nije moguće spremiti. Pokušajte ponovno.",
+                categories: {
+                    Communication: "Komunikacija",
+                    Availability: "Dostupnost",
+                    "Preferred Roles": "Željene uloge",
+                    Deadlines: "Rokovi",
+                    Quality: "Kvaliteta"
+                },
+                values: {
+                    Research: "Istraživanje",
+                    Design: "Dizajn",
+                    Development: "Razvoj",
+                    Testing: "Testiranje",
+                    Documentation: "Dokumentacija",
+                    Other: "Ostalo",
+                    "Strict deadlines": "Strogi rokovi",
+                    "Some flexibility": "Određena fleksibilnost",
+                    Flexible: "Fleksibilni rokovi",
+                    Accuracy: "Točnost",
+                    "Good design / usability": "Dobar dizajn / jednostavnost korištenja",
+                    "Clean work": "Uredno obavljen posao",
+                    "Detailed documentation": "Detaljna dokumentacija"
+                }
+            }
+        },
+        sq: {
+            translation: {
+                title: "Shqyrto propozimin",
+                subtitle: "Shqyrtoni marrëveshjen tuaj të propozuar para se të merrni një vendim.",
+                notice: "Version demonstrues: Ky shqyrtim ruhet vetëm në shfletuesin tuaj. Miratimi nga anëtarët e tjerë të ekipit do të shtohet pasi të lidhet baza e përbashkët e të dhënave.",
+                information: "Informacioni i propozimit",
+                topic: "Tema e mospajtimit",
+                status: "Statusi",
+                agreement: "Marrëveshja e propozuar",
+                preferences: "Preferencat tuaja aktuale",
+                deadlines: "Afatet",
+                roles: "Rolet e preferuara",
+                quality: "Pritshmëritë për cilësinë",
+                back: "Kthehu",
+                change: "Kërko ndryshime",
+                approve: "Mirato",
+                language: "Gjuha",
+                pending: "Në pritje të shqyrtimit",
+                approved: "Miratuar",
+                changesRequested: "Janë kërkuar ndryshime",
+                noDeadline: "Nuk është zgjedhur asnjë preferencë për afatet.",
+                noRoles: "Nuk janë zgjedhur role të preferuara.",
+                noQuality: "Nuk janë zgjedhur pritshmëri për cilësinë.",
+                noProposal: "Nuk u gjet një propozim i vlefshëm. Kthehuni dhe krijoni një propozim së pari.",
+                loadError: "Propozimi nuk mund të ngarkohet. Kthehuni në ekranin e mëparshëm.",
+                changeUnavailable: "Nuk ka propozim për të ndryshuar.",
+                approveUnavailable: "Nuk ka propozim për të miratuar.",
+                changeError: "Kërkesa për ndryshime nuk u ruajt. Provoni përsëri.",
+                approveError: "Miratimi nuk u ruajt. Provoni përsëri.",
+                categories: {
+                    Communication: "Komunikimi",
+                    Availability: "Disponueshmëria",
+                    "Preferred Roles": "Rolet e preferuara",
+                    Deadlines: "Afatet",
+                    Quality: "Cilësia"
+                },
+                values: {
+                    Research: "Hulumtim",
+                    Design: "Dizajn",
+                    Development: "Zhvillim",
+                    Testing: "Testim",
+                    Documentation: "Dokumentim",
+                    Other: "Tjetër",
+                    "Strict deadlines": "Afate të rrepta",
+                    "Some flexibility": "Pak fleksibilitet",
+                    Flexible: "Afate fleksibile",
+                    Accuracy: "Saktësia",
+                    "Good design / usability": "Dizajn i mirë / lehtësi në përdorim",
+                    "Clean work": "Punë e rregullt",
+                    "Detailed documentation": "Dokumentim i detajuar"
+                }
+            }
+        }
+    };
+
+    const main = document.querySelector(".container");
+    const heading = main.querySelector("h1");
+    const subtitle = main.querySelector(".subtitle");
+    const notice = main.querySelector(".notice");
+    const backLink = main.querySelector(".back");
+    const cards = main.querySelectorAll("#proposalDetails .card");
+    const detailsHeading = main.querySelector(".details > h2");
+    const messageElement = document.getElementById("message");
+
+    const languageBox = document.createElement("div");
+    languageBox.style.margin = "20px 0";
+
+    const languageLabel = document.createElement("label");
+    languageLabel.htmlFor = "languageSelector";
+    languageLabel.style.display = "block";
+    languageLabel.style.marginBottom = "8px";
+    languageLabel.style.fontWeight = "bold";
+
+    const languageSelector = document.createElement("select");
+    languageSelector.id = "languageSelector";
+    languageSelector.style.width = "100%";
+    languageSelector.style.padding = "12px";
+    languageSelector.style.border = "1px solid #ccc";
+    languageSelector.style.borderRadius = "10px";
+    languageSelector.style.fontSize = "15px";
+
+    [
+        ["en", "English"],
+        ["hr", "Hrvatski"],
+        ["sq", "Shqip"]
+    ].forEach(function (entry) {
+        const option = document.createElement("option");
+        option.value = entry[0];
+        option.textContent = entry[1];
+        languageSelector.appendChild(option);
+    });
+
+    languageBox.appendChild(languageLabel);
+    languageBox.appendChild(languageSelector);
+    main.insertBefore(languageBox, heading);
+
+    const errorKeys = {
+        "No valid proposal found. Please go back and create a proposal first.": "noProposal",
+        "The proposal could not be loaded. Please return to the previous screen.": "loadError",
+        "No proposal is available to change.": "changeUnavailable",
+        "No proposal is available to approve.": "approveUnavailable",
+        "Could not save the change request. Please try again.": "changeError",
+        "Could not save the approval. Please try again.": "approveError"
+    };
+
+    let currentError = errorKeys[messageElement.textContent.trim()] || null;
+
+    function translateValue(value) {
+        const translated =
+            resources[i18next.language].translation.values[value];
+
+        return translated || value;
+    }
+
+    function translateArray(key, emptyKey) {
+        const values = getSavedArray(key);
+
+        if (values.length === 0) {
+            return i18next.t(emptyKey);
+        }
+
+        return values.map(translateValue).join(", ");
+    }
+
+    function updatePreferences() {
+        const deadline = getSavedText("deadlineExpectations");
+
+        deadlineSummary.textContent = deadline
+            ? translateValue(deadline)
+            : i18next.t("noDeadline");
+
+        rolesSummary.textContent =
+            translateArray("preferredRoles", "noRoles");
+
+        qualitySummary.textContent =
+            translateArray("qualityExpectations", "noQuality");
+    }
+
+    function updateText() {
+        document.documentElement.lang = i18next.language;
+        document.title = i18next.t("title");
+
+        heading.textContent = i18next.t("title");
+        subtitle.textContent = i18next.t("subtitle");
+        notice.textContent = i18next.t("notice");
+        backLink.textContent = "← " + i18next.t("back");
+        languageLabel.textContent = i18next.t("language");
+
+        cards[0].querySelector("h2").textContent =
+            i18next.t("information");
+
+        const labels = cards[0].querySelectorAll(".label");
+
+        labels[0].textContent = i18next.t("topic");
+        labels[1].textContent = i18next.t("status");
+
+        cards[1].querySelector("h2").textContent =
+            i18next.t("agreement");
+
+        detailsHeading.textContent = i18next.t("preferences");
+
+        cards[2].querySelector("h2").textContent =
+            i18next.t("deadlines");
+
+        cards[3].querySelector("h2").textContent =
+            i18next.t("roles");
+
+        cards[4].querySelector("h2").textContent =
+            i18next.t("quality");
+
+        changeButton.textContent = i18next.t("change");
+        approveButton.textContent = i18next.t("approve");
+
+        if (proposal) {
+            const categories =
+                resources[i18next.language].translation.categories;
+
+            proposalTopic.textContent =
+                categories[proposal.topic] || proposal.topic;
+
+            if (proposal.status === "approved") {
+                proposalStatus.textContent = i18next.t("approved");
+            } else if (proposal.status === "changes_requested") {
+                proposalStatus.textContent =
+                    i18next.t("changesRequested");
+            } else {
+                proposalStatus.textContent = i18next.t("pending");
+            }
+
+            updatePreferences();
+        }
+
+        if (currentError) {
+            messageElement.textContent = i18next.t(currentError);
+        }
+    }
+
+    const observer = new MutationObserver(function () {
+        const text = messageElement.textContent.trim();
+
+        if (!text) {
+            currentError = null;
+            return;
+        }
+
+        if (errorKeys[text]) {
+            currentError = errorKeys[text];
+        }
+
+        if (currentError) {
+            const translated = i18next.t(currentError);
+
+            if (text !== translated) {
+                messageElement.textContent = translated;
+            }
+        }
+    });
+
+    let savedLanguage = "en";
+
+    try {
+        savedLanguage = localStorage.getItem("appLanguage") || "en";
+    } catch (error) {
+        savedLanguage = "en";
+    }
+
+    if (!resources[savedLanguage]) {
+        savedLanguage = "en";
+    }
+
+    i18next.init({
+        lng: savedLanguage,
+        fallbackLng: "en",
+        resources: resources
+    }).then(function () {
+        languageSelector.value = savedLanguage;
+
+        observer.observe(messageElement, {
+            childList: true,
+            characterData: true,
+            subtree: true
+        });
+
+        updateText();
+
+        languageSelector.addEventListener("change", function () {
+            const selectedLanguage = languageSelector.value;
+
+            i18next.changeLanguage(selectedLanguage).then(function () {
+                try {
+                    localStorage.setItem("appLanguage", selectedLanguage);
+                } catch (error) {
+                }
+
+                updateText();
+            });
+        });
+    });
+})();
+</script>
 </body>
 </html>

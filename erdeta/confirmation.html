@@ -593,6 +593,522 @@
                 window.location.href = "communication.html";
             });
     </script>
+<script src="https://cdn.jsdelivr.net/npm/i18next@23.16.8/dist/umd/i18next.min.js"></script>
 
+<script>
+(function () {
+    if (!window.i18next) return;
+
+    const resources = {
+        en: {
+            translation: {
+                title: "Agreement Confirmation",
+                approvedTitle: "Agreement Approved!",
+                subtitle: "You have successfully approved your proposed agreement.",
+                status: "Approved",
+                notice: "Demo mode: Your approval has been saved in this browser. Other team members must also approve before this becomes a final team agreement.",
+                approvedProposal: "Approved Proposal",
+                agreementTopic: "Agreement Topic",
+                proposedSolution: "Proposed Solution",
+                savedPreferences: "Your Saved Preferences",
+                communication: "Communication",
+                availability: "Weekly Availability",
+                roles: "Preferred Roles",
+                deadlines: "Deadline Expectations",
+                quality: "Quality Expectations",
+                approvalDetails: "Approval Details",
+                approvalDate: "Approval Date",
+                dashboardButton: "Go to Dashboard",
+                back: "Back",
+                language: "Language",
+                emptyTitle: "No Approved Proposal Found",
+                emptyDescription: "You need to create and approve a proposal before viewing the confirmation.",
+                returnReview: "Return to Review Proposal",
+                dashboardTitle: "Project Dashboard",
+                dashboardWelcome: "Welcome to your Group Project Contract dashboard.",
+                dashboardNotice: "This is a temporary demo dashboard. Your team's main dashboard will be connected later.",
+                yourProposal: "Your Proposal",
+                topic: "Topic",
+                yourApprovedProposal: "Your Approved Proposal",
+                nextSteps: "Next Steps",
+                nextStepsText: "Your proposed agreement has been approved by you. The next step is to collect approval from the other team members.",
+                reviewButton: "Review Agreement",
+                preferencesButton: "Edit My Preferences",
+                notSelected: "Not selected",
+                dateUnavailable: "Date unavailable",
+                loadError: "The agreement could not be loaded.",
+                missingError: "No approved proposal is available.",
+                categories: {
+                    Communication: "Communication",
+                    Availability: "Availability",
+                    "Preferred Roles": "Preferred Roles",
+                    Deadlines: "Deadlines",
+                    Quality: "Quality"
+                },
+                values: {
+                    Email: "Email",
+                    "In-app Chat": "In-app Chat",
+                    Discord: "Discord",
+                    "Zoom / Meet": "Zoom / Meet",
+                    Other: "Other",
+                    Research: "Research",
+                    Design: "Design",
+                    Development: "Development",
+                    Testing: "Testing",
+                    Documentation: "Documentation",
+                    "Strict deadlines": "Strict deadlines",
+                    "Some flexibility": "Some flexibility",
+                    Flexible: "Flexible",
+                    Accuracy: "Accuracy",
+                    "Good design / usability": "Good design / usability",
+                    "Clean work": "Clean work",
+                    "Detailed documentation": "Detailed documentation",
+                    "Flexible schedule": "Flexible schedule"
+                },
+                days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+                periods: ["Morning", "Afternoon", "Evening"]
+            }
+        },
+        hr: {
+            translation: {
+                title: "Potvrda dogovora",
+                approvedTitle: "Dogovor je odobren!",
+                subtitle: "Uspješno ste odobrili svoj predloženi dogovor.",
+                status: "Odobreno",
+                notice: "Demonstracijski način rada: Vaše odobrenje spremljeno je samo u ovom pregledniku. Ostali članovi tima također moraju odobriti prijedlog prije nego što postane konačan timski dogovor.",
+                approvedProposal: "Odobreni prijedlog",
+                agreementTopic: "Tema dogovora",
+                proposedSolution: "Predloženo rješenje",
+                savedPreferences: "Vaše spremljene preferencije",
+                communication: "Komunikacija",
+                availability: "Tjedna dostupnost",
+                roles: "Željene uloge",
+                deadlines: "Očekivanja vezana uz rokove",
+                quality: "Očekivanja kvalitete",
+                approvalDetails: "Detalji odobrenja",
+                approvalDate: "Datum odobrenja",
+                dashboardButton: "Idi na nadzornu ploču",
+                back: "Natrag",
+                language: "Jezik",
+                emptyTitle: "Nije pronađen odobreni prijedlog",
+                emptyDescription: "Morate izraditi i odobriti prijedlog prije prikaza potvrde.",
+                returnReview: "Vrati se na pregled prijedloga",
+                dashboardTitle: "Nadzorna ploča projekta",
+                dashboardWelcome: "Dobro došli na nadzornu ploču svojeg grupnog projekta.",
+                dashboardNotice: "Ovo je privremena demonstracijska nadzorna ploča. Glavna nadzorna ploča vašeg tima bit će povezana kasnije.",
+                yourProposal: "Vaš prijedlog",
+                topic: "Tema",
+                yourApprovedProposal: "Vaš odobreni prijedlog",
+                nextSteps: "Sljedeći koraci",
+                nextStepsText: "Odobrili ste svoj predloženi dogovor. Sljedeći je korak prikupiti odobrenja ostalih članova tima.",
+                reviewButton: "Pregledaj dogovor",
+                preferencesButton: "Uredi moje preferencije",
+                notSelected: "Nije odabrano",
+                dateUnavailable: "Datum nije dostupan",
+                loadError: "Dogovor nije moguće učitati.",
+                missingError: "Nema dostupnog odobrenog prijedloga.",
+                categories: {
+                    Communication: "Komunikacija",
+                    Availability: "Dostupnost",
+                    "Preferred Roles": "Željene uloge",
+                    Deadlines: "Rokovi",
+                    Quality: "Kvaliteta"
+                },
+                values: {
+                    Email: "E-pošta",
+                    "In-app Chat": "Razgovor u aplikaciji",
+                    Discord: "Discord",
+                    "Zoom / Meet": "Zoom / Meet",
+                    Other: "Ostalo",
+                    Research: "Istraživanje",
+                    Design: "Dizajn",
+                    Development: "Razvoj",
+                    Testing: "Testiranje",
+                    Documentation: "Dokumentacija",
+                    "Strict deadlines": "Strogi rokovi",
+                    "Some flexibility": "Određena fleksibilnost",
+                    Flexible: "Fleksibilni rokovi",
+                    Accuracy: "Točnost",
+                    "Good design / usability": "Dobar dizajn / jednostavnost korištenja",
+                    "Clean work": "Uredno obavljen posao",
+                    "Detailed documentation": "Detaljna dokumentacija",
+                    "Flexible schedule": "Fleksibilan raspored"
+                },
+                days: ["Ponedjeljak", "Utorak", "Srijeda", "Četvrtak", "Petak", "Subota", "Nedjelja"],
+                periods: ["Jutro", "Poslijepodne", "Večer"]
+            }
+        },
+        sq: {
+            translation: {
+                title: "Konfirmimi i marrëveshjes",
+                approvedTitle: "Marrëveshja u miratua!",
+                subtitle: "E keni miratuar me sukses marrëveshjen tuaj të propozuar.",
+                status: "Miratuar",
+                notice: "Version demonstrues: Miratimi juaj është ruajtur vetëm në këtë shfletues. Edhe anëtarët e tjerë të ekipit duhet ta miratojnë propozimin para se të bëhet marrëveshje përfundimtare.",
+                approvedProposal: "Propozimi i miratuar",
+                agreementTopic: "Tema e marrëveshjes",
+                proposedSolution: "Zgjidhja e propozuar",
+                savedPreferences: "Preferencat tuaja të ruajtura",
+                communication: "Komunikimi",
+                availability: "Disponueshmëria javore",
+                roles: "Rolet e preferuara",
+                deadlines: "Pritshmëritë për afatet",
+                quality: "Pritshmëritë për cilësinë",
+                approvalDetails: "Detajet e miratimit",
+                approvalDate: "Data e miratimit",
+                dashboardButton: "Shko te paneli kryesor",
+                back: "Kthehu",
+                language: "Gjuha",
+                emptyTitle: "Nuk u gjet propozim i miratuar",
+                emptyDescription: "Duhet të krijoni dhe miratoni një propozim para se të shihni konfirmimin.",
+                returnReview: "Kthehu te shqyrtimi i propozimit",
+                dashboardTitle: "Paneli kryesor i projektit",
+                dashboardWelcome: "Mirë se vini në panelin kryesor të projektit tuaj në grup.",
+                dashboardNotice: "Ky është një panel i përkohshëm demonstrues. Paneli kryesor i ekipit do të lidhet më vonë.",
+                yourProposal: "Propozimi juaj",
+                topic: "Tema",
+                yourApprovedProposal: "Propozimi juaj i miratuar",
+                nextSteps: "Hapat e ardhshëm",
+                nextStepsText: "Ju e keni miratuar marrëveshjen tuaj të propozuar. Hapi tjetër është marrja e miratimit nga anëtarët e tjerë të ekipit.",
+                reviewButton: "Shqyrto marrëveshjen",
+                preferencesButton: "Ndrysho preferencat e mia",
+                notSelected: "Nuk është zgjedhur",
+                dateUnavailable: "Data nuk është në dispozicion",
+                loadError: "Marrëveshja nuk mund të ngarkohet.",
+                missingError: "Nuk ka propozim të miratuar në dispozicion.",
+                categories: {
+                    Communication: "Komunikimi",
+                    Availability: "Disponueshmëria",
+                    "Preferred Roles": "Rolet e preferuara",
+                    Deadlines: "Afatet",
+                    Quality: "Cilësia"
+                },
+                values: {
+                    Email: "Email",
+                    "In-app Chat": "Bisedë në aplikacion",
+                    Discord: "Discord",
+                    "Zoom / Meet": "Zoom / Meet",
+                    Other: "Tjetër",
+                    Research: "Hulumtim",
+                    Design: "Dizajn",
+                    Development: "Zhvillim",
+                    Testing: "Testim",
+                    Documentation: "Dokumentim",
+                    "Strict deadlines": "Afate të rrepta",
+                    "Some flexibility": "Pak fleksibilitet",
+                    Flexible: "Afate fleksibile",
+                    Accuracy: "Saktësia",
+                    "Good design / usability": "Dizajn i mirë / lehtësi në përdorim",
+                    "Clean work": "Punë e rregullt",
+                    "Detailed documentation": "Dokumentim i detajuar",
+                    "Flexible schedule": "Orar fleksibil"
+                },
+                days: ["E hënë", "E martë", "E mërkurë", "E enjte", "E premte", "E shtunë", "E diel"],
+                periods: ["Mëngjes", "Pasdite", "Mbrëmje"]
+            }
+        }
+    };
+
+    const main = document.querySelector(".container");
+    const confirmation = document.getElementById("confirmationScreen");
+    const dashboard = document.getElementById("dashboardScreen");
+
+    const languageBox = document.createElement("div");
+    languageBox.style.margin = "0 0 20px";
+
+    const languageLabel = document.createElement("label");
+    languageLabel.htmlFor = "languageSelector";
+    languageLabel.style.display = "block";
+    languageLabel.style.marginBottom = "8px";
+    languageLabel.style.fontWeight = "bold";
+
+    const languageSelector = document.createElement("select");
+    languageSelector.id = "languageSelector";
+    languageSelector.style.width = "100%";
+    languageSelector.style.padding = "12px";
+    languageSelector.style.border = "1px solid #ccc";
+    languageSelector.style.borderRadius = "10px";
+    languageSelector.style.fontSize = "15px";
+
+    [
+        ["en", "English"],
+        ["hr", "Hrvatski"],
+        ["sq", "Shqip"]
+    ].forEach(function (entry) {
+        const option = document.createElement("option");
+        option.value = entry[0];
+        option.textContent = entry[1];
+        languageSelector.appendChild(option);
+    });
+
+    languageBox.appendChild(languageLabel);
+    languageBox.appendChild(languageSelector);
+    main.insertBefore(languageBox, confirmation);
+
+    const errorKeys = {
+        "The agreement could not be loaded.": "loadError",
+        "No approved proposal is available.": "missingError"
+    };
+
+    let currentError = errorKeys[message.textContent.trim()] || null;
+
+    function setText(selector, key, parent) {
+        const element = (parent || document).querySelector(selector);
+
+        if (element) {
+            element.textContent = i18next.t(key);
+        }
+    }
+
+    function translateValue(value) {
+        const translation = resources[i18next.language].translation;
+
+        if (translation.values[value]) {
+            return translation.values[value];
+        }
+
+        const parts = value.split(" ");
+        const englishDays = resources.en.translation.days;
+        const englishPeriods = resources.en.translation.periods;
+
+        if (parts.length === 2) {
+            const dayIndex = englishDays.indexOf(parts[0]);
+            const periodIndex = englishPeriods.indexOf(parts[1]);
+
+            if (dayIndex >= 0 && periodIndex >= 0) {
+                return translation.days[dayIndex] +
+                    " — " + translation.periods[periodIndex];
+            }
+        }
+
+        return value;
+    }
+
+    function translateArray(key) {
+        const values = getSavedArray(key);
+
+        if (values.length === 0) {
+            return i18next.t("notSelected");
+        }
+
+        return values.map(translateValue).join(", ");
+    }
+
+    function updatePreferences() {
+        document.getElementById("communicationSummary").textContent =
+            translateArray("communicationPreferences");
+
+        const available = getAvailability();
+
+        document.getElementById("availabilitySummary").textContent =
+            available.length
+                ? available.map(translateValue).join(", ")
+                : i18next.t("notSelected");
+
+        document.getElementById("rolesSummary").textContent =
+            translateArray("preferredRoles");
+
+        const deadline = getSavedText("deadlineExpectations");
+
+        document.getElementById("deadlineSummary").textContent =
+            deadline ? translateValue(deadline) : i18next.t("notSelected");
+
+        document.getElementById("qualitySummary").textContent =
+            translateArray("qualityExpectations");
+    }
+
+    function updateApprovalDate() {
+        const element = document.getElementById("approvalDate");
+
+        if (!proposal || !proposal.approvedAt) {
+            element.textContent = i18next.t("dateUnavailable");
+            return;
+        }
+
+        const date = new Date(proposal.approvedAt);
+
+        if (Number.isNaN(date.getTime())) {
+            element.textContent = i18next.t("dateUnavailable");
+            return;
+        }
+
+        const locales = {
+            en: "en-US",
+            hr: "hr-HR",
+            sq: "sq-AL"
+        };
+
+        element.textContent = new Intl.DateTimeFormat(
+            locales[i18next.language] || "en-US",
+            {
+                dateStyle: "medium",
+                timeStyle: "short"
+            }
+        ).format(date);
+    }
+
+    function updateText() {
+        document.documentElement.lang = i18next.language;
+
+        document.title = dashboard.classList.contains("hidden")
+            ? i18next.t("title")
+            : i18next.t("dashboardTitle");
+
+        languageLabel.textContent = i18next.t("language");
+
+        setText(".back", "back", confirmation);
+        const back = confirmation.querySelector(".back");
+        back.textContent = "← " + i18next.t("back");
+
+        setText("#confirmationContent h1", "approvedTitle");
+        setText("#confirmationContent .subtitle", "subtitle");
+        setText("#confirmationContent .status", "status");
+        setText("#confirmationContent .notice", "notice");
+
+        const content = document.getElementById("confirmationContent");
+        const cards = content.querySelectorAll(".card");
+
+        setText("h2", "approvedProposal", cards[0]);
+
+        const agreementLabels = cards[0].querySelectorAll(".label");
+        agreementLabels[0].textContent = i18next.t("agreementTopic");
+        agreementLabels[1].textContent = i18next.t("proposedSolution");
+
+        setText("h2", "savedPreferences", cards[1]);
+
+        const preferenceKeys = [
+            "communication",
+            "availability",
+            "roles",
+            "deadlines",
+            "quality"
+        ];
+
+        const preferenceHeadings =
+            cards[1].querySelectorAll(".preference strong");
+
+        preferenceHeadings.forEach(function (element, index) {
+            element.textContent = i18next.t(preferenceKeys[index]);
+        });
+
+        setText("h2", "approvalDetails", cards[2]);
+        setText(".label", "approvalDate", cards[2]);
+        setText("#dashboardButton", "dashboardButton");
+
+        setText("#emptyState h2", "emptyTitle");
+        setText("#emptyState p", "emptyDescription");
+        setText("#emptyState a", "returnReview");
+
+        setText("#dashboardHeading", "dashboardTitle");
+        setText(".subtitle", "dashboardWelcome", dashboard);
+        setText(".notice", "dashboardNotice", dashboard);
+
+        const dashboardCards = dashboard.querySelectorAll(".card");
+
+        setText("h2", "yourProposal", dashboardCards[0]);
+
+        const dashboardLabels =
+            dashboardCards[0].querySelectorAll(".label");
+
+        dashboardLabels[0].textContent = i18next.t("topic");
+        dashboardLabels[1].textContent =
+            i18next.t("yourApprovedProposal");
+
+        setText("h2", "nextSteps", dashboardCards[1]);
+        setText("p", "nextStepsText", dashboardCards[1]);
+
+        setText("#reviewButton", "reviewButton");
+        setText("#preferencesButton", "preferencesButton");
+
+        if (proposal) {
+            const categories =
+                resources[i18next.language].translation.categories;
+
+            const translatedTopic =
+                categories[proposal.topic] || proposal.topic;
+
+            document.getElementById("agreementTopic").textContent =
+                translatedTopic;
+
+            document.getElementById("dashboardTopic").textContent =
+                translatedTopic;
+
+            updatePreferences();
+            updateApprovalDate();
+        }
+
+        if (currentError) {
+            message.textContent = i18next.t(currentError);
+        }
+    }
+
+    const observer = new MutationObserver(function () {
+        const text = message.textContent.trim();
+
+        if (!text) {
+            currentError = null;
+            return;
+        }
+
+        if (errorKeys[text]) {
+            currentError = errorKeys[text];
+        }
+
+        if (currentError) {
+            const translated = i18next.t(currentError);
+
+            if (text !== translated) {
+                message.textContent = translated;
+            }
+        }
+    });
+
+    let savedLanguage = "en";
+
+    try {
+        savedLanguage = localStorage.getItem("appLanguage") || "en";
+    } catch (error) {
+        savedLanguage = "en";
+    }
+
+    if (!resources[savedLanguage]) {
+        savedLanguage = "en";
+    }
+
+    i18next.init({
+        lng: savedLanguage,
+        fallbackLng: "en",
+        resources: resources
+    }).then(function () {
+        languageSelector.value = savedLanguage;
+
+        observer.observe(message, {
+            childList: true,
+            characterData: true,
+            subtree: true
+        });
+
+        updateText();
+
+        languageSelector.addEventListener("change", function () {
+            const selectedLanguage = languageSelector.value;
+
+            i18next.changeLanguage(selectedLanguage).then(function () {
+                try {
+                    localStorage.setItem("appLanguage", selectedLanguage);
+                } catch (error) {
+                }
+
+                updateText();
+            });
+        });
+
+        document.getElementById("dashboardButton")
+            .addEventListener("click", function () {
+                updateText();
+            });
+    });
+})();
+</script>
 </body>
 </html>

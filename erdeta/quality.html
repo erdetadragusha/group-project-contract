@@ -240,6 +240,218 @@
 
         });
     </script>
+<script src="https://cdn.jsdelivr.net/npm/i18next@23.16.8/dist/umd/i18next.min.js"></script>
 
+<script>
+(function () {
+    if (!window.i18next) return;
+
+    const resources = {
+        en: {
+            translation: {
+                title: "Quality Expectations",
+                question: "What is most important to you when it comes to the quality of your group project?",
+                instruction: "Select what matters most to you:",
+                accuracy: "Accuracy",
+                design: "Good design / usability",
+                clean: "Clean work",
+                documentation: "Detailed documentation",
+                other: "Other",
+                back: "Back",
+                next: "Next",
+                language: "Language",
+                requiredError: "Please select at least one quality expectation.",
+                loadError: "Previous quality preferences could not be loaded.",
+                saveError: "Could not save your quality preferences. Please try again."
+            }
+        },
+        hr: {
+            translation: {
+                title: "Očekivanja kvalitete",
+                question: "Što vam je najvažnije kada je riječ o kvaliteti grupnog projekta?",
+                instruction: "Odaberite što vam je najvažnije:",
+                accuracy: "Točnost",
+                design: "Dobar dizajn / jednostavnost korištenja",
+                clean: "Uredno obavljen posao",
+                documentation: "Detaljna dokumentacija",
+                other: "Ostalo",
+                back: "Natrag",
+                next: "Dalje",
+                language: "Jezik",
+                requiredError: "Odaberite barem jedno očekivanje kvalitete.",
+                loadError: "Prethodne postavke kvalitete nije moguće učitati.",
+                saveError: "Postavke kvalitete nije moguće spremiti. Pokušajte ponovno."
+            }
+        },
+        sq: {
+            translation: {
+                title: "Pritshmëritë për cilësinë",
+                question: "Çfarë është më e rëndësishme për ju kur bëhet fjalë për cilësinë e projektit në grup?",
+                instruction: "Zgjidhni çfarë ka më shumë rëndësi për ju:",
+                accuracy: "Saktësia",
+                design: "Dizajn i mirë / lehtësi në përdorim",
+                clean: "Punë e rregullt",
+                documentation: "Dokumentim i detajuar",
+                other: "Tjetër",
+                back: "Kthehu",
+                next: "Vazhdo",
+                language: "Gjuha",
+                requiredError: "Ju lutemi zgjidhni të paktën një pritshmëri për cilësinë.",
+                loadError: "Preferencat e mëparshme për cilësinë nuk mund të ngarkohen.",
+                saveError: "Preferencat për cilësinë nuk u ruajtën. Provoni përsëri."
+            }
+        }
+    };
+
+    const main = document.querySelector(".container");
+    const heading = main.querySelector("h1");
+    const question = main.querySelector("p");
+    const legend = main.querySelector("legend");
+    const backLink = main.querySelector(".back");
+    const nextButton = main.querySelector('button[type="submit"]');
+    const options = main.querySelectorAll(".option");
+    const messageElement = document.getElementById("message");
+
+    const languageBox = document.createElement("div");
+    languageBox.style.margin = "20px 0";
+
+    const languageLabel = document.createElement("label");
+    languageLabel.htmlFor = "languageSelector";
+    languageLabel.style.display = "block";
+    languageLabel.style.marginBottom = "8px";
+    languageLabel.style.fontWeight = "bold";
+
+    const languageSelector = document.createElement("select");
+    languageSelector.id = "languageSelector";
+    languageSelector.style.width = "100%";
+    languageSelector.style.padding = "12px";
+    languageSelector.style.border = "1px solid #ccc";
+    languageSelector.style.borderRadius = "10px";
+    languageSelector.style.fontSize = "15px";
+
+    [
+        ["en", "English"],
+        ["hr", "Hrvatski"],
+        ["sq", "Shqip"]
+    ].forEach(function (entry) {
+        const option = document.createElement("option");
+        option.value = entry[0];
+        option.textContent = entry[1];
+        languageSelector.appendChild(option);
+    });
+
+    languageBox.appendChild(languageLabel);
+    languageBox.appendChild(languageSelector);
+    main.insertBefore(languageBox, heading);
+
+    const qualityKeys = [
+        "accuracy",
+        "design",
+        "clean",
+        "documentation",
+        "other"
+    ];
+
+    const errorKeys = {
+        "Please select at least one quality expectation.": "requiredError",
+        "Previous quality preferences could not be loaded.": "loadError",
+        "Could not save your quality preferences. Please try again.": "saveError"
+    };
+
+    let currentError = null;
+
+    function updateText() {
+        document.documentElement.lang = i18next.language;
+        document.title = i18next.t("title");
+
+        heading.textContent = i18next.t("title");
+        question.textContent = i18next.t("question");
+        legend.textContent = i18next.t("instruction");
+        backLink.textContent = "← " + i18next.t("back");
+        nextButton.textContent = i18next.t("next");
+        languageLabel.textContent = i18next.t("language");
+
+        options.forEach(function (label, index) {
+            const textNode = Array.from(label.childNodes).find(function (node) {
+                return node.nodeType === 3 && node.textContent.trim();
+            });
+
+            if (textNode) {
+                textNode.textContent = " " + i18next.t(qualityKeys[index]);
+            }
+        });
+
+        if (currentError) {
+            messageElement.textContent = i18next.t(currentError);
+        }
+    }
+
+    const observer = new MutationObserver(function () {
+        const text = messageElement.textContent.trim();
+
+        if (!text) {
+            currentError = null;
+            return;
+        }
+
+        if (errorKeys[text]) {
+            currentError = errorKeys[text];
+        }
+
+        if (currentError) {
+            const translated = i18next.t(currentError);
+
+            if (text !== translated) {
+                messageElement.textContent = translated;
+            }
+        }
+    });
+
+    let savedLanguage = "en";
+
+    try {
+        savedLanguage = localStorage.getItem("appLanguage") || "en";
+    } catch (error) {
+        savedLanguage = "en";
+    }
+
+    if (!resources[savedLanguage]) {
+        savedLanguage = "en";
+    }
+
+    i18next.init({
+        lng: savedLanguage,
+        fallbackLng: "en",
+        resources: resources
+    }).then(function () {
+        languageSelector.value = savedLanguage;
+
+        observer.observe(messageElement, {
+            childList: true,
+            characterData: true,
+            subtree: true
+        });
+
+        if (errorKeys[messageElement.textContent.trim()]) {
+            currentError = errorKeys[messageElement.textContent.trim()];
+        }
+
+        updateText();
+
+        languageSelector.addEventListener("change", function () {
+            const selectedLanguage = languageSelector.value;
+
+            i18next.changeLanguage(selectedLanguage).then(function () {
+                try {
+                    localStorage.setItem("appLanguage", selectedLanguage);
+                } catch (error) {
+                }
+
+                updateText();
+            });
+        });
+    });
+})();
+</script>
 </body>
 </html>
