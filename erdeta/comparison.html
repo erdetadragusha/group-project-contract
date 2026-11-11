@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Preference Comparison</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6fb;
+            margin: 0;
+            padding: 20px;
+            color: #222;
+        }
+
+        .container {
+            background: white;
+            max-width: 500px;
+            margin: 40px auto;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .back {
+            color: #3458a4;
+            text-decoration: none;
+            font-size: 16px;
+        }
+
+        h1 {
+            font-size: 25px;
+            text-align: center;
+            color: #263b63;
+        }
+
+        p {
+            text-align: center;
+            color: #555;
+            line-height: 1.5;
+        }
+
+        .notice {
+            padding: 12px;
+            background-color: #fff7e6;
+            border: 1px solid #ead09a;
+            border-radius: 10px;
+            font-size: 13px;
+            line-height: 1.5;
+            margin: 20px 0;
+        }
+
+        .comparison-card {
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        h2 {
+            font-size: 17px;
+            margin: 0;
+            color: #263b63;
+        }
+
+        .status {
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .same {
+            background-color: #e1f5e8;
+            color: #176b37;
+        }
+
+        .different {
+            background-color: #fff0db;
+            color: #8a4900;
+        }
+
+        .missing {
+            background-color: #eeeeee;
+            color: #555;
+        }
+
+        .choices {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .choice {
+            padding: 12px;
+            background-color: #f4f6fb;
+            border-radius: 8px;
+            min-width: 0;
+        }
+
+        .choice strong {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 13px;
+            color: #263b63;
+        }
+
+        .choice span {
+            display: block;
+            font-size: 13px;
+            line-height: 1.5;
+            overflow-wrap: anywhere;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background-color: #3458a4;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 17px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+
+        button:hover {
+            background-color: #263b63;
+        }
+
+        button:focus-visible,
+        a:focus-visible {
+            outline: 3px solid #e09b24;
+            outline-offset: 3px;
+        }
+
+        #message {
+            color: #b42318;
+            font-size: 14px;
+        }
+
+        @media (max-width: 450px) {
+            .container {
+                padding: 20px;
+                margin: 15px auto;
+            }
+
+            .choices {
+                gap: 8px;
+            }
+
+            .choice {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <main class="container">
+
+        <a href="quality.html" class="back">
+            ← Back
+        </a>
+
+        <h1>Preference Comparison</h1>
+
+        <p>See how your preferences compare with your teammate's preferences.</p>
+
+        <div class="notice">
+            Demo comparison: The teammate's choices below are sample data.
+            Real team preferences will be connected through the database.
+        </div>
+
+        <div id="comparisonResults"></div>
+
+        <button type="button" id="nextButton">
+            View Disagreements
+        </button>
+
+        <p id="message" role="status" aria-live="polite"></p>
+
+    </main>
+
+    <script>
+        const results = document.getElementById("comparisonResults");
+        const message = document.getElementById("message");
+
+        function getSavedArray(key) {
+            try {
+                const value = JSON.parse(localStorage.getItem(key) || "[]");
+                return Array.isArray(value) ? value : [];
+            } catch (error) {
+                return [];
+            }
+        }
+
+        function getSavedText(key) {
+            try {
+                return localStorage.getItem(key) || "";
+            } catch (error) {
+                return "";
+            }
+        }
+
+        function getAvailability() {
+            try {
+                const value = JSON.parse(
+                    localStorage.getItem("weeklyAvailability") || "null"
+                );
+
+                if (!value) {
+                    return [];
+                }
+
+                const times = Array.isArray(value.times)
+                    ? value.times.map(function(time) {
+                        return time.replace("-", " ");
+                    })
+                    : [];
+
+                if (value.flexible === true) {
+                    times.push("Flexible schedule");
+                }
+
+                return times;
+            } catch (error) {
+                return [];
+            }
+        }
+
+        function sameChoices(first, second) {
+            if (first.length === 0) {
+                return false;
+            }
+
+            const a = [...new Set(first)].sort();
+            const b = [...new Set(second)].sort();
+
+            return JSON.stringify(a) === JSON.stringify(b);
+        }
+
+        const preferences = [
+            {
+                category: "Communication",
+                mine: getSavedArray("communicationPreferences"),
+                teammate: ["In-app Chat"]
+            },
+            {
+                category: "Availability",
+                mine: getAvailability(),
+                teammate: ["Monday Morning", "Wednesday Evening"]
+            },
+            {
+                category: "Preferred Roles",
+                mine: getSavedArray("preferredRoles"),
+                teammate: ["Development", "Testing"]
+            },
+            {
+                category: "Deadlines",
+                mine: getSavedText("deadlineExpectations")
+                    ? [getSavedText("deadlineExpectations")]
+                    : [],
+                teammate: ["Strict deadlines"]
+            },
+            {
+                category: "Quality",
+                mine: getSavedArray("qualityExpectations"),
+                teammate: ["Accuracy", "Clean work"]
+            }
+        ];
+
+        const comparison = preferences.map(function(item) {
+            let status = "Different";
+
+            if (item.mine.length === 0) {
+                status = "Not set";
+            } else if (sameChoices(item.mine, item.teammate)) {
+                status = "Same";
+            }
+
+            return {
+                category: item.category,
+                mine: item.mine,
+                teammate: item.teammate,
+                status: status
+            };
+        });
+
+        comparison.forEach(function(item) {
+            const card = document.createElement("section");
+            card.className = "comparison-card";
+
+            const header = document.createElement("div");
+            header.className = "card-header";
+
+            const title = document.createElement("h2");
+            title.textContent = item.category;
+
+            const status = document.createElement("span");
+            status.className = "status";
+
+            if (item.status === "Same") {
+                status.classList.add("same");
+            } else if (item.status === "Different") {
+                status.classList.add("different");
+            } else {
+                status.classList.add("missing");
+            }
+
+            status.textContent = item.status;
+
+            header.appendChild(title);
+            header.appendChild(status);
+
+            const choices = document.createElement("div");
+            choices.className = "choices";
+
+            const myChoice = document.createElement("div");
+            myChoice.className = "choice";
+
+            const myHeading = document.createElement("strong");
+            myHeading.textContent = "Your choice";
+
+            const myText = document.createElement("span");
+            myText.textContent = item.mine.length
+                ? item.mine.join(", ")
+                : "Not selected";
+
+            myChoice.appendChild(myHeading);
+            myChoice.appendChild(myText);
+
+            const teammateChoice = document.createElement("div");
+            teammateChoice.className = "choice";
+
+            const teammateHeading = document.createElement("strong");
+            teammateHeading.textContent = "Example teammate";
+
+            const teammateText = document.createElement("span");
+            teammateText.textContent = item.teammate.join(", ");
+
+            teammateChoice.appendChild(teammateHeading);
+            teammateChoice.appendChild(teammateText);
+
+            choices.appendChild(myChoice);
+            choices.appendChild(teammateChoice);
+
+            card.appendChild(header);
+            card.appendChild(choices);
+
+            results.appendChild(card);
+        });
+
+        document.getElementById("nextButton")
+            .addEventListener("click", function() {
+
+                try {
+                    localStorage.setItem(
+                        "groupComparison",
+                        JSON.stringify(comparison)
+                    );
+
+                    window.location.href = "disagreements.html";
+
+                } catch (error) {
+                    message.textContent =
+                        "Could not save the comparison. Please try again.";
+                }
+            });
+    </script>
+<script src="https://cdn.jsdelivr.net/npm/i18next@23.16.8/dist/umd/i18next.min.js"></script>
+
+<script>
+(function () {
+    if (!window.i18next) return;
+
+    const resources = {
+        en: {
+            translation: {
+                title: "Preference Comparison",
+                description: "See how your preferences compare with your teammate's preferences.",
+                notice: "Demo comparison: The teammate's choices below are sample data. Real team preferences will be connected through the database.",
+                back: "Back",
+                next: "View Disagreements",
+                language: "Language",
+                yourChoice: "Your choice",
+                teammate: "Example teammate",
+                notSelected: "Not selected",
+                saveError: "Could not save the comparison. Please try again.",
+                categories: {
+                    Communication: "Communication",
+                    Availability: "Availability",
+                    "Preferred Roles": "Preferred Roles",
+                    Deadlines: "Deadlines",
+                    Quality: "Quality"
+                },
+                statuses: {
+                    Same: "Same",
+                    Different: "Different",
+                    "Not set": "Not set"
+                },
+                values: {
+                    Email: "Email",
+                    "In-app Chat": "In-app Chat",
+                    Discord: "Discord",
+                    "Zoom / Meet": "Zoom / Meet",
+                    Other: "Other",
+                    Research: "Research",
+                    Design: "Design",
+                    Development: "Development",
+                    Testing: "Testing",
+                    Documentation: "Documentation",
+                    "Strict deadlines": "Strict deadlines",
+                    "Some flexibility": "Some flexibility",
+                    Flexible: "Flexible",
+                    Accuracy: "Accuracy",
+                    "Good design / usability": "Good design / usability",
+                    "Clean work": "Clean work",
+                    "Detailed documentation": "Detailed documentation",
+                    "Flexible schedule": "Flexible schedule"
+                },
+                days: {
+                    Monday: "Monday",
+                    Tuesday: "Tuesday",
+                    Wednesday: "Wednesday",
+                    Thursday: "Thursday",
+                    Friday: "Friday",
+                    Saturday: "Saturday",
+                    Sunday: "Sunday"
+                },
+                periods: {
+                    Morning: "Morning",
+                    Afternoon: "Afternoon",
+                    Evening: "Evening"
+                }
+            }
+        },
+        hr: {
+            translation: {
+                title: "Usporedba preferencija",
+                description: "Pogledajte kako se vaše preferencije uspoređuju s preferencijama člana tima.",
+                notice: "Demonstracijska usporedba: Odabiri člana tima prikazani ispod samo su primjeri. Stvarne preferencije bit će povezane putem baze podataka.",
+                back: "Natrag",
+                next: "Pregled neslaganja",
+                language: "Jezik",
+                yourChoice: "Vaš odabir",
+                teammate: "Primjer člana tima",
+                notSelected: "Nije odabrano",
+                saveError: "Usporedbu nije moguće spremiti. Pokušajte ponovno.",
+                categories: {
+                    Communication: "Komunikacija",
+                    Availability: "Dostupnost",
+                    "Preferred Roles": "Željene uloge",
+                    Deadlines: "Rokovi",
+                    Quality: "Kvaliteta"
+                },
+                statuses: {
+                    Same: "Isto",
+                    Different: "Različito",
+                    "Not set": "Nije postavljeno"
+                },
+                values: {
+                    Email: "E-pošta",
+                    "In-app Chat": "Razgovor u aplikaciji",
+                    Discord: "Discord",
+                    "Zoom / Meet": "Zoom / Meet",
+                    Other: "Ostalo",
+                    Research: "Istraživanje",
+                    Design: "Dizajn",
+                    Development: "Razvoj",
+                    Testing: "Testiranje",
+                    Documentation: "Dokumentacija",
+                    "Strict deadlines": "Strogi rokovi",
+                    "Some flexibility": "Određena fleksibilnost",
+                    Flexible: "Fleksibilni rokovi",
+                    Accuracy: "Točnost",
+                    "Good design / usability": "Dobar dizajn / jednostavnost korištenja",
+                    "Clean work": "Uredno obavljen posao",
+                    "Detailed documentation": "Detaljna dokumentacija",
+                    "Flexible schedule": "Fleksibilan raspored"
+                },
+                days: {
+                    Monday: "Ponedjeljak",
+                    Tuesday: "Utorak",
+                    Wednesday: "Srijeda",
+                    Thursday: "Četvrtak",
+                    Friday: "Petak",
+                    Saturday: "Subota",
+                    Sunday: "Nedjelja"
+                },
+                periods: {
+                    Morning: "Jutro",
+                    Afternoon: "Poslijepodne",
+                    Evening: "Večer"
+                }
+            }
+        },
+        sq: {
+            translation: {
+                title: "Krahasimi i preferencave",
+                description: "Shihni si krahasohen preferencat tuaja me preferencat e anëtarit të ekipit.",
+                notice: "Krahasim demonstrues: Zgjedhjet e anëtarit të ekipit më poshtë janë vetëm shembuj. Preferencat e vërteta do të lidhen përmes bazës së të dhënave.",
+                back: "Kthehu",
+                next: "Shiko mospajtimet",
+                language: "Gjuha",
+                yourChoice: "Zgjedhja juaj",
+                teammate: "Shembull i anëtarit të ekipit",
+                notSelected: "Nuk është zgjedhur",
+                saveError: "Krahasimi nuk u ruajt. Provoni përsëri.",
+                categories: {
+                    Communication: "Komunikimi",
+                    Availability: "Disponueshmëria",
+                    "Preferred Roles": "Rolet e preferuara",
+                    Deadlines: "Afatet",
+                    Quality: "Cilësia"
+                },
+                statuses: {
+                    Same: "Njësoj",
+                    Different: "Ndryshe",
+                    "Not set": "Nuk është caktuar"
+                },
+                values: {
+                    Email: "Email",
+                    "In-app Chat": "Bisedë në aplikacion",
+                    Discord: "Discord",
+                    "Zoom / Meet": "Zoom / Meet",
+                    Other: "Tjetër",
+                    Research: "Hulumtim",
+                    Design: "Dizajn",
+                    Development: "Zhvillim",
+                    Testing: "Testim",
+                    Documentation: "Dokumentim",
+                    "Strict deadlines": "Afate të rrepta",
+                    "Some flexibility": "Pak fleksibilitet",
+                    Flexible: "Afate fleksibile",
+                    Accuracy: "Saktësia",
+                    "Good design / usability": "Dizajn i mirë / lehtësi në përdorim",
+                    "Clean work": "Punë e rregullt",
+                    "Detailed documentation": "Dokumentim i detajuar",
+                    "Flexible schedule": "Orar fleksibil"
+                },
+                days: {
+                    Monday: "E hënë",
+                    Tuesday: "E martë",
+                    Wednesday: "E mërkurë",
+                    Thursday: "E enjte",
+                    Friday: "E premte",
+                    Saturday: "E shtunë",
+                    Sunday: "E diel"
+                },
+                periods: {
+                    Morning: "Mëngjes",
+                    Afternoon: "Pasdite",
+                    Evening: "Mbrëmje"
+                }
+            }
+        }
+    };
+
+    const main = document.querySelector(".container");
+    const heading = main.querySelector("h1");
+    const description = main.querySelector("p");
+    const notice = main.querySelector(".notice");
+    const backLink = main.querySelector(".back");
+    const nextButton = document.getElementById("nextButton");
+    const messageElement = document.getElementById("message");
+
+    const languageBox = document.createElement("div");
+    languageBox.style.margin = "20px 0";
+
+    const languageLabel = document.createElement("label");
+    languageLabel.htmlFor = "languageSelector";
+    languageLabel.style.display = "block";
+    languageLabel.style.marginBottom = "8px";
+    languageLabel.style.fontWeight = "bold";
+
+    const languageSelector = document.createElement("select");
+    languageSelector.id = "languageSelector";
+    languageSelector.style.width = "100%";
+    languageSelector.style.padding = "12px";
+    languageSelector.style.border = "1px solid #ccc";
+    languageSelector.style.borderRadius = "10px";
+    languageSelector.style.fontSize = "15px";
+
+    [
+        ["en", "English"],
+        ["hr", "Hrvatski"],
+        ["sq", "Shqip"]
+    ].forEach(function (entry) {
+        const option = document.createElement("option");
+        option.value = entry[0];
+        option.textContent = entry[1];
+        languageSelector.appendChild(option);
+    });
+
+    languageBox.appendChild(languageLabel);
+    languageBox.appendChild(languageSelector);
+    main.insertBefore(languageBox, heading);
+
+    function translateValue(value) {
+        const directKey = "values." + value;
+
+        if (i18next.exists(directKey)) {
+            return i18next.t(directKey);
+        }
+
+        const parts = value.split(" ");
+
+        if (parts.length === 2 &&
+            i18next.exists("days." + parts[0]) &&
+            i18next.exists("periods." + parts[1])) {
+
+            return i18next.t("days." + parts[0]) +
+                " — " + i18next.t("periods." + parts[1]);
+        }
+
+        return value;
+    }
+
+    function translateChoices(values) {
+        if (!values || values.length === 0) {
+            return i18next.t("notSelected");
+        }
+
+        return values.map(translateValue).join(", ");
+    }
+
+    function updateText() {
+        document.documentElement.lang = i18next.language;
+        document.title = i18next.t("title");
+
+        heading.textContent = i18next.t("title");
+        description.textContent = i18next.t("description");
+        notice.textContent = i18next.t("notice");
+        backLink.textContent = "← " + i18next.t("back");
+        nextButton.textContent = i18next.t("next");
+        languageLabel.textContent = i18next.t("language");
+
+        const cards = document.querySelectorAll(".comparison-card");
+
+        cards.forEach(function (card, index) {
+            const item = comparison[index];
+
+            if (!item) return;
+
+            card.querySelector("h2").textContent =
+                i18next.t("categories." + item.category);
+
+            card.querySelector(".status").textContent =
+                i18next.t("statuses." + item.status);
+
+            const choiceHeadings = card.querySelectorAll(".choice strong");
+            const choiceTexts = card.querySelectorAll(".choice span");
+
+            choiceHeadings[0].textContent = i18next.t("yourChoice");
+            choiceHeadings[1].textContent = i18next.t("teammate");
+
+            choiceTexts[0].textContent = translateChoices(item.mine);
+            choiceTexts[1].textContent = translateChoices(item.teammate);
+        });
+
+        if (messageElement.textContent.trim()) {
+            messageElement.textContent = i18next.t("saveError");
+        }
+    }
+
+    const observer = new MutationObserver(function () {
+        const originalError =
+            "Could not save the comparison. Please try again.";
+
+        if (messageElement.textContent.trim() === originalError) {
+            const translated = i18next.t("saveError");
+
+            if (originalError !== translated) {
+                messageElement.textContent = translated;
+            }
+        }
+    });
+
+    let savedLanguage = "en";
+
+    try {
+        savedLanguage = localStorage.getItem("appLanguage") || "en";
+    } catch (error) {
+        savedLanguage = "en";
+    }
+
+    if (!resources[savedLanguage]) {
+        savedLanguage = "en";
+    }
+
+    i18next.init({
+        lng: savedLanguage,
+        fallbackLng: "en",
+        resources: resources
+    }).then(function () {
+        languageSelector.value = savedLanguage;
+
+        observer.observe(messageElement, {
+            childList: true,
+            characterData: true,
+            subtree: true
+        });
+
+        updateText();
+
+        languageSelector.addEventListener("change", function () {
+            const selectedLanguage = languageSelector.value;
+
+            i18next.changeLanguage(selectedLanguage).then(function () {
+                try {
+                    localStorage.setItem("appLanguage", selectedLanguage);
+                } catch (error) {
+                }
+
+                updateText();
+            });
+        });
+    });
+})();
+</script>
+</body>
+</html>
