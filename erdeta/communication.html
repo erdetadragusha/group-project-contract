@@ -168,7 +168,8 @@
         </form>
 
     </main>
-
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="../mateo/supabase-client.js"></script>
     <script>
 
         // Get the form and message area
@@ -199,7 +200,7 @@
         }
 
         // Handle the Next button
-        form.addEventListener("submit", function(event) {
+        form.addEventListener("submit", async function(event) {
 
             event.preventDefault();
 
@@ -229,8 +230,37 @@
                     JSON.stringify(selected)
                 );
 
-                // Open Screen 2: Weekly Availability
-                window.location.href = "availability.html";
+              // Save preferences to Supabase
+const teamId = new URLSearchParams(window.location.search).get("teamId");
+
+if (!teamId) {
+    throw new Error("Missing team ID");
+}
+
+const { data: authData, error: authError } =
+    await database.auth.getUser();
+
+if (authError || !authData.user) {
+    throw new Error("Please log in first");
+}
+
+const { error: saveError } = await database
+    .from("team_preferences")
+    .upsert({
+        team_id: teamId,
+        user_id: authData.user.id,
+        communication: selected
+    }, {
+        onConflict: "team_id,user_id"
+    });
+
+if (saveError) {
+    throw saveError;
+}
+
+// Open Screen 2
+window.location.href =
+    "availability.html?teamId=" + encodeURIComponent(teamId);
 
             } catch (error) {
 
