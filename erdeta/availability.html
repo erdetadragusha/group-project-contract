@@ -179,6 +179,8 @@
         </form>
 
     </main>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="../mateo/supabase-client.js"></script>
 
     <script>
         const days = [
@@ -220,27 +222,63 @@
             scheduleBody.appendChild(row);
         });
 
-        try {
-            const saved = JSON.parse(
-                localStorage.getItem("weeklyAvailability") || "null"
-            );
+      async function loadAvailability() {
+    const nextButton = document.querySelector(
+        '#availabilityForm button[type="submit"]'
+    );
 
-            if (saved && Array.isArray(saved.times)) {
-                document.querySelectorAll(
-                    'input[name="availability"]'
-                ).forEach(function(input) {
-                    input.checked = saved.times.includes(input.value);
-                });
+    nextButton.disabled = true;
 
-                flexibleInput.checked = saved.flexible === true;
-            }
+    try {
+        const teamId = new URLSearchParams(
+            window.location.search
+        ).get("teamId");
 
-        } catch (error) {
-            message.textContent = "Previous choices could not be loaded.";
+        if (!teamId) {
+            throw new Error("Missing team ID");
         }
 
-        document.getElementById("availabilityForm")
-            .addEventListener("submit", function(event) {
+        const { data: authData, error: authError } =
+            await database.auth.getUser();
+
+        if (authError || !authData.user) {
+            throw new Error("Not signed in");
+        }
+
+        const { data, error } = await database
+            .from("team_preferences")
+            .select("availability")
+            .eq("team_id", teamId)
+            .eq("user_id", authData.user.id)
+            .maybeSingle();
+
+        if (error) {
+            throw error;
+        }
+
+        const saved = data?.availability || {
+            times: [],
+            flexible: false
+        };
+
+        document.querySelectorAll(
+            'input[name="availability"]'
+        ).forEach(function(input) {
+            input.checked = saved.times.includes(input.value);
+        });
+
+        flexibleInput.checked = saved.flexible === true;
+        nextButton.disabled = false;
+
+    } catch (error) {
+        message.textContent =
+            "Previous choices could not be loaded.";
+    }
+}
+
+loadAvailability();
+      document.getElementById("availabilityForm")
+            .addEventListener("submit", async function(event) {
 
                 event.preventDefault();
 
@@ -269,7 +307,55 @@
                         })
                     );
 
-                    window.location.href = "roles.html";
+                    const teamId = new URLSearchParams(window.location.search).get("teamId");
+
+if (!teamId) {
+    throw new Error("Missing team ID");
+}
+
+const { data: authData, error: authError } =
+    await database.auth.getUser();
+
+if (authError || !authData.user) {
+    throw new Error("Please log in first");
+}
+
+const { data: updated, error: updateError } = await database
+    .from("team_preferences")
+    .update({
+        availability: {
+            times: selected,
+            flexible: flexible
+        },
+        updated_at: new Date().toISOString()
+    })
+    .eq("team_id", teamId)
+    .eq("user_id", authData.user.id)
+    .select("team_id");
+
+if (updateError) {
+    throw updateError;
+}
+
+if (updated.length === 0) {
+    const { error: insertError } = await database
+        .from("team_preferences")
+        .insert({
+            team_id: teamId,
+            user_id: authData.user.id,
+            availability: {
+                times: selected,
+                flexible: flexible
+            }
+        });
+
+    if (insertError) {
+        throw insertError;
+    }
+}
+
+window.location.href =
+    "roles.html?teamId=" + encodeURIComponent(teamId);
 
                 } catch (error) {
                     message.textContent =
@@ -348,6 +434,7 @@
     const nextButton = main.querySelector('button[type="submit"]');
     const flexibleLabel = main.querySelector(".flexible");
     const message = document.getElementById("message");
+    document.querySelector(".back").href = "communication.html" + window.location.search;
 
     const languageBox = document.createElement("div");
     languageBox.style.margin = "20px 0";
