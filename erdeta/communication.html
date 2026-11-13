@@ -176,29 +176,51 @@
         const form = document.getElementById("preferencesForm");
         const message = document.getElementById("message");
 
-        // Load previously saved preferences
-        try {
-            const savedPreferences = JSON.parse(
-                localStorage.getItem("communicationPreferences") || "[]"
-            );
+        async function loadPreferences() {
+    const nextButton = form.querySelector('button[type="submit"]');
+    nextButton.disabled = true;
 
-            if (Array.isArray(savedPreferences)) {
-                document.querySelectorAll(
-                    'input[name="communication"]'
-                ).forEach(function(input) {
+    try {
+        const teamId = new URLSearchParams(window.location.search).get("teamId");
 
-                    if (savedPreferences.includes(input.value)) {
-                        input.checked = true;
-                    }
-
-                });
-            }
-
-        } catch (error) {
-            message.textContent =
-                "Previous preferences could not be loaded.";
+        if (!teamId) {
+            throw new Error("Missing team ID");
         }
 
+        const { data: authData, error: authError } =
+            await database.auth.getUser();
+
+        if (authError || !authData.user) {
+            throw new Error("Not signed in");
+        }
+
+        const { data, error } = await database
+            .from("team_preferences")
+            .select("communication")
+            .eq("team_id", teamId)
+            .eq("user_id", authData.user.id)
+            .maybeSingle();
+
+        if (error) {
+            throw error;
+        }
+
+        const savedPreferences = data?.communication || [];
+
+        document.querySelectorAll('input[name="communication"]')
+            .forEach(function(input) {
+                input.checked = savedPreferences.includes(input.value);
+            });
+
+        nextButton.disabled = false;
+
+    } catch (error) {
+        message.textContent =
+            "Previous preferences could not be loaded.";
+    }
+}
+
+loadPreferences();
         // Handle the Next button
         form.addEventListener("submit", async function(event) {
 
@@ -244,18 +266,32 @@ if (authError || !authData.user) {
     throw new Error("Please log in first");
 }
 
-const { error: saveError } = await database
+const { data: updated, error: updateError } = await database
     .from("team_preferences")
-    .upsert({
-        team_id: teamId,
-        user_id: authData.user.id,
-        communication: selected
-    }, {
-        onConflict: "team_id,user_id"
-    });
+    .update({
+        communication: selected,
+        updated_at: new Date().toISOString()
+    })
+    .eq("team_id", teamId)
+    .eq("user_id", authData.user.id)
+    .select("team_id");
 
-if (saveError) {
-    throw saveError;
+if (updateError) {
+    throw updateError;
+}
+
+if (updated.length === 0) {
+    const { error: insertError } = await database
+        .from("team_preferences")
+        .insert({
+            team_id: teamId,
+            user_id: authData.user.id,
+            communication: selected
+        });
+
+    if (insertError) {
+        throw insertError;
+    }
 }
 
 // Open Screen 2
