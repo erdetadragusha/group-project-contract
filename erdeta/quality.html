@@ -1,10 +1,9 @@
+
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Quality Expectations</title>
 
     <style>
@@ -26,7 +25,7 @@
             margin: 40px auto;
             padding: 30px;
             border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
 
         .back {
@@ -101,11 +100,35 @@
             background-color: #263b63;
         }
 
+        button:disabled {
+            opacity: 0.65;
+            cursor: not-allowed;
+        }
+
         button:focus-visible,
         input:focus-visible,
-        a:focus-visible {
+        a:focus-visible,
+        select:focus-visible {
             outline: 3px solid #e09b24;
             outline-offset: 3px;
+        }
+
+        .language-box {
+            margin: 20px 0;
+        }
+
+        .language-box label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        .language-box select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            font-size: 15px;
         }
 
         #message {
@@ -120,96 +143,275 @@
             }
         }
     </style>
-
 </head>
 
 <body>
-
     <main class="container">
 
-        <a href="deadlines.html" class="back">
+        <a href="deadlines.html" class="back" id="backLink">
             ← Back
         </a>
 
-        <h1>Quality Expectations</h1>
+        <div class="language-box">
+            <label for="languageSelector" data-i18n="language">
+                Language
+            </label>
 
-        <p>What is most important to you when it comes to the quality of your group project?</p>
+            <select id="languageSelector">
+                <option value="en">English</option>
+                <option value="hr">Hrvatski</option>
+                <option value="sq">Shqip</option>
+            </select>
+        </div>
+
+        <h1 data-i18n="title">Quality Expectations</h1>
+
+        <p data-i18n="question">
+            What is most important to you when it comes to the quality of your group project?
+        </p>
 
         <form id="qualityForm">
-
             <fieldset>
-
-                <legend>Select what matters most to you:</legend>
+                <legend data-i18n="instruction">
+                    Select what matters most to you:
+                </legend>
 
                 <label class="option">
                     <input type="checkbox" name="quality" value="Accuracy">
-                    Accuracy
+                    <span data-i18n="accuracy">Accuracy</span>
                 </label>
 
                 <label class="option">
                     <input type="checkbox" name="quality" value="Good design / usability">
-                    Good design / usability
+                    <span data-i18n="design">Good design / usability</span>
                 </label>
 
                 <label class="option">
                     <input type="checkbox" name="quality" value="Clean work">
-                    Clean work
+                    <span data-i18n="clean">Clean work</span>
                 </label>
 
                 <label class="option">
                     <input type="checkbox" name="quality" value="Detailed documentation">
-                    Detailed documentation
+                    <span data-i18n="documentation">Detailed documentation</span>
                 </label>
 
                 <label class="option">
                     <input type="checkbox" name="quality" value="Other">
-                    Other
+                    <span data-i18n="other">Other</span>
                 </label>
-
             </fieldset>
 
-            <button type="submit">Next</button>
+            <button type="submit" id="nextButton" disabled data-i18n="next">
+                Next
+            </button>
 
             <p id="message" role="status" aria-live="polite"></p>
-
         </form>
-
     </main>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+    <script src="../mateo/supabase-client.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/i18next@23.16.8/dist/umd/i18next.min.js"></script>
+
     <script>
+        const resources = {
+            en: {
+                translation: {
+                    title: "Quality Expectations",
+                    question: "What is most important to you when it comes to the quality of your group project?",
+                    instruction: "Select what matters most to you:",
+                    accuracy: "Accuracy",
+                    design: "Good design / usability",
+                    clean: "Clean work",
+                    documentation: "Detailed documentation",
+                    other: "Other",
+                    back: "Back",
+                    next: "Next",
+                    language: "Language",
+                    requiredError: "Please select at least one quality expectation.",
+                    loadError: "Previous quality preferences could not be loaded.",
+                    saveError: "Could not save your quality preferences. Please try again.",
+                    teamError: "Please open this page from your team.",
+                    loginError: "Please sign in through the team setup first.",
+                    loading: "Loading your quality preferences...",
+                    saving: "Saving your quality preferences..."
+                }
+            },
+
+            hr: {
+                translation: {
+                    title: "Očekivanja kvalitete",
+                    question: "Što vam je najvažnije kada je riječ o kvaliteti grupnog projekta?",
+                    instruction: "Odaberite što vam je najvažnije:",
+                    accuracy: "Točnost",
+                    design: "Dobar dizajn / jednostavnost korištenja",
+                    clean: "Uredno obavljen posao",
+                    documentation: "Detaljna dokumentacija",
+                    other: "Ostalo",
+                    back: "Natrag",
+                    next: "Dalje",
+                    language: "Jezik",
+                    requiredError: "Odaberite barem jedno očekivanje kvalitete.",
+                    loadError: "Prethodne postavke kvalitete nije moguće učitati.",
+                    saveError: "Postavke kvalitete nije moguće spremiti. Pokušajte ponovno.",
+                    teamError: "Otvorite ovu stranicu iz svojeg tima.",
+                    loginError: "Najprije se prijavite putem postavljanja tima.",
+                    loading: "Učitavanje postavki kvalitete...",
+                    saving: "Spremanje postavki kvalitete..."
+                }
+            },
+
+            sq: {
+                translation: {
+                    title: "Pritshmëritë për cilësinë",
+                    question: "Çfarë është më e rëndësishme për ju kur bëhet fjalë për cilësinë e projektit në grup?",
+                    instruction: "Zgjidhni çfarë ka më shumë rëndësi për ju:",
+                    accuracy: "Saktësia",
+                    design: "Dizajn i mirë / lehtësi në përdorim",
+                    clean: "Punë e rregullt",
+                    documentation: "Dokumentim i detajuar",
+                    other: "Tjetër",
+                    back: "Kthehu",
+                    next: "Vazhdo",
+                    language: "Gjuha",
+                    requiredError: "Ju lutemi zgjidhni të paktën një pritshmëri për cilësinë.",
+                    loadError: "Preferencat e mëparshme për cilësinë nuk mund të ngarkohen.",
+                    saveError: "Preferencat për cilësinë nuk u ruajtën. Provoni përsëri.",
+                    teamError: "Hapeni këtë faqe nga ekipi juaj.",
+                    loginError: "Ju lutemi hyni fillimisht përmes ekipit.",
+                    loading: "Duke ngarkuar preferencat për cilësinë...",
+                    saving: "Duke ruajtur preferencat për cilësinë..."
+                }
+            }
+        };
+
         const form = document.getElementById("qualityForm");
         const message = document.getElementById("message");
+        const nextButton = document.getElementById("nextButton");
+        const backLink = document.getElementById("backLink");
+        const languageSelector = document.getElementById("languageSelector");
+
         const checkboxes = document.querySelectorAll(
             'input[name="quality"]'
         );
 
-        try {
-            const savedQuality = JSON.parse(
-                localStorage.getItem("qualityExpectations") || "[]"
-            );
+        const teamId = new URLSearchParams(
+            window.location.search
+        ).get("teamId");
 
-            if (Array.isArray(savedQuality)) {
+        if (teamId) {
+            backLink.href =
+                "deadlines.html?teamId=" + encodeURIComponent(teamId);
+        }
+
+        let statusKey = null;
+        let ready = false;
+
+        function showStatus(key) {
+            statusKey = key;
+            message.textContent = key ? i18next.t(key) : "";
+        }
+
+        function updateLanguage() {
+            document.documentElement.lang = i18next.language;
+            document.title = i18next.t("title");
+
+            document.querySelectorAll("[data-i18n]").forEach(function(element) {
+                const key = element.getAttribute("data-i18n");
+                element.textContent = i18next.t(key);
+            });
+
+            backLink.textContent = "← " + i18next.t("back");
+            languageSelector.value = i18next.language;
+
+            if (statusKey) {
+                message.textContent = i18next.t(statusKey);
+            }
+        }
+
+        function saveLocalCopy(quality) {
+            try {
+                localStorage.setItem(
+                    "qualityExpectations",
+                    JSON.stringify(quality)
+                );
+            } catch (error) {
+            }
+        }
+
+        async function getCurrentUser() {
+            const { data, error } = await database.auth.getUser();
+
+            if (error || !data.user) {
+                throw new Error("NOT_SIGNED_IN");
+            }
+
+            return data.user;
+        }
+
+        async function loadQuality() {
+            nextButton.disabled = true;
+            showStatus("loading");
+
+            if (!teamId) {
+                showStatus("teamError");
+                return;
+            }
+
+            try {
+                const user = await getCurrentUser();
+
+                const { data, error } = await database
+                    .from("team_preferences")
+                    .select("quality")
+                    .eq("team_id", teamId)
+                    .eq("user_id", user.id)
+                    .maybeSingle();
+
+                if (error) {
+                    throw error;
+                }
+
+                const savedQuality = Array.isArray(data?.quality)
+                    ? data.quality
+                    : [];
+
                 checkboxes.forEach(function(checkbox) {
                     checkbox.checked = savedQuality.includes(
                         checkbox.value
                     );
                 });
-            }
 
-        } catch (error) {
-            message.textContent =
-                "Previous quality preferences could not be loaded.";
+                saveLocalCopy(savedQuality);
+
+                ready = true;
+                nextButton.disabled = false;
+                showStatus(null);
+
+            } catch (error) {
+                if (error.message === "NOT_SIGNED_IN") {
+                    showStatus("loginError");
+                } else {
+                    showStatus("loadError");
+                }
+            }
         }
 
         checkboxes.forEach(function(checkbox) {
             checkbox.addEventListener("change", function() {
-                message.textContent = "";
+                if (ready) {
+                    showStatus(null);
+                }
             });
         });
 
-        form.addEventListener("submit", function(event) {
-
+        form.addEventListener("submit", async function(event) {
             event.preventDefault();
+
+            if (!ready || nextButton.disabled) {
+                return;
+            }
 
             const selected = Array.from(
                 document.querySelectorAll(
@@ -220,238 +422,97 @@
             });
 
             if (selected.length === 0) {
-                message.textContent =
-                    "Please select at least one quality expectation.";
+                showStatus("requiredError");
                 return;
             }
 
+            nextButton.disabled = true;
+            showStatus("saving");
+
             try {
-                localStorage.setItem(
-                    "qualityExpectations",
-                    JSON.stringify(selected)
-                );
+                const user = await getCurrentUser();
 
-                window.location.href = "comparison.html";
+                const { data: updated, error: updateError } = await database
+                    .from("team_preferences")
+                    .update({
+                        quality: selected,
+                        updated_at: new Date().toISOString()
+                    })
+                    .eq("team_id", teamId)
+                    .eq("user_id", user.id)
+                    .select("team_id");
 
-            } catch (error) {
-                message.textContent =
-                    "Could not save your quality preferences. Please try again.";
-            }
-
-        });
-    </script>
-<script src="https://cdn.jsdelivr.net/npm/i18next@23.16.8/dist/umd/i18next.min.js"></script>
-
-<script>
-(function () {
-    if (!window.i18next) return;
-
-    const resources = {
-        en: {
-            translation: {
-                title: "Quality Expectations",
-                question: "What is most important to you when it comes to the quality of your group project?",
-                instruction: "Select what matters most to you:",
-                accuracy: "Accuracy",
-                design: "Good design / usability",
-                clean: "Clean work",
-                documentation: "Detailed documentation",
-                other: "Other",
-                back: "Back",
-                next: "Next",
-                language: "Language",
-                requiredError: "Please select at least one quality expectation.",
-                loadError: "Previous quality preferences could not be loaded.",
-                saveError: "Could not save your quality preferences. Please try again."
-            }
-        },
-        hr: {
-            translation: {
-                title: "Očekivanja kvalitete",
-                question: "Što vam je najvažnije kada je riječ o kvaliteti grupnog projekta?",
-                instruction: "Odaberite što vam je najvažnije:",
-                accuracy: "Točnost",
-                design: "Dobar dizajn / jednostavnost korištenja",
-                clean: "Uredno obavljen posao",
-                documentation: "Detaljna dokumentacija",
-                other: "Ostalo",
-                back: "Natrag",
-                next: "Dalje",
-                language: "Jezik",
-                requiredError: "Odaberite barem jedno očekivanje kvalitete.",
-                loadError: "Prethodne postavke kvalitete nije moguće učitati.",
-                saveError: "Postavke kvalitete nije moguće spremiti. Pokušajte ponovno."
-            }
-        },
-        sq: {
-            translation: {
-                title: "Pritshmëritë për cilësinë",
-                question: "Çfarë është më e rëndësishme për ju kur bëhet fjalë për cilësinë e projektit në grup?",
-                instruction: "Zgjidhni çfarë ka më shumë rëndësi për ju:",
-                accuracy: "Saktësia",
-                design: "Dizajn i mirë / lehtësi në përdorim",
-                clean: "Punë e rregullt",
-                documentation: "Dokumentim i detajuar",
-                other: "Tjetër",
-                back: "Kthehu",
-                next: "Vazhdo",
-                language: "Gjuha",
-                requiredError: "Ju lutemi zgjidhni të paktën një pritshmëri për cilësinë.",
-                loadError: "Preferencat e mëparshme për cilësinë nuk mund të ngarkohen.",
-                saveError: "Preferencat për cilësinë nuk u ruajtën. Provoni përsëri."
-            }
-        }
-    };
-
-    const main = document.querySelector(".container");
-    const heading = main.querySelector("h1");
-    const question = main.querySelector("p");
-    const legend = main.querySelector("legend");
-    const backLink = main.querySelector(".back");
-    const nextButton = main.querySelector('button[type="submit"]');
-    const options = main.querySelectorAll(".option");
-    const messageElement = document.getElementById("message");
-
-    const languageBox = document.createElement("div");
-    languageBox.style.margin = "20px 0";
-
-    const languageLabel = document.createElement("label");
-    languageLabel.htmlFor = "languageSelector";
-    languageLabel.style.display = "block";
-    languageLabel.style.marginBottom = "8px";
-    languageLabel.style.fontWeight = "bold";
-
-    const languageSelector = document.createElement("select");
-    languageSelector.id = "languageSelector";
-    languageSelector.style.width = "100%";
-    languageSelector.style.padding = "12px";
-    languageSelector.style.border = "1px solid #ccc";
-    languageSelector.style.borderRadius = "10px";
-    languageSelector.style.fontSize = "15px";
-
-    [
-        ["en", "English"],
-        ["hr", "Hrvatski"],
-        ["sq", "Shqip"]
-    ].forEach(function (entry) {
-        const option = document.createElement("option");
-        option.value = entry[0];
-        option.textContent = entry[1];
-        languageSelector.appendChild(option);
-    });
-
-    languageBox.appendChild(languageLabel);
-    languageBox.appendChild(languageSelector);
-    main.insertBefore(languageBox, heading);
-
-    const qualityKeys = [
-        "accuracy",
-        "design",
-        "clean",
-        "documentation",
-        "other"
-    ];
-
-    const errorKeys = {
-        "Please select at least one quality expectation.": "requiredError",
-        "Previous quality preferences could not be loaded.": "loadError",
-        "Could not save your quality preferences. Please try again.": "saveError"
-    };
-
-    let currentError = null;
-
-    function updateText() {
-        document.documentElement.lang = i18next.language;
-        document.title = i18next.t("title");
-
-        heading.textContent = i18next.t("title");
-        question.textContent = i18next.t("question");
-        legend.textContent = i18next.t("instruction");
-        backLink.textContent = "← " + i18next.t("back");
-        nextButton.textContent = i18next.t("next");
-        languageLabel.textContent = i18next.t("language");
-
-        options.forEach(function (label, index) {
-            const textNode = Array.from(label.childNodes).find(function (node) {
-                return node.nodeType === 3 && node.textContent.trim();
-            });
-
-            if (textNode) {
-                textNode.textContent = " " + i18next.t(qualityKeys[index]);
-            }
-        });
-
-        if (currentError) {
-            messageElement.textContent = i18next.t(currentError);
-        }
-    }
-
-    const observer = new MutationObserver(function () {
-        const text = messageElement.textContent.trim();
-
-        if (!text) {
-            currentError = null;
-            return;
-        }
-
-        if (errorKeys[text]) {
-            currentError = errorKeys[text];
-        }
-
-        if (currentError) {
-            const translated = i18next.t(currentError);
-
-            if (text !== translated) {
-                messageElement.textContent = translated;
-            }
-        }
-    });
-
-    let savedLanguage = "en";
-
-    try {
-        savedLanguage = localStorage.getItem("appLanguage") || "en";
-    } catch (error) {
-        savedLanguage = "en";
-    }
-
-    if (!resources[savedLanguage]) {
-        savedLanguage = "en";
-    }
-
-    i18next.init({
-        lng: savedLanguage,
-        fallbackLng: "en",
-        resources: resources
-    }).then(function () {
-        languageSelector.value = savedLanguage;
-
-        observer.observe(messageElement, {
-            childList: true,
-            characterData: true,
-            subtree: true
-        });
-
-        if (errorKeys[messageElement.textContent.trim()]) {
-            currentError = errorKeys[messageElement.textContent.trim()];
-        }
-
-        updateText();
-
-        languageSelector.addEventListener("change", function () {
-            const selectedLanguage = languageSelector.value;
-
-            i18next.changeLanguage(selectedLanguage).then(function () {
-                try {
-                    localStorage.setItem("appLanguage", selectedLanguage);
-                } catch (error) {
+                if (updateError) {
+                    throw updateError;
                 }
 
-                updateText();
+                if (!updated || updated.length === 0) {
+                    const { error: insertError } = await database
+                        .from("team_preferences")
+                        .insert({
+                            team_id: teamId,
+                            user_id: user.id,
+                            quality: selected
+                        });
+
+                    if (insertError) {
+                        throw insertError;
+                    }
+                }
+
+                saveLocalCopy(selected);
+
+                window.location.href =
+                    "comparison.html?teamId=" + encodeURIComponent(teamId);
+
+            } catch (error) {
+                showStatus(
+                    error.message === "NOT_SIGNED_IN"
+                        ? "loginError"
+                        : "saveError"
+                );
+
+                nextButton.disabled = false;
+            }
+        });
+
+        let savedLanguage = "en";
+
+        try {
+            savedLanguage = localStorage.getItem("appLanguage") || "en";
+        } catch (error) {
+            savedLanguage = "en";
+        }
+
+        if (!resources[savedLanguage]) {
+            savedLanguage = "en";
+        }
+
+        i18next.init({
+            lng: savedLanguage,
+            fallbackLng: "en",
+            supportedLngs: ["en", "hr", "sq"],
+            resources: resources
+        }).then(function() {
+            updateLanguage();
+            loadQuality();
+
+            languageSelector.addEventListener("change", function() {
+                const selectedLanguage = languageSelector.value;
+
+                i18next.changeLanguage(selectedLanguage).then(function() {
+                    try {
+                        localStorage.setItem(
+                            "appLanguage",
+                            selectedLanguage
+                        );
+                    } catch (error) {
+                    }
+
+                    updateLanguage();
+                });
             });
         });
-    });
-})();
-</script>
+    </script>
 </body>
 </html>
