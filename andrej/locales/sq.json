@@ -177,6 +177,7 @@
         "holidayUnavailable": "Kontrolli i festave nuk është i disponueshëm tani. Mund ta dërgoni propozimin gjithsesi.",
         "submit": "Dërgoja ekipit për votim",
         "submitted": "Propozimi u dërgua. Anëtarët tani mund të votojnë.",
+        "submittedAlone": "Propozimi u miratua. Jeni i vetmi anëtar i ekipit, ndaj vota juaj vendosi.",
         "updated": "Propozimi u përditësua."
     },
     "voting": {
