@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Conflict details | Group Project Contract</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <a class="skip-link" href="#main" data-i18n="a11y.skipToContent">
+        Skip to content
+    </a>
+
+    <header class="topbar">
+        <a id="back-link"
+           class="back-link"
+           href="conflicts.html"
+           data-back="conflicts.html"
+           data-i18n="actions.back">
+            Back
+        </a>
+
+        <div class="language-control">
+            <label for="language-select" data-i18n="common.language">
+                Language
+            </label>
+
+            <select id="language-select" disabled>
+                <option value="en" lang="en">English</option>
+                <option value="hr" lang="hr">Hrvatski</option>
+                <option value="sq" lang="sq">Shqip</option>
+            </select>
+        </div>
+    </header>
+
+    <p id="offline-banner"
+       class="banner banner-warn"
+       role="status"
+       data-i18n="states.offlineBanner"
+       hidden></p>
+
+    <p id="language-message" class="banner banner-warn" role="alert" hidden>
+        The page could not load its texts. Check your connection and reload.
+    </p>
+
+    <main id="main" class="content">
+        <h1 data-i18n="conflict.title">Conflict details</h1>
+
+        <div id="state" aria-live="polite"></div>
+
+        <div id="content" hidden></div>
+    </main>
+
+    <div id="footer" class="sticky-footer" hidden></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/i18next@23.16.8/dist/umd/i18next.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../mateo/supabase-client.js"></script>
+
+    <script src="common.js"></script>
+    <script src="forms.js"></script>
+    <script src="conflict-data.js"></script>
+    <script src="conflict.js"></script>
+</body>
+</html>
