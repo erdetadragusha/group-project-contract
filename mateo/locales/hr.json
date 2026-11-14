@@ -215,6 +215,7 @@
         "projectName":"Naziv projekta",
         "membersButton":"Prikaži članove tima",
         "statusButton":"Prikaži status pozivnica",
+        "contractButton":"Otvori ugovor tima",
         "preferencesButton":"Nastavi na preferencije",
         "refreshButton":"Osvježi",
         "navigation":"Navigacija tima",
