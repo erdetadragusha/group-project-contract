@@ -276,7 +276,13 @@
                     );
 
                     id=created.id;
-                    app.toastOnNextPage("propose.submitted");
+                    // The proposal counts as the author's vote, so in a
+                    // one-member team it is decided at once.
+                    app.toastOnNextPage(
+                        context.members.length===1 ?
+                            "propose.submittedAlone" :
+                            "propose.submitted"
+                    );
                 }
 
                 window.location.href=app.url("voting.html",{id:id});
