@@ -1,10 +1,9 @@
+
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Deadline Expectations</title>
 
     <style>
@@ -26,7 +25,7 @@
             margin: 40px auto;
             padding: 30px;
             border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
 
         .back {
@@ -118,11 +117,35 @@
             background-color: #263b63;
         }
 
+        button:disabled {
+            opacity: 0.65;
+            cursor: not-allowed;
+        }
+
         button:focus-visible,
         input:focus-visible,
-        a:focus-visible {
+        a:focus-visible,
+        select:focus-visible {
             outline: 3px solid #e09b24;
             outline-offset: 3px;
+        }
+
+        .language-box {
+            margin: 20px 0;
+        }
+
+        .language-box label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        .language-box select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            font-size: 15px;
         }
 
         #message {
@@ -140,22 +163,34 @@
 </head>
 
 <body>
-
     <main class="container">
 
-        <a href="roles.html" class="back">
+        <a href="roles.html" class="back" id="backLink">
             ← Back
         </a>
 
-        <h1>Deadline Expectations</h1>
+        <div class="language-box">
+            <label for="languageSelector" data-i18n="language">
+                Language
+            </label>
+            <select id="languageSelector">
+                <option value="en">English</option>
+                <option value="hr">Hrvatski</option>
+                <option value="sq">Shqip</option>
+            </select>
+        </div>
 
-        <p>How do you prefer to work with deadlines in your group project?</p>
+        <h1 data-i18n="title">Deadline Expectations</h1>
+
+        <p data-i18n="question">
+            How do you prefer to work with deadlines in your group project?
+        </p>
 
         <form id="deadlinesForm">
-
             <fieldset>
-
-                <legend>Choose your preferred deadline style:</legend>
+                <legend data-i18n="instruction">
+                    Choose your preferred deadline style:
+                </legend>
 
                 <label class="option">
                     <input
@@ -165,11 +200,10 @@
                     >
 
                     <span class="option-text">
-                        <span class="option-title">
+                        <span class="option-title" data-i18n="strict">
                             Strict deadlines
                         </span>
-
-                        <span class="option-description">
+                        <span class="option-description" data-i18n="strictDescription">
                             I prefer to finish tasks on time and follow fixed deadlines.
                         </span>
                     </span>
@@ -183,11 +217,10 @@
                     >
 
                     <span class="option-text">
-                        <span class="option-title">
+                        <span class="option-title" data-i18n="some">
                             Some flexibility
                         </span>
-
-                        <span class="option-description">
+                        <span class="option-description" data-i18n="someDescription">
                             I prefer deadlines but can adjust them when needed.
                         </span>
                     </span>
@@ -201,300 +234,318 @@
                     >
 
                     <span class="option-text">
-                        <span class="option-title">
+                        <span class="option-title" data-i18n="flexible">
                             Flexible
                         </span>
-
-                        <span class="option-description">
+                        <span class="option-description" data-i18n="flexibleDescription">
                             I prefer a flexible schedule with adjustable deadlines.
                         </span>
                     </span>
                 </label>
-
             </fieldset>
 
-            <button type="submit">Next</button>
+            <button type="submit" id="nextButton" disabled data-i18n="next">
+                Next
+            </button>
 
             <p id="message" role="status" aria-live="polite"></p>
-
         </form>
 
     </main>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+    <script src="../mateo/supabase-client.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/i18next@23.16.8/dist/umd/i18next.min.js"></script>
+
     <script>
+        const resources = {
+            en: {
+                translation: {
+                    title: "Deadline Expectations",
+                    question: "How do you prefer to work with deadlines in your group project?",
+                    instruction: "Choose your preferred deadline style:",
+                    strict: "Strict deadlines",
+                    strictDescription: "I prefer to finish tasks on time and follow fixed deadlines.",
+                    some: "Some flexibility",
+                    someDescription: "I prefer deadlines but can adjust them when needed.",
+                    flexible: "Flexible",
+                    flexibleDescription: "I prefer a flexible schedule with adjustable deadlines.",
+                    back: "Back",
+                    next: "Next",
+                    language: "Language",
+                    requiredError: "Please select your preferred deadline style.",
+                    loadError: "Previous deadline preferences could not be loaded.",
+                    saveError: "Could not save your deadline preference. Please try again.",
+                    teamError: "Please open this page from your team.",
+                    loginError: "Please sign in through the team setup first.",
+                    loading: "Loading your deadline preference...",
+                    saving: "Saving your deadline preference..."
+                }
+            },
+            hr: {
+                translation: {
+                    title: "Očekivanja vezana uz rokove",
+                    question: "Kako najradije radite s rokovima u grupnom projektu?",
+                    instruction: "Odaberite način rada s rokovima:",
+                    strict: "Strogi rokovi",
+                    strictDescription: "Volim završavati zadatke na vrijeme i pridržavati se fiksnih rokova.",
+                    some: "Određena fleksibilnost",
+                    someDescription: "Volim imati rokove, ali ih mogu prilagoditi kada je potrebno.",
+                    flexible: "Fleksibilni rokovi",
+                    flexibleDescription: "Više mi odgovara fleksibilan raspored s prilagodljivim rokovima.",
+                    back: "Natrag",
+                    next: "Dalje",
+                    language: "Jezik",
+                    requiredError: "Odaberite način rada s rokovima.",
+                    loadError: "Prethodne postavke rokova nije moguće učitati.",
+                    saveError: "Postavku rokova nije moguće spremiti. Pokušajte ponovno.",
+                    teamError: "Otvorite ovu stranicu iz svojeg tima.",
+                    loginError: "Najprije se prijavite putem postavljanja tima.",
+                    loading: "Učitavanje postavki rokova...",
+                    saving: "Spremanje postavki rokova..."
+                }
+            },
+            sq: {
+                translation: {
+                    title: "Pritshmëritë për afatet",
+                    question: "Si preferoni të punoni me afatet në projektin tuaj në grup?",
+                    instruction: "Zgjidhni mënyrën tuaj të preferuar të punës me afate:",
+                    strict: "Afate të rrepta",
+                    strictDescription: "Preferoj t'i përfundoj detyrat në kohë dhe t'i respektoj afatet e caktuara.",
+                    some: "Pak fleksibilitet",
+                    someDescription: "Preferoj të kem afate, por mund t'i ndryshoj kur është e nevojshme.",
+                    flexible: "Afate fleksibile",
+                    flexibleDescription: "Preferoj një orar fleksibil me afate që mund të ndryshohen.",
+                    back: "Kthehu",
+                    next: "Vazhdo",
+                    language: "Gjuha",
+                    requiredError: "Ju lutemi zgjidhni mënyrën e preferuar të punës me afate.",
+                    loadError: "Preferencat e mëparshme për afatet nuk mund të ngarkohen.",
+                    saveError: "Preferenca për afatet nuk u ruajt. Provoni përsëri.",
+                    teamError: "Hapeni këtë faqe nga ekipi juaj.",
+                    loginError: "Ju lutemi hyni fillimisht përmes ekipit.",
+                    loading: "Duke ngarkuar preferencën për afatet...",
+                    saving: "Duke ruajtur preferencën për afatet..."
+                }
+            }
+        };
+
         const form = document.getElementById("deadlinesForm");
         const message = document.getElementById("message");
+        const nextButton = document.getElementById("nextButton");
+        const backLink = document.getElementById("backLink");
+        const languageSelector = document.getElementById("languageSelector");
+
         const radioButtons = document.querySelectorAll(
             'input[name="deadline"]'
         );
 
-        try {
-            const savedDeadline = localStorage.getItem(
-                "deadlineExpectations"
-            );
+        const teamId = new URLSearchParams(
+            window.location.search
+        ).get("teamId");
 
-            if (savedDeadline) {
-                radioButtons.forEach(function(radio) {
-                    if (radio.value === savedDeadline) {
-                        radio.checked = true;
-                    }
-                });
+        if (teamId) {
+            backLink.href =
+                "roles.html?teamId=" + encodeURIComponent(teamId);
+        }
+
+        let statusKey = null;
+        let ready = false;
+
+        function showStatus(key) {
+            statusKey = key;
+            message.textContent = key ? i18next.t(key) : "";
+        }
+
+        function updateLanguage() {
+            document.documentElement.lang = i18next.language;
+            document.title = i18next.t("title");
+
+            document.querySelectorAll("[data-i18n]").forEach(function(element) {
+                const key = element.getAttribute("data-i18n");
+                element.textContent = i18next.t(key);
+            });
+
+            backLink.textContent = "← " + i18next.t("back");
+            languageSelector.value = i18next.language;
+
+            if (statusKey) {
+                message.textContent = i18next.t(statusKey);
+            }
+        }
+
+        function saveLocalCopy(deadline) {
+            try {
+                localStorage.setItem("deadlineExpectations", deadline);
+            } catch (error) {
+            }
+        }
+
+        async function getCurrentUser() {
+            const { data, error } = await database.auth.getUser();
+
+            if (error || !data.user) {
+                throw new Error("NOT_SIGNED_IN");
             }
 
-        } catch (error) {
-            message.textContent =
-                "Previous deadline preferences could not be loaded.";
+            return data.user;
+        }
+
+        async function loadDeadline() {
+            nextButton.disabled = true;
+            showStatus("loading");
+
+            if (!teamId) {
+                showStatus("teamError");
+                return;
+            }
+
+            try {
+                const user = await getCurrentUser();
+
+                const { data, error } = await database
+                    .from("team_preferences")
+                    .select("deadline")
+                    .eq("team_id", teamId)
+                    .eq("user_id", user.id)
+                    .maybeSingle();
+
+                if (error) {
+                    throw error;
+                }
+
+                const savedDeadline = data?.deadline || "";
+
+                radioButtons.forEach(function(radio) {
+                    radio.checked = radio.value === savedDeadline;
+                });
+
+                saveLocalCopy(savedDeadline);
+
+                ready = true;
+                nextButton.disabled = false;
+                showStatus(null);
+
+            } catch (error) {
+                if (error.message === "NOT_SIGNED_IN") {
+                    showStatus("loginError");
+                } else {
+                    showStatus("loadError");
+                }
+            }
         }
 
         radioButtons.forEach(function(radio) {
             radio.addEventListener("change", function() {
-                message.textContent = "";
+                if (ready) {
+                    showStatus(null);
+                }
             });
         });
 
-        form.addEventListener("submit", function(event) {
-
+        form.addEventListener("submit", async function(event) {
             event.preventDefault();
+
+            if (!ready || nextButton.disabled) {
+                return;
+            }
 
             const selected = document.querySelector(
                 'input[name="deadline"]:checked'
             );
 
             if (!selected) {
-                message.textContent =
-                    "Please select your preferred deadline style.";
+                showStatus("requiredError");
                 return;
             }
 
+            nextButton.disabled = true;
+            showStatus("saving");
+
             try {
-                localStorage.setItem(
-                    "deadlineExpectations",
-                    selected.value
-                );
+                const user = await getCurrentUser();
 
-                window.location.href = "quality.html";
+                const { data: updated, error: updateError } = await database
+                    .from("team_preferences")
+                    .update({
+                        deadline: selected.value,
+                        updated_at: new Date().toISOString()
+                    })
+                    .eq("team_id", teamId)
+                    .eq("user_id", user.id)
+                    .select("team_id");
 
-            } catch (error) {
-                message.textContent =
-                    "Could not save your deadline preference. Please try again.";
-            }
-
-        });
-    </script>
-<script src="https://cdn.jsdelivr.net/npm/i18next@23.16.8/dist/umd/i18next.min.js"></script>
-
-<script>
-(function () {
-    if (!window.i18next) return;
-
-    const resources = {
-        en: {
-            translation: {
-                title: "Deadline Expectations",
-                question: "How do you prefer to work with deadlines in your group project?",
-                instruction: "Choose your preferred deadline style:",
-                strict: "Strict deadlines",
-                strictDescription: "I prefer to finish tasks on time and follow fixed deadlines.",
-                some: "Some flexibility",
-                someDescription: "I prefer deadlines but can adjust them when needed.",
-                flexible: "Flexible",
-                flexibleDescription: "I prefer a flexible schedule with adjustable deadlines.",
-                back: "Back",
-                next: "Next",
-                language: "Language",
-                requiredError: "Please select your preferred deadline style.",
-                loadError: "Previous deadline preferences could not be loaded.",
-                saveError: "Could not save your deadline preference. Please try again."
-            }
-        },
-        hr: {
-            translation: {
-                title: "Očekivanja vezana uz rokove",
-                question: "Kako najradije radite s rokovima u grupnom projektu?",
-                instruction: "Odaberite način rada s rokovima:",
-                strict: "Strogi rokovi",
-                strictDescription: "Volim završavati zadatke na vrijeme i pridržavati se fiksnih rokova.",
-                some: "Određena fleksibilnost",
-                someDescription: "Volim imati rokove, ali ih mogu prilagoditi kada je potrebno.",
-                flexible: "Fleksibilni rokovi",
-                flexibleDescription: "Više mi odgovara fleksibilan raspored s prilagodljivim rokovima.",
-                back: "Natrag",
-                next: "Dalje",
-                language: "Jezik",
-                requiredError: "Odaberite način rada s rokovima.",
-                loadError: "Prethodne postavke rokova nije moguće učitati.",
-                saveError: "Postavku rokova nije moguće spremiti. Pokušajte ponovno."
-            }
-        },
-        sq: {
-            translation: {
-                title: "Pritshmëritë për afatet",
-                question: "Si preferoni të punoni me afatet në projektin tuaj në grup?",
-                instruction: "Zgjidhni mënyrën tuaj të preferuar të punës me afate:",
-                strict: "Afate të rrepta",
-                strictDescription: "Preferoj t'i përfundoj detyrat në kohë dhe t'i respektoj afatet e caktuara.",
-                some: "Pak fleksibilitet",
-                someDescription: "Preferoj të kem afate, por mund t'i ndryshoj kur është e nevojshme.",
-                flexible: "Afate fleksibile",
-                flexibleDescription: "Preferoj një orar fleksibil me afate që mund të ndryshohen.",
-                back: "Kthehu",
-                next: "Vazhdo",
-                language: "Gjuha",
-                requiredError: "Ju lutemi zgjidhni mënyrën e preferuar të punës me afate.",
-                loadError: "Preferencat e mëparshme për afatet nuk mund të ngarkohen.",
-                saveError: "Preferenca për afatet nuk u ruajt. Provoni përsëri."
-            }
-        }
-    };
-
-    const main = document.querySelector(".container");
-    const heading = main.querySelector("h1");
-    const question = main.querySelector("p");
-    const legend = main.querySelector("legend");
-    const backLink = main.querySelector(".back");
-    const nextButton = main.querySelector('button[type="submit"]');
-    const optionTitles = main.querySelectorAll(".option-title");
-    const optionDescriptions = main.querySelectorAll(".option-description");
-    const messageElement = document.getElementById("message");
-
-    const languageBox = document.createElement("div");
-    languageBox.style.margin = "20px 0";
-
-    const languageLabel = document.createElement("label");
-    languageLabel.htmlFor = "languageSelector";
-    languageLabel.style.display = "block";
-    languageLabel.style.marginBottom = "8px";
-    languageLabel.style.fontWeight = "bold";
-
-    const languageSelector = document.createElement("select");
-    languageSelector.id = "languageSelector";
-    languageSelector.style.width = "100%";
-    languageSelector.style.padding = "12px";
-    languageSelector.style.border = "1px solid #ccc";
-    languageSelector.style.borderRadius = "10px";
-    languageSelector.style.fontSize = "15px";
-
-    [
-        ["en", "English"],
-        ["hr", "Hrvatski"],
-        ["sq", "Shqip"]
-    ].forEach(function (entry) {
-        const option = document.createElement("option");
-        option.value = entry[0];
-        option.textContent = entry[1];
-        languageSelector.appendChild(option);
-    });
-
-    languageBox.appendChild(languageLabel);
-    languageBox.appendChild(languageSelector);
-    main.insertBefore(languageBox, heading);
-
-    const titleKeys = ["strict", "some", "flexible"];
-
-    const descriptionKeys = [
-        "strictDescription",
-        "someDescription",
-        "flexibleDescription"
-    ];
-
-    const errorKeys = {
-        "Please select your preferred deadline style.": "requiredError",
-        "Previous deadline preferences could not be loaded.": "loadError",
-        "Could not save your deadline preference. Please try again.": "saveError"
-    };
-
-    let currentError = null;
-
-    function updateText() {
-        document.documentElement.lang = i18next.language;
-        document.title = i18next.t("title");
-
-        heading.textContent = i18next.t("title");
-        question.textContent = i18next.t("question");
-        legend.textContent = i18next.t("instruction");
-        backLink.textContent = "← " + i18next.t("back");
-        nextButton.textContent = i18next.t("next");
-        languageLabel.textContent = i18next.t("language");
-
-        optionTitles.forEach(function (element, index) {
-            element.textContent = i18next.t(titleKeys[index]);
-        });
-
-        optionDescriptions.forEach(function (element, index) {
-            element.textContent = i18next.t(descriptionKeys[index]);
-        });
-
-        if (currentError) {
-            messageElement.textContent = i18next.t(currentError);
-        }
-    }
-
-    const observer = new MutationObserver(function () {
-        const text = messageElement.textContent.trim();
-
-        if (!text) {
-            currentError = null;
-            return;
-        }
-
-        if (errorKeys[text]) {
-            currentError = errorKeys[text];
-        }
-
-        if (currentError) {
-            const translated = i18next.t(currentError);
-
-            if (text !== translated) {
-                messageElement.textContent = translated;
-            }
-        }
-    });
-
-    let savedLanguage = "en";
-
-    try {
-        savedLanguage = localStorage.getItem("appLanguage") || "en";
-    } catch (error) {
-        savedLanguage = "en";
-    }
-
-    if (!resources[savedLanguage]) {
-        savedLanguage = "en";
-    }
-
-    i18next.init({
-        lng: savedLanguage,
-        fallbackLng: "en",
-        resources: resources
-    }).then(function () {
-        languageSelector.value = savedLanguage;
-
-        observer.observe(messageElement, {
-            childList: true,
-            characterData: true,
-            subtree: true
-        });
-
-        if (errorKeys[messageElement.textContent.trim()]) {
-            currentError = errorKeys[messageElement.textContent.trim()];
-        }
-
-        updateText();
-
-        languageSelector.addEventListener("change", function () {
-            const selectedLanguage = languageSelector.value;
-
-            i18next.changeLanguage(selectedLanguage).then(function () {
-                try {
-                    localStorage.setItem("appLanguage", selectedLanguage);
-                } catch (error) {
+                if (updateError) {
+                    throw updateError;
                 }
 
-                updateText();
+                if (!updated || updated.length === 0) {
+                    const { error: insertError } = await database
+                        .from("team_preferences")
+                        .insert({
+                            team_id: teamId,
+                            user_id: user.id,
+                            deadline: selected.value
+                        });
+
+                    if (insertError) {
+                        throw insertError;
+                    }
+                }
+
+                saveLocalCopy(selected.value);
+
+                window.location.href =
+                    "quality.html?teamId=" + encodeURIComponent(teamId);
+
+            } catch (error) {
+                showStatus(
+                    error.message === "NOT_SIGNED_IN"
+                        ? "loginError"
+                        : "saveError"
+                );
+
+                nextButton.disabled = false;
+            }
+        });
+
+        let savedLanguage = "en";
+
+        try {
+            savedLanguage = localStorage.getItem("appLanguage") || "en";
+        } catch (error) {
+            savedLanguage = "en";
+        }
+
+        if (!resources[savedLanguage]) {
+            savedLanguage = "en";
+        }
+
+        i18next.init({
+            lng: savedLanguage,
+            fallbackLng: "en",
+            supportedLngs: ["en", "hr", "sq"],
+            resources: resources
+        }).then(function() {
+            updateLanguage();
+            loadDeadline();
+
+            languageSelector.addEventListener("change", function() {
+                const selectedLanguage = languageSelector.value;
+
+                i18next.changeLanguage(selectedLanguage).then(function() {
+                    try {
+                        localStorage.setItem(
+                            "appLanguage",
+                            selectedLanguage
+                        );
+                    } catch (error) {
+                    }
+
+                    updateLanguage();
+                });
             });
         });
-    });
-})();
-</script>
+    </script>
 </body>
 </html>

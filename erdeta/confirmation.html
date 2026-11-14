@@ -1,10 +1,9 @@
+
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Agreement Confirmation</title>
 
     <style>
@@ -14,45 +13,25 @@
 
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f6fb;
+            background: #f4f6fb;
             margin: 0;
             padding: 20px;
             color: #222;
         }
 
         .container {
-            background: white;
             max-width: 460px;
             margin: 40px auto;
             padding: 30px;
+            background: white;
             border-radius: 15px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
 
-        .back {
-            color: #3458a4;
-            text-decoration: none;
-            font-size: 16px;
-        }
-
-        .success-icon {
-            width: 85px;
-            height: 85px;
-            background-color: #e1f5e8;
-            color: #176b37;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 45px;
-            font-weight: bold;
-            margin: 25px auto;
-        }
-
         h1 {
             font-size: 25px;
-            text-align: center;
             color: #263b63;
+            text-align: center;
         }
 
         h2 {
@@ -62,13 +41,70 @@
         }
 
         p {
-            color: #555;
             line-height: 1.6;
+            color: #555;
         }
 
         .subtitle {
             text-align: center;
-            margin-bottom: 25px;
+        }
+
+        .back {
+            color: #3458a4;
+            text-decoration: none;
+        }
+
+        .language-box {
+            margin: 20px 0;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            background: white;
+            font-size: 15px;
+        }
+
+        .outcome-icon {
+            width: 85px;
+            height: 85px;
+            margin: 25px auto;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 42px;
+            font-weight: bold;
+            background: #eef3ff;
+            color: #3458a4;
+        }
+
+        .outcome-icon.approved {
+            background: #e1f5e8;
+            color: #176b37;
+        }
+
+        .outcome-icon.rejected {
+            background: #fde8e8;
+            color: #a21d1d;
+        }
+
+        .outcome-icon.changes_requested {
+            background: #fff0db;
+            color: #8a4900;
+        }
+
+        .outcome-icon.pending {
+            background: #eef3ff;
+            color: #3458a4;
         }
 
         .status {
@@ -76,36 +112,51 @@
             width: fit-content;
             margin: 15px auto;
             padding: 8px 15px;
-            background-color: #e1f5e8;
-            color: #176b37;
             border-radius: 20px;
+            background: #eeeeee;
+            color: #555;
             font-weight: bold;
             font-size: 13px;
         }
 
+        .status.approved {
+            background: #e1f5e8;
+            color: #176b37;
+        }
+
+        .status.rejected {
+            background: #fde8e8;
+            color: #a21d1d;
+        }
+
+        .status.changes_requested {
+            background: #fff0db;
+            color: #8a4900;
+        }
+
         .card {
-            border: 1px solid #ddd;
-            border-radius: 10px;
             padding: 18px;
             margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
         }
 
         .agreement-card {
-            background-color: #eef3ff;
+            background: #eef3ff;
             border-color: #b9c9ee;
         }
 
         .label {
             display: block;
+            margin-bottom: 6px;
             font-size: 13px;
             color: #666;
-            margin-bottom: 6px;
         }
 
         .value {
             display: block;
-            font-size: 15px;
             color: #263b63;
+            font-size: 15px;
             font-weight: bold;
             overflow-wrap: anywhere;
         }
@@ -113,7 +164,6 @@
         .proposal-text {
             white-space: pre-wrap;
             overflow-wrap: anywhere;
-            margin-bottom: 0;
         }
 
         .preference {
@@ -128,72 +178,60 @@
         .preference strong {
             display: block;
             color: #263b63;
-            margin-bottom: 7px;
-            font-size: 14px;
+            margin-bottom: 6px;
         }
 
         .preference span {
-            font-size: 14px;
             color: #555;
-            line-height: 1.6;
+            font-size: 14px;
             overflow-wrap: anywhere;
+            line-height: 1.5;
         }
 
-        button {
+        .notice {
+            padding: 15px;
+            margin: 20px 0;
+            background: #fff7e6;
+            border: 1px solid #ead09a;
+            border-radius: 10px;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        .actions {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .button {
+            display: block;
             width: 100%;
             padding: 15px;
-            background-color: #3458a4;
-            color: white;
-            border: none;
             border-radius: 10px;
-            font-size: 17px;
-            cursor: pointer;
-            margin-top: 15px;
+            background: #3458a4;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: bold;
         }
 
-        button:hover {
-            background-color: #263b63;
+        .button.secondary {
+            background: white;
+            color: #3458a4;
+            border: 2px solid #3458a4;
         }
 
-        button:focus-visible,
-        a:focus-visible {
+        a:focus-visible,
+        select:focus-visible {
             outline: 3px solid #e09b24;
             outline-offset: 3px;
         }
 
-        .notice {
-            background-color: #fff7e6;
-            border: 1px solid #ead09a;
-            padding: 15px;
-            border-radius: 10px;
-            font-size: 13px;
-            line-height: 1.6;
-            margin: 20px 0;
-        }
-
-        .hidden {
-            display: none;
-        }
-
-        .empty {
-            padding: 20px;
-            background-color: #eef3ff;
-            border-radius: 10px;
-            text-align: center;
-            margin-top: 20px;
-        }
-
-        .empty a {
-            display: inline-block;
-            margin-top: 10px;
-            color: #3458a4;
-            font-weight: bold;
-        }
-
-        #message {
-            margin-top: 15px;
-            color: #b42318;
-            text-align: center;
+        [hidden] {
+            display: none !important;
         }
 
         @media (max-width: 450px) {
@@ -203,311 +241,545 @@
             }
         }
     </style>
-
 </head>
 
 <body>
-
     <main class="container">
 
-        <section id="confirmationScreen">
+        <a href="review.html" id="backLink" class="back">
+            ← Back
+        </a>
 
-            <a href="review.html" class="back">
-                ← Back
-            </a>
+        <div class="language-box">
+            <label for="languageSelector" data-t="language">
+                Language
+            </label>
 
-            <div id="confirmationContent" class="hidden">
+            <select id="languageSelector">
+                <option value="en">English</option>
+                <option value="hr">Hrvatski</option>
+                <option value="sq">Shqip</option>
+            </select>
+        </div>
 
-                <div class="success-icon" aria-hidden="true">
-                    ✓
-                </div>
+        <h1 data-t="title">Agreement Confirmation</h1>
 
-                <h1>Agreement Approved!</h1>
+        <p class="subtitle" data-t="intro">
+            View the current decision on your proposal.
+        </p>
 
-                <p class="subtitle">
-                    You have successfully approved your proposed agreement.
-                </p>
+        <div id="notice" class="notice"
+             role="status" aria-live="polite">
+            Loading proposal...
+        </div>
 
-                <span class="status">
-                    Approved
-                </span>
+        <div id="confirmationContent" hidden>
 
-                <div class="notice">
-                    Demo mode: Your approval has been saved in this browser.
-                    Other team members must also approve before this becomes
-                    a final team agreement.
-                </div>
-
-                <div class="card agreement-card">
-
-                    <h2>Approved Proposal</h2>
-
-                    <span class="label">
-                        Agreement Topic
-                    </span>
-
-                    <span class="value" id="agreementTopic"></span>
-
-                    <div style="margin-top: 18px;">
-
-                        <span class="label">
-                            Proposed Solution
-                        </span>
-
-                        <p class="proposal-text" id="agreementText"></p>
-
-                    </div>
-
-                </div>
-
-                <div class="card">
-
-                    <h2>Your Saved Preferences</h2>
-
-                    <div class="preference">
-                        <strong>Communication</strong>
-                        <span id="communicationSummary"></span>
-                    </div>
-
-                    <div class="preference">
-                        <strong>Weekly Availability</strong>
-                        <span id="availabilitySummary"></span>
-                    </div>
-
-                    <div class="preference">
-                        <strong>Preferred Roles</strong>
-                        <span id="rolesSummary"></span>
-                    </div>
-
-                    <div class="preference">
-                        <strong>Deadline Expectations</strong>
-                        <span id="deadlineSummary"></span>
-                    </div>
-
-                    <div class="preference">
-                        <strong>Quality Expectations</strong>
-                        <span id="qualitySummary"></span>
-                    </div>
-
-                </div>
-
-                <div class="card">
-
-                    <h2>Approval Details</h2>
-
-                    <span class="label">
-                        Approval Date
-                    </span>
-
-                    <span class="value" id="approvalDate"></span>
-
-                </div>
-
-                <button type="button" id="dashboardButton">
-                    Go to Dashboard
-                </button>
-
+            <div id="outcomeIcon" class="outcome-icon" aria-hidden="true">
+                ...
             </div>
 
-            <div id="emptyState" class="empty hidden">
+            <h2 id="outcomeTitle" style="text-align:center"></h2>
 
-                <h2>No Approved Proposal Found</h2>
+            <p id="outcomeDescription" class="subtitle"></p>
 
-                <p>
-                    You need to create and approve a proposal
-                    before viewing the confirmation.
-                </p>
+            <span id="statusBadge" class="status"></span>
 
-                <a href="review.html">
-                    Return to Review Proposal
+            <div class="card agreement-card">
+                <h2 data-t="proposalHeading">Proposal Details</h2>
+
+                <span class="label" data-t="topicLabel">
+                    Agreement Topic
+                </span>
+
+                <span class="value" id="agreementTopic"></span>
+
+                <div style="margin-top:18px">
+                    <span class="label" data-t="solutionLabel">
+                        Proposed Solution
+                    </span>
+
+                    <p id="agreementText" class="proposal-text"></p>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 data-t="preferencesHeading">
+                    Your Saved Preferences
+                </h2>
+
+                <div class="preference">
+                    <strong data-t="communication">Communication</strong>
+                    <span id="communicationSummary"></span>
+                </div>
+
+                <div class="preference">
+                    <strong data-t="availability">Weekly Availability</strong>
+                    <span id="availabilitySummary"></span>
+                </div>
+
+                <div class="preference">
+                    <strong data-t="roles">Preferred Roles</strong>
+                    <span id="rolesSummary"></span>
+                </div>
+
+                <div class="preference">
+                    <strong data-t="deadlines">Deadline Expectations</strong>
+                    <span id="deadlineSummary"></span>
+                </div>
+
+                <div class="preference">
+                    <strong data-t="quality">Quality Expectations</strong>
+                    <span id="qualitySummary"></span>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 data-t="reviewDetails">Review Details</h2>
+
+                <span class="label" data-t="reviewDateLabel">
+                    Review Date
+                </span>
+
+                <span class="value" id="reviewDate"></span>
+            </div>
+
+            <div class="notice" id="agreementNotice">
+                This decision applies to this proposal only.
+            </div>
+
+            <div class="actions">
+                <a id="reviewButton" class="button" href="review.html"
+                   data-t="reviewButton">
+                    Back to Review Proposal
                 </a>
 
+                <a id="preferencesButton" class="button secondary"
+                   href="communication.html" data-t="preferencesButton">
+                    Edit My Preferences
+                </a>
             </div>
+        </div>
 
-            <p id="message" role="status" aria-live="polite"></p>
-
-        </section>
-
-        <section id="dashboardScreen" class="hidden">
-
-            <h1 id="dashboardHeading" tabindex="-1">
-                Project Dashboard
-            </h1>
-
-            <p class="subtitle">
-                Welcome to your Group Project Contract dashboard.
-            </p>
-
-            <div class="notice">
-                This is a temporary demo dashboard.
-                Your team's main dashboard will be connected later.
-            </div>
-
-            <div class="card">
-
-                <h2>Your Proposal</h2>
-
-                <span class="label">
-                    Topic
-                </span>
-
-                <span class="value" id="dashboardTopic"></span>
-
-                <div style="margin-top: 15px;">
-
-                    <span class="label">
-                        Your Approved Proposal
-                    </span>
-
-                    <p class="proposal-text" id="dashboardProposal"></p>
-
-                </div>
-
-            </div>
-
-            <div class="card">
-
-                <h2>Next Steps</h2>
-
-                <p>
-                    Your proposed agreement has been approved by you.
-                    The next step is to collect approval from the other
-                    team members.
-                </p>
-
-            </div>
-
-            <button type="button" id="reviewButton">
-                Review Agreement
-            </button>
-
-            <button type="button" id="preferencesButton">
-                Edit My Preferences
-            </button>
-
-        </section>
+        <div class="actions" id="errorActions" hidden>
+            <a id="errorReviewLink" class="button" href="review.html"
+               data-t="reviewButton">
+                Back to Review Proposal
+            </a>
+        </div>
 
     </main>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+    <script src="../mateo/supabase-client.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/i18next@23.16.8/dist/umd/i18next.min.js"></script>
+
     <script>
-        const confirmationContent = document.getElementById(
-            "confirmationContent"
-        );
+        const resources = {
+            en: {
+                translation: {
+                    title: "Agreement Confirmation",
+                    intro: "View the current decision on your proposal.",
+                    language: "Language",
+                    back: "Back",
+                    proposalHeading: "Proposal Details",
+                    topicLabel: "Agreement Topic",
+                    solutionLabel: "Proposed Solution",
+                    preferencesHeading: "Your Saved Preferences",
+                    communication: "Communication",
+                    availability: "Weekly Availability",
+                    roles: "Preferred Roles",
+                    deadlines: "Deadline Expectations",
+                    quality: "Quality Expectations",
+                    reviewDetails: "Review Details",
+                    reviewDateLabel: "Review Date",
+                    reviewButton: "Back to Review Proposal",
+                    preferencesButton: "Edit My Preferences",
+                    notSelected: "Not selected",
+                    notReviewed: "Not reviewed yet",
+                    loading: "Loading proposal...",
+                    noTeam: "Please open this screen from your team.",
+                    noProposal: "No proposal ID was provided. Open a proposal from the Review screen.",
+                    notFound: "Proposal not found or you do not have access.",
+                    loginError: "Please sign in through your team first.",
+                    loadError: "Could not load the proposal from Supabase.",
+                    prefError: "Your saved preferences could not be loaded.",
+                    statusNotice: "This decision applies to this proposal between two teammates. It does not automatically approve the full team contract.",
+                    statuses: {
+                        pending: "Pending Review",
+                        approved: "Approved",
+                        changes_requested: "Changes Requested",
+                        rejected: "Rejected"
+                    },
+                    outcomes: {
+                        pending: "Awaiting Review",
+                        approved: "Proposal Approved!",
+                        changes_requested: "Changes Requested",
+                        rejected: "Proposal Rejected"
+                    },
+                    descriptions: {
+                        pending: "Your teammate has not made a decision yet.",
+                        approved: "The assigned teammate approved this proposal.",
+                        changes_requested: "The assigned teammate requested changes. A revised proposal can be submitted.",
+                        rejected: "The assigned teammate rejected this proposal."
+                    },
+                    categories: {
+                        Communication: "Communication",
+                        Availability: "Availability",
+                        "Preferred Roles": "Preferred Roles",
+                        Deadlines: "Deadlines",
+                        Quality: "Quality"
+                    },
+                    values: {
+                        Email: "Email",
+                        "In-app Chat": "In-app Chat",
+                        Discord: "Discord",
+                        "Zoom / Meet": "Zoom / Meet",
+                        Other: "Other",
+                        Research: "Research",
+                        Design: "Design",
+                        Development: "Development",
+                        Testing: "Testing",
+                        Documentation: "Documentation",
+                        "Strict deadlines": "Strict deadlines",
+                        "Some flexibility": "Some flexibility",
+                        Flexible: "Flexible",
+                        Accuracy: "Accuracy",
+                        "Good design / usability": "Good design / usability",
+                        "Clean work": "Clean work",
+                        "Detailed documentation": "Detailed documentation",
+                        "Flexible schedule": "Flexible schedule"
+                    },
+                    days: {
+                        Monday: "Monday",
+                        Tuesday: "Tuesday",
+                        Wednesday: "Wednesday",
+                        Thursday: "Thursday",
+                        Friday: "Friday",
+                        Saturday: "Saturday",
+                        Sunday: "Sunday"
+                    },
+                    periods: {
+                        Morning: "Morning",
+                        Afternoon: "Afternoon",
+                        Evening: "Evening"
+                    }
+                }
+            },
+            hr: {
+                translation: {
+                    title: "Potvrda dogovora",
+                    intro: "Pogledajte trenutačnu odluku o prijedlogu.",
+                    language: "Jezik",
+                    back: "Natrag",
+                    proposalHeading: "Detalji prijedloga",
+                    topicLabel: "Tema dogovora",
+                    solutionLabel: "Predloženo rješenje",
+                    preferencesHeading: "Vaše spremljene preferencije",
+                    communication: "Komunikacija",
+                    availability: "Tjedna dostupnost",
+                    roles: "Željene uloge",
+                    deadlines: "Očekivanja vezana uz rokove",
+                    quality: "Očekivanja kvalitete",
+                    reviewDetails: "Detalji pregleda",
+                    reviewDateLabel: "Datum pregleda",
+                    reviewButton: "Natrag na pregled prijedloga",
+                    preferencesButton: "Uredi moje preferencije",
+                    notSelected: "Nije odabrano",
+                    notReviewed: "Još nije pregledano",
+                    loading: "Učitavanje prijedloga...",
+                    noTeam: "Otvorite ovaj zaslon iz svojeg tima.",
+                    noProposal: "ID prijedloga nedostaje. Otvorite prijedlog sa zaslona za pregled.",
+                    notFound: "Prijedlog nije pronađen ili nemate pristup.",
+                    loginError: "Najprije se prijavite putem svojeg tima.",
+                    loadError: "Prijedlog nije moguće učitati iz baze Supabase.",
+                    prefError: "Vaše spremljene preferencije nije moguće učitati.",
+                    statusNotice: "Ova odluka odnosi se na prijedlog između dva člana tima. Ne znači automatsko odobrenje cijelog timskog ugovora.",
+                    statuses: {
+                        pending: "Čeka pregled",
+                        approved: "Odobreno",
+                        changes_requested: "Zatražene izmjene",
+                        rejected: "Odbijeno"
+                    },
+                    outcomes: {
+                        pending: "Čeka pregled",
+                        approved: "Prijedlog je odobren!",
+                        changes_requested: "Zatražene izmjene",
+                        rejected: "Prijedlog je odbijen"
+                    },
+                    descriptions: {
+                        pending: "Član tima još nije donio odluku.",
+                        approved: "Odabrani član tima odobrio je prijedlog.",
+                        changes_requested: "Član tima zatražio je izmjene. Može se poslati novi prijedlog.",
+                        rejected: "Odabrani član tima odbio je prijedlog."
+                    },
+                    categories: {
+                        Communication: "Komunikacija",
+                        Availability: "Dostupnost",
+                        "Preferred Roles": "Željene uloge",
+                        Deadlines: "Rokovi",
+                        Quality: "Kvaliteta"
+                    },
+                    values: {
+                        Email: "E-pošta",
+                        "In-app Chat": "Razgovor u aplikaciji",
+                        Discord: "Discord",
+                        "Zoom / Meet": "Zoom / Meet",
+                        Other: "Ostalo",
+                        Research: "Istraživanje",
+                        Design: "Dizajn",
+                        Development: "Razvoj",
+                        Testing: "Testiranje",
+                        Documentation: "Dokumentacija",
+                        "Strict deadlines": "Strogi rokovi",
+                        "Some flexibility": "Određena fleksibilnost",
+                        Flexible: "Fleksibilni rokovi",
+                        Accuracy: "Točnost",
+                        "Good design / usability": "Dobar dizajn / jednostavnost korištenja",
+                        "Clean work": "Uredno obavljen posao",
+                        "Detailed documentation": "Detaljna dokumentacija",
+                        "Flexible schedule": "Fleksibilan raspored"
+                    },
+                    days: {
+                        Monday: "Ponedjeljak",
+                        Tuesday: "Utorak",
+                        Wednesday: "Srijeda",
+                        Thursday: "Četvrtak",
+                        Friday: "Petak",
+                        Saturday: "Subota",
+                        Sunday: "Nedjelja"
+                    },
+                    periods: {
+                        Morning: "Jutro",
+                        Afternoon: "Poslijepodne",
+                        Evening: "Večer"
+                    }
+                }
+            },
+            sq: {
+                translation: {
+                    title: "Konfirmimi i marrëveshjes",
+                    intro: "Shihni vendimin aktual për propozimin tuaj.",
+                    language: "Gjuha",
+                    back: "Kthehu",
+                    proposalHeading: "Detajet e propozimit",
+                    topicLabel: "Tema e marrëveshjes",
+                    solutionLabel: "Zgjidhja e propozuar",
+                    preferencesHeading: "Preferencat tuaja të ruajtura",
+                    communication: "Komunikimi",
+                    availability: "Disponueshmëria javore",
+                    roles: "Rolet e preferuara",
+                    deadlines: "Pritshmëritë për afatet",
+                    quality: "Pritshmëritë për cilësinë",
+                    reviewDetails: "Detajet e shqyrtimit",
+                    reviewDateLabel: "Data e shqyrtimit",
+                    reviewButton: "Kthehu te shqyrtimi",
+                    preferencesButton: "Ndrysho preferencat e mia",
+                    notSelected: "Nuk është zgjedhur",
+                    notReviewed: "Ende nuk është shqyrtuar",
+                    loading: "Duke ngarkuar propozimin...",
+                    noTeam: "Hapeni këtë ekran nga ekipi juaj.",
+                    noProposal: "Mungon ID-ja e propozimit. Hapeni nga ekrani i shqyrtimit.",
+                    notFound: "Propozimi nuk u gjet ose nuk keni qasje.",
+                    loginError: "Ju lutemi hyni fillimisht përmes ekipit tuaj.",
+                    loadError: "Propozimi nuk mund të ngarkohet nga Supabase.",
+                    prefError: "Preferencat tuaja të ruajtura nuk u ngarkuan.",
+                    statusNotice: "Ky vendim vlen për propozimin midis dy anëtarëve të ekipit. Nuk e miraton automatikisht kontratën e plotë të ekipit.",
+                    statuses: {
+                        pending: "Në pritje të shqyrtimit",
+                        approved: "Miratuar",
+                        changes_requested: "Janë kërkuar ndryshime",
+                        rejected: "Refuzuar"
+                    },
+                    outcomes: {
+                        pending: "Në pritje të shqyrtimit",
+                        approved: "Propozimi u miratua!",
+                        changes_requested: "Janë kërkuar ndryshime",
+                        rejected: "Propozimi u refuzua"
+                    },
+                    descriptions: {
+                        pending: "Anëtari i ekipit ende nuk ka marrë vendim.",
+                        approved: "Anëtari i zgjedhur e miratoi këtë propozim.",
+                        changes_requested: "Anëtari i ekipit kërkoi ndryshime. Mund të dërgohet një propozim i ri.",
+                        rejected: "Anëtari i ekipit e refuzoi këtë propozim."
+                    },
+                    categories: {
+                        Communication: "Komunikimi",
+                        Availability: "Disponueshmëria",
+                        "Preferred Roles": "Rolet e preferuara",
+                        Deadlines: "Afatet",
+                        Quality: "Cilësia"
+                    },
+                    values: {
+                        Email: "Email",
+                        "In-app Chat": "Bisedë në aplikacion",
+                        Discord: "Discord",
+                        "Zoom / Meet": "Zoom / Meet",
+                        Other: "Tjetër",
+                        Research: "Hulumtim",
+                        Design: "Dizajn",
+                        Development: "Zhvillim",
+                        Testing: "Testim",
+                        Documentation: "Dokumentim",
+                        "Strict deadlines": "Strict deadlines",
+                        "Some flexibility": "Pak fleksibilitet",
+                        Flexible: "Afate fleksibile",
+                        Accuracy: "Saktësia",
+                        "Good design / usability": "Dizajn i mirë / lehtësi në përdorim",
+                        "Clean work": "Punë e rregullt",
+                        "Detailed documentation": "Dokumentim i detajuar",
+                        "Flexible schedule": "Orar fleksibil"
+                    },
+                    days: {
+                        Monday: "E hënë",
+                        Tuesday: "E martë",
+                        Wednesday: "E mërkurë",
+                        Thursday: "E enjte",
+                        Friday: "E premte",
+                        Saturday: "E shtunë",
+                        Sunday: "E diel"
+                    },
+                    periods: {
+                        Morning: "Mëngjes",
+                        Afternoon: "Pasdite",
+                        Evening: "Mbrëmje"
+                    }
+                }
+            }
+        };
 
-        const dashboardScreen = document.getElementById(
-            "dashboardScreen"
-        );
+        const params = new URLSearchParams(window.location.search);
+        const teamId = params.get("teamId");
+        const proposalId = params.get("proposalId");
 
-        const confirmationScreen = document.getElementById(
-            "confirmationScreen"
-        );
-
-        const emptyState = document.getElementById("emptyState");
-        const message = document.getElementById("message");
+        const backLink = document.getElementById("backLink");
+        const reviewButton = document.getElementById("reviewButton");
+        const preferencesButton = document.getElementById("preferencesButton");
+        const errorReviewLink = document.getElementById("errorReviewLink");
+        const languageSelector = document.getElementById("languageSelector");
+        const content = document.getElementById("confirmationContent");
+        const notice = document.getElementById("notice");
+        const errorActions = document.getElementById("errorActions");
 
         let proposal = null;
+        let preferences = null;
+        let noticeKey = "loading";
+        let preferencesError = false;
 
-        function getSavedArray(key) {
-            try {
-                const value = JSON.parse(
-                    localStorage.getItem(key) || "[]"
-                );
+        const reviewUrl = "review.html" + (
+            teamId
+                ? "?teamId=" + encodeURIComponent(teamId) +
+                    (proposalId
+                        ? "&proposalId=" + encodeURIComponent(proposalId)
+                        : "")
+                : ""
+        );
 
-                return Array.isArray(value) ? value : [];
+        backLink.href = reviewUrl;
+        reviewButton.href = reviewUrl;
+        errorReviewLink.href = reviewUrl;
 
-            } catch (error) {
+        if (teamId) {
+            preferencesButton.href =
+                "communication.html?teamId=" + encodeURIComponent(teamId);
+        }
+
+        function showNotice(key) {
+            noticeKey = key;
+            notice.textContent = i18next.t(key);
+        }
+
+        function translateValue(value) {
+            const key = "values." + value;
+
+            if (i18next.exists(key)) {
+                return i18next.t(key);
+            }
+
+            const parts = value.split(" ");
+
+            if (
+                parts.length === 2 &&
+                i18next.exists("days." + parts[0]) &&
+                i18next.exists("periods." + parts[1])
+            ) {
+                return i18next.t("days." + parts[0]) +
+                    " — " + i18next.t("periods." + parts[1]);
+            }
+
+            return value;
+        }
+
+        function translateArray(value) {
+            if (!Array.isArray(value) || value.length === 0) {
+                return i18next.t("notSelected");
+            }
+
+            return value.map(translateValue).join(", ");
+        }
+
+        function availabilityChoices(value) {
+            if (!value || typeof value !== "object") {
                 return [];
             }
-        }
 
-        function getSavedText(key) {
-            try {
-                return localStorage.getItem(key) || "";
-            } catch (error) {
-                return "";
-            }
-        }
-
-        function displayArray(elementId, values) {
-            document.getElementById(elementId).textContent =
-                values.length > 0
-                    ? values.join(", ")
-                    : "Not selected";
-        }
-
-        function getAvailability() {
-            try {
-                const saved = JSON.parse(
-                    localStorage.getItem("weeklyAvailability") || "null"
-                );
-
-                if (!saved) {
-                    return [];
-                }
-
-                const times = Array.isArray(saved.times)
-                    ? saved.times.map(function(value) {
-                        return value.replace("-", " ");
+            const result = Array.isArray(value.times)
+                ? value.times
+                    .filter(function(item) {
+                        return typeof item === "string";
                     })
-                    : [];
+                    .map(function(item) {
+                        return item.replace("-", " ");
+                    })
+                : [];
 
-                if (saved.flexible === true) {
-                    times.push("Flexible schedule");
-                }
-
-                return times;
-
-            } catch (error) {
-                return [];
+            if (value.flexible === true) {
+                result.push("Flexible schedule");
             }
+
+            return result;
         }
 
-        function displayPreferences() {
-            displayArray(
-                "communicationSummary",
-                getSavedArray("communicationPreferences")
-            );
+        function updatePreferences() {
+            const saved = preferences || {};
 
-            displayArray(
-                "availabilitySummary",
-                getAvailability()
-            );
+            document.getElementById("communicationSummary").textContent =
+                translateArray(saved.communication);
 
-            displayArray(
-                "rolesSummary",
-                getSavedArray("preferredRoles")
-            );
+            document.getElementById("availabilitySummary").textContent =
+                translateArray(availabilityChoices(saved.availability));
 
-            const deadline = getSavedText("deadlineExpectations");
+            document.getElementById("rolesSummary").textContent =
+                translateArray(saved.roles);
 
             document.getElementById("deadlineSummary").textContent =
-                deadline || "Not selected";
+                saved.deadline
+                    ? translateValue(saved.deadline)
+                    : i18next.t("notSelected");
 
-            displayArray(
-                "qualitySummary",
-                getSavedArray("qualityExpectations")
-            );
+            document.getElementById("qualitySummary").textContent =
+                translateArray(saved.quality);
         }
 
-        function displayApprovalDate(value) {
-            const dateElement = document.getElementById(
-                "approvalDate"
-            );
-
+        function formatReviewDate(value) {
             if (!value) {
-                dateElement.textContent = "Date unavailable";
-                return;
+                return i18next.t("notReviewed");
             }
 
             const date = new Date(value);
 
             if (Number.isNaN(date.getTime())) {
-                dateElement.textContent = "Date unavailable";
-                return;
+                return i18next.t("notReviewed");
             }
 
-            dateElement.textContent = new Intl.DateTimeFormat(
-                "en",
+            const locales = {
+                en: "en-US",
+                hr: "hr-HR",
+                sq: "sq-AL"
+            };
+
+            return new Intl.DateTimeFormat(
+                locales[i18next.language] || "en-US",
                 {
                     dateStyle: "medium",
                     timeStyle: "short"
@@ -515,600 +787,198 @@
             ).format(date);
         }
 
-        try {
-            const saved = JSON.parse(
-                localStorage.getItem("groupProposal") || "null"
-            );
-
-            if (
-                saved &&
-                saved.status === "approved" &&
-                typeof saved.topic === "string" &&
-                saved.topic.trim().length > 0 &&
-                typeof saved.text === "string" &&
-                saved.text.trim().length >= 10
-            ) {
-                proposal = saved;
-
-                document.getElementById(
-                    "agreementTopic"
-                ).textContent = proposal.topic;
-
-                document.getElementById(
-                    "agreementText"
-                ).textContent = proposal.text;
-
-                displayPreferences();
-
-                displayApprovalDate(proposal.approvedAt);
-
-                document.getElementById(
-                    "dashboardTopic"
-                ).textContent = proposal.topic;
-
-                document.getElementById(
-                    "dashboardProposal"
-                ).textContent = proposal.text;
-
-                confirmationContent.classList.remove("hidden");
-
-            } else {
-                emptyState.classList.remove("hidden");
+        function renderProposal() {
+            if (!proposal) {
+                return;
             }
 
-        } catch (error) {
-            emptyState.classList.remove("hidden");
+            const status = proposal.status;
+            const icon = document.getElementById("outcomeIcon");
+            const badge = document.getElementById("statusBadge");
 
-            message.textContent =
-                "The agreement could not be loaded.";
+            const symbols = {
+                approved: "✓",
+                rejected: "×",
+                changes_requested: "!",
+                pending: "…"
+            };
+
+            icon.className = "outcome-icon " + status;
+            icon.textContent = symbols[status] || "…";
+
+            badge.className = "status " + status;
+            badge.textContent = i18next.t("statuses." + status);
+
+            document.getElementById("outcomeTitle").textContent =
+                i18next.t("outcomes." + status);
+
+            document.getElementById("outcomeDescription").textContent =
+                i18next.t("descriptions." + status);
+
+            document.getElementById("agreementTopic").textContent =
+                i18next.t("categories." + proposal.topic);
+
+            document.getElementById("agreementText").textContent =
+                proposal.proposal_text;
+
+            document.getElementById("reviewDate").textContent =
+                formatReviewDate(proposal.reviewed_at);
+
+            document.getElementById("agreementNotice").textContent =
+                i18next.t("statusNotice");
+
+            updatePreferences();
         }
 
-        document.getElementById("dashboardButton")
-            .addEventListener("click", function() {
+        function updateLanguage() {
+            document.documentElement.lang = i18next.language;
+            document.title = i18next.t("title");
 
-                if (!proposal) {
-                    message.textContent =
-                        "No approved proposal is available.";
+            document.querySelectorAll("[data-t]").forEach(
+                function(element) {
+                    element.textContent = i18next.t(
+                        element.getAttribute("data-t")
+                    );
+                }
+            );
+
+            backLink.textContent = "← " + i18next.t("back");
+            languageSelector.value = i18next.language;
+
+            if (noticeKey) {
+                notice.textContent = i18next.t(noticeKey);
+            }
+
+            renderProposal();
+        }
+
+        async function loadConfirmation() {
+            content.hidden = true;
+            errorActions.hidden = true;
+            showNotice("loading");
+
+            if (!teamId) {
+                showNotice("noTeam");
+                errorActions.hidden = false;
+                return;
+            }
+
+            if (!proposalId) {
+                showNotice("noProposal");
+                errorActions.hidden = false;
+                return;
+            }
+
+            try {
+                const { data: authData, error: authError } =
+                    await database.auth.getUser();
+
+                if (authError || !authData.user) {
+                    throw new Error("NOT_SIGNED_IN");
+                }
+
+                const currentUserId = authData.user.id;
+
+                const { data, error } = await database
+                    .from("preference_proposals")
+                    .select(
+                        "id,team_id,author_id,teammate_id,topic,proposal_text,status,reviewed_at"
+                    )
+                    .eq("team_id", teamId)
+                    .eq("id", proposalId)
+                    .maybeSingle();
+
+                if (error) {
+                    throw error;
+                }
+
+                if (
+                    !data ||
+                    (
+                        data.author_id !== currentUserId &&
+                        data.teammate_id !== currentUserId
+                    )
+                ) {
+                    showNotice("notFound");
+                    errorActions.hidden = false;
                     return;
                 }
 
-                confirmationScreen.classList.add("hidden");
-                dashboardScreen.classList.remove("hidden");
-
-                document.title = "Project Dashboard";
-
-                document.getElementById(
-                    "dashboardHeading"
-                ).focus();
-
-            });
-
-        document.getElementById("reviewButton")
-            .addEventListener("click", function() {
-                window.location.href = "review.html";
-            });
-
-        document.getElementById("preferencesButton")
-            .addEventListener("click", function() {
-                window.location.href = "communication.html";
-            });
-    </script>
-<script src="https://cdn.jsdelivr.net/npm/i18next@23.16.8/dist/umd/i18next.min.js"></script>
-
-<script>
-(function () {
-    if (!window.i18next) return;
-
-    const resources = {
-        en: {
-            translation: {
-                title: "Agreement Confirmation",
-                approvedTitle: "Agreement Approved!",
-                subtitle: "You have successfully approved your proposed agreement.",
-                status: "Approved",
-                notice: "Demo mode: Your approval has been saved in this browser. Other team members must also approve before this becomes a final team agreement.",
-                approvedProposal: "Approved Proposal",
-                agreementTopic: "Agreement Topic",
-                proposedSolution: "Proposed Solution",
-                savedPreferences: "Your Saved Preferences",
-                communication: "Communication",
-                availability: "Weekly Availability",
-                roles: "Preferred Roles",
-                deadlines: "Deadline Expectations",
-                quality: "Quality Expectations",
-                approvalDetails: "Approval Details",
-                approvalDate: "Approval Date",
-                dashboardButton: "Go to Dashboard",
-                back: "Back",
-                language: "Language",
-                emptyTitle: "No Approved Proposal Found",
-                emptyDescription: "You need to create and approve a proposal before viewing the confirmation.",
-                returnReview: "Return to Review Proposal",
-                dashboardTitle: "Project Dashboard",
-                dashboardWelcome: "Welcome to your Group Project Contract dashboard.",
-                dashboardNotice: "This is a temporary demo dashboard. Your team's main dashboard will be connected later.",
-                yourProposal: "Your Proposal",
-                topic: "Topic",
-                yourApprovedProposal: "Your Approved Proposal",
-                nextSteps: "Next Steps",
-                nextStepsText: "Your proposed agreement has been approved by you. The next step is to collect approval from the other team members.",
-                reviewButton: "Review Agreement",
-                preferencesButton: "Edit My Preferences",
-                notSelected: "Not selected",
-                dateUnavailable: "Date unavailable",
-                loadError: "The agreement could not be loaded.",
-                missingError: "No approved proposal is available.",
-                categories: {
-                    Communication: "Communication",
-                    Availability: "Availability",
-                    "Preferred Roles": "Preferred Roles",
-                    Deadlines: "Deadlines",
-                    Quality: "Quality"
-                },
-                values: {
-                    Email: "Email",
-                    "In-app Chat": "In-app Chat",
-                    Discord: "Discord",
-                    "Zoom / Meet": "Zoom / Meet",
-                    Other: "Other",
-                    Research: "Research",
-                    Design: "Design",
-                    Development: "Development",
-                    Testing: "Testing",
-                    Documentation: "Documentation",
-                    "Strict deadlines": "Strict deadlines",
-                    "Some flexibility": "Some flexibility",
-                    Flexible: "Flexible",
-                    Accuracy: "Accuracy",
-                    "Good design / usability": "Good design / usability",
-                    "Clean work": "Clean work",
-                    "Detailed documentation": "Detailed documentation",
-                    "Flexible schedule": "Flexible schedule"
-                },
-                days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
-                periods: ["Morning", "Afternoon", "Evening"]
-            }
-        },
-        hr: {
-            translation: {
-                title: "Potvrda dogovora",
-                approvedTitle: "Dogovor je odobren!",
-                subtitle: "Uspješno ste odobrili svoj predloženi dogovor.",
-                status: "Odobreno",
-                notice: "Demonstracijski način rada: Vaše odobrenje spremljeno je samo u ovom pregledniku. Ostali članovi tima također moraju odobriti prijedlog prije nego što postane konačan timski dogovor.",
-                approvedProposal: "Odobreni prijedlog",
-                agreementTopic: "Tema dogovora",
-                proposedSolution: "Predloženo rješenje",
-                savedPreferences: "Vaše spremljene preferencije",
-                communication: "Komunikacija",
-                availability: "Tjedna dostupnost",
-                roles: "Željene uloge",
-                deadlines: "Očekivanja vezana uz rokove",
-                quality: "Očekivanja kvalitete",
-                approvalDetails: "Detalji odobrenja",
-                approvalDate: "Datum odobrenja",
-                dashboardButton: "Idi na nadzornu ploču",
-                back: "Natrag",
-                language: "Jezik",
-                emptyTitle: "Nije pronađen odobreni prijedlog",
-                emptyDescription: "Morate izraditi i odobriti prijedlog prije prikaza potvrde.",
-                returnReview: "Vrati se na pregled prijedloga",
-                dashboardTitle: "Nadzorna ploča projekta",
-                dashboardWelcome: "Dobro došli na nadzornu ploču svojeg grupnog projekta.",
-                dashboardNotice: "Ovo je privremena demonstracijska nadzorna ploča. Glavna nadzorna ploča vašeg tima bit će povezana kasnije.",
-                yourProposal: "Vaš prijedlog",
-                topic: "Tema",
-                yourApprovedProposal: "Vaš odobreni prijedlog",
-                nextSteps: "Sljedeći koraci",
-                nextStepsText: "Odobrili ste svoj predloženi dogovor. Sljedeći je korak prikupiti odobrenja ostalih članova tima.",
-                reviewButton: "Pregledaj dogovor",
-                preferencesButton: "Uredi moje preferencije",
-                notSelected: "Nije odabrano",
-                dateUnavailable: "Datum nije dostupan",
-                loadError: "Dogovor nije moguće učitati.",
-                missingError: "Nema dostupnog odobrenog prijedloga.",
-                categories: {
-                    Communication: "Komunikacija",
-                    Availability: "Dostupnost",
-                    "Preferred Roles": "Željene uloge",
-                    Deadlines: "Rokovi",
-                    Quality: "Kvaliteta"
-                },
-                values: {
-                    Email: "E-pošta",
-                    "In-app Chat": "Razgovor u aplikaciji",
-                    Discord: "Discord",
-                    "Zoom / Meet": "Zoom / Meet",
-                    Other: "Ostalo",
-                    Research: "Istraživanje",
-                    Design: "Dizajn",
-                    Development: "Razvoj",
-                    Testing: "Testiranje",
-                    Documentation: "Dokumentacija",
-                    "Strict deadlines": "Strogi rokovi",
-                    "Some flexibility": "Određena fleksibilnost",
-                    Flexible: "Fleksibilni rokovi",
-                    Accuracy: "Točnost",
-                    "Good design / usability": "Dobar dizajn / jednostavnost korištenja",
-                    "Clean work": "Uredno obavljen posao",
-                    "Detailed documentation": "Detaljna dokumentacija",
-                    "Flexible schedule": "Fleksibilan raspored"
-                },
-                days: ["Ponedjeljak", "Utorak", "Srijeda", "Četvrtak", "Petak", "Subota", "Nedjelja"],
-                periods: ["Jutro", "Poslijepodne", "Večer"]
-            }
-        },
-        sq: {
-            translation: {
-                title: "Konfirmimi i marrëveshjes",
-                approvedTitle: "Marrëveshja u miratua!",
-                subtitle: "E keni miratuar me sukses marrëveshjen tuaj të propozuar.",
-                status: "Miratuar",
-                notice: "Version demonstrues: Miratimi juaj është ruajtur vetëm në këtë shfletues. Edhe anëtarët e tjerë të ekipit duhet ta miratojnë propozimin para se të bëhet marrëveshje përfundimtare.",
-                approvedProposal: "Propozimi i miratuar",
-                agreementTopic: "Tema e marrëveshjes",
-                proposedSolution: "Zgjidhja e propozuar",
-                savedPreferences: "Preferencat tuaja të ruajtura",
-                communication: "Komunikimi",
-                availability: "Disponueshmëria javore",
-                roles: "Rolet e preferuara",
-                deadlines: "Pritshmëritë për afatet",
-                quality: "Pritshmëritë për cilësinë",
-                approvalDetails: "Detajet e miratimit",
-                approvalDate: "Data e miratimit",
-                dashboardButton: "Shko te paneli kryesor",
-                back: "Kthehu",
-                language: "Gjuha",
-                emptyTitle: "Nuk u gjet propozim i miratuar",
-                emptyDescription: "Duhet të krijoni dhe miratoni një propozim para se të shihni konfirmimin.",
-                returnReview: "Kthehu te shqyrtimi i propozimit",
-                dashboardTitle: "Paneli kryesor i projektit",
-                dashboardWelcome: "Mirë se vini në panelin kryesor të projektit tuaj në grup.",
-                dashboardNotice: "Ky është një panel i përkohshëm demonstrues. Paneli kryesor i ekipit do të lidhet më vonë.",
-                yourProposal: "Propozimi juaj",
-                topic: "Tema",
-                yourApprovedProposal: "Propozimi juaj i miratuar",
-                nextSteps: "Hapat e ardhshëm",
-                nextStepsText: "Ju e keni miratuar marrëveshjen tuaj të propozuar. Hapi tjetër është marrja e miratimit nga anëtarët e tjerë të ekipit.",
-                reviewButton: "Shqyrto marrëveshjen",
-                preferencesButton: "Ndrysho preferencat e mia",
-                notSelected: "Nuk është zgjedhur",
-                dateUnavailable: "Data nuk është në dispozicion",
-                loadError: "Marrëveshja nuk mund të ngarkohet.",
-                missingError: "Nuk ka propozim të miratuar në dispozicion.",
-                categories: {
-                    Communication: "Komunikimi",
-                    Availability: "Disponueshmëria",
-                    "Preferred Roles": "Rolet e preferuara",
-                    Deadlines: "Afatet",
-                    Quality: "Cilësia"
-                },
-                values: {
-                    Email: "Email",
-                    "In-app Chat": "Bisedë në aplikacion",
-                    Discord: "Discord",
-                    "Zoom / Meet": "Zoom / Meet",
-                    Other: "Tjetër",
-                    Research: "Hulumtim",
-                    Design: "Dizajn",
-                    Development: "Zhvillim",
-                    Testing: "Testim",
-                    Documentation: "Dokumentim",
-                    "Strict deadlines": "Afate të rrepta",
-                    "Some flexibility": "Pak fleksibilitet",
-                    Flexible: "Afate fleksibile",
-                    Accuracy: "Saktësia",
-                    "Good design / usability": "Dizajn i mirë / lehtësi në përdorim",
-                    "Clean work": "Punë e rregullt",
-                    "Detailed documentation": "Dokumentim i detajuar",
-                    "Flexible schedule": "Orar fleksibil"
-                },
-                days: ["E hënë", "E martë", "E mërkurë", "E enjte", "E premte", "E shtunë", "E diel"],
-                periods: ["Mëngjes", "Pasdite", "Mbrëmje"]
-            }
-        }
-    };
-
-    const main = document.querySelector(".container");
-    const confirmation = document.getElementById("confirmationScreen");
-    const dashboard = document.getElementById("dashboardScreen");
-
-    const languageBox = document.createElement("div");
-    languageBox.style.margin = "0 0 20px";
-
-    const languageLabel = document.createElement("label");
-    languageLabel.htmlFor = "languageSelector";
-    languageLabel.style.display = "block";
-    languageLabel.style.marginBottom = "8px";
-    languageLabel.style.fontWeight = "bold";
-
-    const languageSelector = document.createElement("select");
-    languageSelector.id = "languageSelector";
-    languageSelector.style.width = "100%";
-    languageSelector.style.padding = "12px";
-    languageSelector.style.border = "1px solid #ccc";
-    languageSelector.style.borderRadius = "10px";
-    languageSelector.style.fontSize = "15px";
-
-    [
-        ["en", "English"],
-        ["hr", "Hrvatski"],
-        ["sq", "Shqip"]
-    ].forEach(function (entry) {
-        const option = document.createElement("option");
-        option.value = entry[0];
-        option.textContent = entry[1];
-        languageSelector.appendChild(option);
-    });
-
-    languageBox.appendChild(languageLabel);
-    languageBox.appendChild(languageSelector);
-    main.insertBefore(languageBox, confirmation);
-
-    const errorKeys = {
-        "The agreement could not be loaded.": "loadError",
-        "No approved proposal is available.": "missingError"
-    };
-
-    let currentError = errorKeys[message.textContent.trim()] || null;
-
-    function setText(selector, key, parent) {
-        const element = (parent || document).querySelector(selector);
-
-        if (element) {
-            element.textContent = i18next.t(key);
-        }
-    }
-
-    function translateValue(value) {
-        const translation = resources[i18next.language].translation;
-
-        if (translation.values[value]) {
-            return translation.values[value];
-        }
-
-        const parts = value.split(" ");
-        const englishDays = resources.en.translation.days;
-        const englishPeriods = resources.en.translation.periods;
-
-        if (parts.length === 2) {
-            const dayIndex = englishDays.indexOf(parts[0]);
-            const periodIndex = englishPeriods.indexOf(parts[1]);
-
-            if (dayIndex >= 0 && periodIndex >= 0) {
-                return translation.days[dayIndex] +
-                    " — " + translation.periods[periodIndex];
-            }
-        }
-
-        return value;
-    }
-
-    function translateArray(key) {
-        const values = getSavedArray(key);
-
-        if (values.length === 0) {
-            return i18next.t("notSelected");
-        }
-
-        return values.map(translateValue).join(", ");
-    }
-
-    function updatePreferences() {
-        document.getElementById("communicationSummary").textContent =
-            translateArray("communicationPreferences");
-
-        const available = getAvailability();
-
-        document.getElementById("availabilitySummary").textContent =
-            available.length
-                ? available.map(translateValue).join(", ")
-                : i18next.t("notSelected");
-
-        document.getElementById("rolesSummary").textContent =
-            translateArray("preferredRoles");
-
-        const deadline = getSavedText("deadlineExpectations");
-
-        document.getElementById("deadlineSummary").textContent =
-            deadline ? translateValue(deadline) : i18next.t("notSelected");
-
-        document.getElementById("qualitySummary").textContent =
-            translateArray("qualityExpectations");
-    }
-
-    function updateApprovalDate() {
-        const element = document.getElementById("approvalDate");
-
-        if (!proposal || !proposal.approvedAt) {
-            element.textContent = i18next.t("dateUnavailable");
-            return;
-        }
-
-        const date = new Date(proposal.approvedAt);
-
-        if (Number.isNaN(date.getTime())) {
-            element.textContent = i18next.t("dateUnavailable");
-            return;
-        }
-
-        const locales = {
-            en: "en-US",
-            hr: "hr-HR",
-            sq: "sq-AL"
-        };
-
-        element.textContent = new Intl.DateTimeFormat(
-            locales[i18next.language] || "en-US",
-            {
-                dateStyle: "medium",
-                timeStyle: "short"
-            }
-        ).format(date);
-    }
-
-    function updateText() {
-        document.documentElement.lang = i18next.language;
-
-        document.title = dashboard.classList.contains("hidden")
-            ? i18next.t("title")
-            : i18next.t("dashboardTitle");
-
-        languageLabel.textContent = i18next.t("language");
-
-        setText(".back", "back", confirmation);
-        const back = confirmation.querySelector(".back");
-        back.textContent = "← " + i18next.t("back");
-
-        setText("#confirmationContent h1", "approvedTitle");
-        setText("#confirmationContent .subtitle", "subtitle");
-        setText("#confirmationContent .status", "status");
-        setText("#confirmationContent .notice", "notice");
-
-        const content = document.getElementById("confirmationContent");
-        const cards = content.querySelectorAll(".card");
-
-        setText("h2", "approvedProposal", cards[0]);
-
-        const agreementLabels = cards[0].querySelectorAll(".label");
-        agreementLabels[0].textContent = i18next.t("agreementTopic");
-        agreementLabels[1].textContent = i18next.t("proposedSolution");
-
-        setText("h2", "savedPreferences", cards[1]);
-
-        const preferenceKeys = [
-            "communication",
-            "availability",
-            "roles",
-            "deadlines",
-            "quality"
-        ];
-
-        const preferenceHeadings =
-            cards[1].querySelectorAll(".preference strong");
-
-        preferenceHeadings.forEach(function (element, index) {
-            element.textContent = i18next.t(preferenceKeys[index]);
-        });
-
-        setText("h2", "approvalDetails", cards[2]);
-        setText(".label", "approvalDate", cards[2]);
-        setText("#dashboardButton", "dashboardButton");
-
-        setText("#emptyState h2", "emptyTitle");
-        setText("#emptyState p", "emptyDescription");
-        setText("#emptyState a", "returnReview");
-
-        setText("#dashboardHeading", "dashboardTitle");
-        setText(".subtitle", "dashboardWelcome", dashboard);
-        setText(".notice", "dashboardNotice", dashboard);
-
-        const dashboardCards = dashboard.querySelectorAll(".card");
-
-        setText("h2", "yourProposal", dashboardCards[0]);
-
-        const dashboardLabels =
-            dashboardCards[0].querySelectorAll(".label");
-
-        dashboardLabels[0].textContent = i18next.t("topic");
-        dashboardLabels[1].textContent =
-            i18next.t("yourApprovedProposal");
-
-        setText("h2", "nextSteps", dashboardCards[1]);
-        setText("p", "nextStepsText", dashboardCards[1]);
-
-        setText("#reviewButton", "reviewButton");
-        setText("#preferencesButton", "preferencesButton");
-
-        if (proposal) {
-            const categories =
-                resources[i18next.language].translation.categories;
-
-            const translatedTopic =
-                categories[proposal.topic] || proposal.topic;
-
-            document.getElementById("agreementTopic").textContent =
-                translatedTopic;
-
-            document.getElementById("dashboardTopic").textContent =
-                translatedTopic;
-
-            updatePreferences();
-            updateApprovalDate();
-        }
-
-        if (currentError) {
-            message.textContent = i18next.t(currentError);
-        }
-    }
-
-    const observer = new MutationObserver(function () {
-        const text = message.textContent.trim();
-
-        if (!text) {
-            currentError = null;
-            return;
-        }
-
-        if (errorKeys[text]) {
-            currentError = errorKeys[text];
-        }
-
-        if (currentError) {
-            const translated = i18next.t(currentError);
-
-            if (text !== translated) {
-                message.textContent = translated;
-            }
-        }
-    });
-
-    let savedLanguage = "en";
-
-    try {
-        savedLanguage = localStorage.getItem("appLanguage") || "en";
-    } catch (error) {
-        savedLanguage = "en";
-    }
-
-    if (!resources[savedLanguage]) {
-        savedLanguage = "en";
-    }
-
-    i18next.init({
-        lng: savedLanguage,
-        fallbackLng: "en",
-        resources: resources
-    }).then(function () {
-        languageSelector.value = savedLanguage;
-
-        observer.observe(message, {
-            childList: true,
-            characterData: true,
-            subtree: true
-        });
-
-        updateText();
-
-        languageSelector.addEventListener("change", function () {
-            const selectedLanguage = languageSelector.value;
-
-            i18next.changeLanguage(selectedLanguage).then(function () {
-                try {
-                    localStorage.setItem("appLanguage", selectedLanguage);
-                } catch (error) {
+                proposal = data;
+
+                const prefResult = await database
+                    .from("team_preferences")
+                    .select(
+                        "communication,availability,roles,deadline,quality"
+                    )
+                    .eq("team_id", teamId)
+                    .eq("user_id", currentUserId)
+                    .maybeSingle();
+
+                if (prefResult.error) {
+                    preferencesError = true;
+                } else {
+                    preferences = prefResult.data;
                 }
 
-                updateText();
+                content.hidden = false;
+                renderProposal();
+
+                if (preferencesError) {
+                    showNotice("prefError");
+                } else {
+                    showNotice("statusNotice");
+                }
+
+            } catch (error) {
+                showNotice(
+                    error.message === "NOT_SIGNED_IN"
+                        ? "loginError"
+                        : "loadError"
+                );
+
+                errorActions.hidden = false;
+            }
+        }
+
+        let savedLanguage = "en";
+
+        try {
+            savedLanguage =
+                localStorage.getItem("appLanguage") || "en";
+        } catch (error) {
+            savedLanguage = "en";
+        }
+
+        if (!resources[savedLanguage]) {
+            savedLanguage = "en";
+        }
+
+        i18next.init({
+            lng: savedLanguage,
+            fallbackLng: "en",
+            supportedLngs: ["en", "hr", "sq"],
+            resources: resources
+        }).then(function() {
+            updateLanguage();
+            loadConfirmation();
+
+            languageSelector.addEventListener("change", function() {
+                const selectedLanguage = languageSelector.value;
+
+                i18next.changeLanguage(selectedLanguage).then(function() {
+                    try {
+                        localStorage.setItem(
+                            "appLanguage",
+                            selectedLanguage
+                        );
+                    } catch (error) {
+                    }
+
+                    updateLanguage();
+                });
             });
         });
-
-        document.getElementById("dashboardButton")
-            .addEventListener("click", function () {
-                updateText();
-            });
-    });
-})();
-</script>
+    </script>
 </body>
 </html>

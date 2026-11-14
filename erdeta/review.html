@@ -1,10 +1,9 @@
+
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Review Proposal</title>
 
     <style>
@@ -14,17 +13,17 @@
 
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f6fb;
+            background: #f4f6fb;
             margin: 0;
             padding: 20px;
             color: #222;
         }
 
         .container {
-            background: white;
             max-width: 460px;
             margin: 40px auto;
             padding: 30px;
+            background: white;
             border-radius: 15px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
@@ -32,13 +31,12 @@
         .back {
             color: #3458a4;
             text-decoration: none;
-            font-size: 16px;
         }
 
         h1 {
             font-size: 25px;
-            text-align: center;
             color: #263b63;
+            text-align: center;
         }
 
         p {
@@ -48,16 +46,35 @@
 
         .subtitle {
             text-align: center;
-            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin: 20px 0;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #263b63;
+        }
+
+        select, input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            font-size: 14px;
+            background: white;
         }
 
         .notice {
-            background-color: #fff7e6;
-            border: 1px solid #ead09a;
             padding: 13px;
+            margin: 20px 0;
+            border: 1px solid #ead09a;
             border-radius: 10px;
-            margin-bottom: 20px;
-            font-size: 13px;
+            background: #fff7e6;
+            font-size: 14px;
             line-height: 1.5;
         }
 
@@ -65,7 +82,7 @@
             border: 1px solid #ddd;
             border-radius: 10px;
             padding: 18px;
-            margin-bottom: 15px;
+            margin: 15px 0;
         }
 
         .card h2 {
@@ -82,18 +99,18 @@
         }
 
         .proposal-card {
-            background-color: #eef3ff;
+            background: #eef3ff;
             border-color: #b9c9ee;
         }
 
-        .label {
+        .field-label {
             display: block;
             font-size: 12px;
             color: #666;
             margin-bottom: 6px;
         }
 
-        .value {
+        .field-value {
             display: block;
             font-size: 15px;
             font-weight: bold;
@@ -101,60 +118,70 @@
             overflow-wrap: anywhere;
         }
 
-        .details {
-            margin-top: 15px;
-        }
-
-        .details h2 {
-            font-size: 18px;
-            color: #263b63;
-            margin-bottom: 15px;
-        }
-
         .status {
             display: inline-block;
-            background-color: #fff0db;
-            color: #8a4900;
             padding: 7px 12px;
             border-radius: 20px;
+            background: #fff0db;
+            color: #8a4900;
             font-size: 12px;
             font-weight: bold;
-            margin-bottom: 15px;
+        }
+
+        .status.approved {
+            background: #e1f5e8;
+            color: #176b37;
+        }
+
+        .status.rejected {
+            background: #fde8e8;
+            color: #a21d1d;
+        }
+
+        .share-box {
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .share-box p {
+            font-size: 13px;
+            margin-top: 0;
         }
 
         .buttons {
             display: flex;
-            gap: 12px;
+            flex-direction: column;
+            gap: 10px;
             margin-top: 25px;
         }
 
         button {
-            flex: 1;
-            padding: 15px 10px;
+            width: 100%;
+            padding: 14px;
+            border: none;
             border-radius: 10px;
             font-size: 15px;
             font-weight: bold;
             cursor: pointer;
-            border: none;
+        }
+
+        .approve-button {
+            background: #3458a4;
+            color: white;
         }
 
         .change-button {
-            background-color: white;
+            background: white;
             color: #3458a4;
             border: 2px solid #3458a4;
         }
 
-        .change-button:hover {
-            background-color: #eef3ff;
-        }
-
-        .approve-button {
-            background-color: #3458a4;
-            color: white;
-        }
-
-        .approve-button:hover {
-            background-color: #263b63;
+        .reject-button {
+            background: #fff0f0;
+            color: #a21d1d;
+            border: 2px solid #a21d1d;
         }
 
         button:disabled {
@@ -163,658 +190,799 @@
         }
 
         button:focus-visible,
-        a:focus-visible {
+        a:focus-visible,
+        select:focus-visible,
+        input:focus-visible {
             outline: 3px solid #e09b24;
             outline-offset: 3px;
         }
 
         #message {
-            margin-top: 15px;
-            color: #b42318;
-            text-align: center;
             font-size: 14px;
+            line-height: 1.5;
+            color: #b42318;
         }
 
-        .hidden {
-            display: none;
+        [hidden] {
+            display: none !important;
         }
 
         @media (max-width: 450px) {
             .container {
-                padding: 20px;
                 margin: 15px auto;
-            }
-
-            .buttons {
-                flex-direction: column;
+                padding: 20px;
             }
         }
     </style>
-
 </head>
 
 <body>
-
     <main class="container">
 
-        <a href="proposal.html" class="back">
+        <a href="comparison.html" id="backLink" class="back">
             ← Back
         </a>
 
-        <h1>Review Proposal</h1>
+        <div class="form-group">
+            <label for="languageSelector" data-i18n="language">
+                Language
+            </label>
 
-        <p class="subtitle">
-            Review your proposed agreement before making a decision.
-        </p>
-
-        <div class="notice">
-            Demo mode: This review is stored only in your browser.
-            Approval by other team members will be added when
-            the shared database is connected.
+            <select id="languageSelector">
+                <option value="en">English</option>
+                <option value="hr">Hrvatski</option>
+                <option value="sq">Shqip</option>
+            </select>
         </div>
 
-        <div id="proposalDetails" class="hidden">
+        <h1 data-i18n="title">Review Proposal</h1>
+
+        <p class="subtitle" data-i18n="subtitle">
+            Review the proposed agreement and its status.
+        </p>
+
+        <div class="form-group" id="pickerBox" hidden>
+            <label for="proposalPicker" data-i18n="choose">
+                Choose a proposal:
+            </label>
+
+            <select id="proposalPicker"></select>
+        </div>
+
+        <div class="notice" id="notice" role="status" aria-live="polite">
+            Loading proposal...
+        </div>
+
+        <div id="proposalDetails" hidden>
 
             <div class="card">
+                <h2 data-i18n="information">
+                    Proposal Information
+                </h2>
 
-                <h2>Proposal Information</h2>
-
-                <span class="label">Disagreement Topic</span>
-
-                <span class="value" id="proposalTopic"></span>
+                <span class="field-label" data-i18n="topic">
+                    Disagreement Topic
+                </span>
+                <span class="field-value" id="proposalTopic"></span>
 
                 <div style="margin-top: 15px;">
-
-                    <span class="label">Status</span>
-
-                    <span class="status" id="proposalStatus">
-                        Pending Review
+                    <span class="field-label" data-i18n="statusLabel">
+                        Status
                     </span>
-
+                    <span class="status" id="proposalStatus"></span>
                 </div>
-
             </div>
 
             <div class="card proposal-card">
-
-                <h2>Proposed Agreement</h2>
-
+                <h2 data-i18n="agreement">
+                    Proposed Agreement
+                </h2>
                 <p id="proposalText"></p>
-
             </div>
 
-            <section class="details">
+            <div class="card">
+                <h2 data-i18n="preferences">
+                    Your Current Preferences
+                </h2>
 
-                <h2>Your Current Preferences</h2>
+                <span class="field-label" data-i18n="deadlines">
+                    Deadlines
+                </span>
+                <p id="deadlineSummary"></p>
 
-                <div class="card">
+                <span class="field-label" data-i18n="roles">
+                    Preferred Roles
+                </span>
+                <p id="rolesSummary"></p>
 
-                    <h2>Deadlines</h2>
+                <span class="field-label" data-i18n="quality">
+                    Quality Expectations
+                </span>
+                <p id="qualitySummary"></p>
+            </div>
 
-                    <p id="deadlineSummary"></p>
+            <div class="share-box" id="shareBox" hidden>
+                <label for="reviewLink" data-i18n="shareTitle">
+                    Share with your teammate
+                </label>
 
-                </div>
+                <p data-i18n="shareHelp">
+                    Send this link to your teammate so they can review your proposal.
+                </p>
 
-                <div class="card">
+                <input type="text" id="reviewLink" readonly>
 
-                    <h2>Preferred Roles</h2>
-
-                    <p id="rolesSummary"></p>
-
-                </div>
-
-                <div class="card">
-
-                    <h2>Quality Expectations</h2>
-
-                    <p id="qualitySummary"></p>
-
-                </div>
-
-            </section>
-
-            <div class="buttons">
-
-                <button
-                    type="button"
-                    class="change-button"
-                    id="changeButton"
-                >
-                    Request Changes
+                <button type="button" class="change-button"
+                        id="copyButton" data-i18n="copy">
+                    Copy Review Link
                 </button>
+            </div>
 
-                <button
-                    type="button"
-                    class="approve-button"
-                    id="approveButton"
-                >
+            <div class="buttons" id="reviewButtons" hidden>
+
+                <button type="button" class="approve-button"
+                        data-decision="approved" data-i18n="approve">
                     Approve
                 </button>
 
+                <button type="button" class="change-button"
+                        data-decision="changes_requested" data-i18n="changes">
+                    Request Changes
+                </button>
+
+                <button type="button" class="reject-button"
+                        data-decision="rejected" data-i18n="reject">
+                    Reject
+                </button>
             </div>
 
         </div>
 
         <p id="message" role="status" aria-live="polite"></p>
-
     </main>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+    <script src="../mateo/supabase-client.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/i18next@23.16.8/dist/umd/i18next.min.js"></script>
+
     <script>
-        const proposalDetails = document.getElementById("proposalDetails");
-        const proposalTopic = document.getElementById("proposalTopic");
-        const proposalText = document.getElementById("proposalText");
-        const proposalStatus = document.getElementById("proposalStatus");
+        const resources = {
+            en: {
+                translation: {
+                    title: "Review Proposal",
+                    subtitle: "Review the proposed agreement and its status.",
+                    language: "Language",
+                    back: "Back",
+                    choose: "Choose a proposal:",
+                    information: "Proposal Information",
+                    topic: "Disagreement Topic",
+                    statusLabel: "Status",
+                    agreement: "Proposed Agreement",
+                    preferences: "Your Current Preferences",
+                    deadlines: "Deadlines",
+                    roles: "Preferred Roles",
+                    quality: "Quality Expectations",
+                    shareTitle: "Share with your teammate",
+                    shareHelp: "Send this link to your teammate so they can review your proposal.",
+                    copy: "Copy Review Link",
+                    approve: "Approve",
+                    changes: "Request Changes",
+                    reject: "Reject",
+                    loading: "Loading proposal...",
+                    noTeam: "Please open this screen from your team.",
+                    noProposals: "No proposals found for you in this team.",
+                    notFound: "This proposal was not found or you do not have access.",
+                    loginError: "Please sign in through your team first.",
+                    loadError: "Could not load the proposal. Please try again.",
+                    awaiting: "Your proposal is waiting for your teammate's response. Share the link below.",
+                    reviewPrompt: "You are the assigned reviewer. Please choose a decision.",
+                    completed: "This proposal has already been reviewed.",
+                    saved: "Your decision has been saved.",
+                    saveError: "Could not save your decision. Please try again.",
+                    copied: "Review link copied!",
+                    copyError: "Please select and copy the link manually.",
+                    sent: "Sent",
+                    received: "Received",
+                    emptyDeadline: "No deadline preference selected.",
+                    emptyRoles: "No preferred roles selected.",
+                    emptyQuality: "No quality expectations selected.",
+                    statuses: {
+                        pending: "Pending Review",
+                        approved: "Approved",
+                        changes_requested: "Changes Requested",
+                        rejected: "Rejected"
+                    },
+                    categories: {
+                        Communication: "Communication",
+                        Availability: "Availability",
+                        "Preferred Roles": "Preferred Roles",
+                        Deadlines: "Deadlines",
+                        Quality: "Quality"
+                    },
+                    values: {
+                        Research: "Research",
+                        Design: "Design",
+                        Development: "Development",
+                        Testing: "Testing",
+                        Documentation: "Documentation",
+                        Other: "Other",
+                        "Strict deadlines": "Strict deadlines",
+                        "Some flexibility": "Some flexibility",
+                        Flexible: "Flexible",
+                        Accuracy: "Accuracy",
+                        "Good design / usability": "Good design / usability",
+                        "Clean work": "Clean work",
+                        "Detailed documentation": "Detailed documentation"
+                    }
+                }
+            },
+            hr: {
+                translation: {
+                    title: "Pregled prijedloga",
+                    subtitle: "Pregledajte predloženi dogovor i njegov status.",
+                    language: "Jezik",
+                    back: "Natrag",
+                    choose: "Odaberite prijedlog:",
+                    information: "Informacije o prijedlogu",
+                    topic: "Tema neslaganja",
+                    statusLabel: "Status",
+                    agreement: "Predloženi dogovor",
+                    preferences: "Vaše trenutačne preferencije",
+                    deadlines: "Rokovi",
+                    roles: "Željene uloge",
+                    quality: "Očekivanja kvalitete",
+                    shareTitle: "Podijelite s članom tima",
+                    shareHelp: "Pošaljite ovu poveznicu članu tima kako bi mogao pregledati prijedlog.",
+                    copy: "Kopiraj poveznicu",
+                    approve: "Odobri",
+                    changes: "Zatraži izmjene",
+                    reject: "Odbij",
+                    loading: "Učitavanje prijedloga...",
+                    noTeam: "Otvorite ovaj zaslon iz svojeg tima.",
+                    noProposals: "Nema prijedloga za vas u ovom timu.",
+                    notFound: "Prijedlog nije pronađen ili nemate pristup.",
+                    loginError: "Najprije se prijavite putem svojeg tima.",
+                    loadError: "Prijedlog nije moguće učitati. Pokušajte ponovno.",
+                    awaiting: "Vaš prijedlog čeka odgovor člana tima. Podijelite poveznicu ispod.",
+                    reviewPrompt: "Vi ste odabrani za pregled. Odaberite odluku.",
+                    completed: "Ovaj je prijedlog već pregledan.",
+                    saved: "Vaša je odluka spremljena.",
+                    saveError: "Odluku nije moguće spremiti. Pokušajte ponovno.",
+                    copied: "Poveznica za pregled je kopirana!",
+                    copyError: "Odaberite i ručno kopirajte poveznicu.",
+                    sent: "Poslano",
+                    received: "Primljeno",
+                    emptyDeadline: "Nije odabrana preferencija rokova.",
+                    emptyRoles: "Nisu odabrane željene uloge.",
+                    emptyQuality: "Nisu odabrana očekivanja kvalitete.",
+                    statuses: {
+                        pending: "Čeka pregled",
+                        approved: "Odobreno",
+                        changes_requested: "Zatražene izmjene",
+                        rejected: "Odbijeno"
+                    },
+                    categories: {
+                        Communication: "Komunikacija",
+                        Availability: "Dostupnost",
+                        "Preferred Roles": "Željene uloge",
+                        Deadlines: "Rokovi",
+                        Quality: "Kvaliteta"
+                    },
+                    values: {
+                        Research: "Istraživanje",
+                        Design: "Dizajn",
+                        Development: "Razvoj",
+                        Testing: "Testiranje",
+                        Documentation: "Dokumentacija",
+                        Other: "Ostalo",
+                        "Strict deadlines": "Strogi rokovi",
+                        "Some flexibility": "Određena fleksibilnost",
+                        Flexible: "Fleksibilni rokovi",
+                        Accuracy: "Točnost",
+                        "Good design / usability": "Dobar dizajn / jednostavnost korištenja",
+                        "Clean work": "Uredno obavljen posao",
+                        "Detailed documentation": "Detaljna dokumentacija"
+                    }
+                }
+            },
+            sq: {
+                translation: {
+                    title: "Shqyrto propozimin",
+                    subtitle: "Shqyrtoni marrëveshjen e propozuar dhe statusin e saj.",
+                    language: "Gjuha",
+                    back: "Kthehu",
+                    choose: "Zgjidhni një propozim:",
+                    information: "Informacioni i propozimit",
+                    topic: "Tema e mospajtimit",
+                    statusLabel: "Statusi",
+                    agreement: "Marrëveshja e propozuar",
+                    preferences: "Preferencat tuaja aktuale",
+                    deadlines: "Afatet",
+                    roles: "Rolet e preferuara",
+                    quality: "Pritshmëritë për cilësinë",
+                    shareTitle: "Ndajeni me anëtarin e ekipit",
+                    shareHelp: "Dërgojani këtë lidhje anëtarit të ekipit që ta shqyrtojë propozimin.",
+                    copy: "Kopjo lidhjen",
+                    approve: "Mirato",
+                    changes: "Kërko ndryshime",
+                    reject: "Refuzo",
+                    loading: "Duke ngarkuar propozimin...",
+                    noTeam: "Hapeni këtë ekran nga ekipi juaj.",
+                    noProposals: "Nuk u gjetën propozime për ju në këtë ekip.",
+                    notFound: "Propozimi nuk u gjet ose nuk keni qasje.",
+                    loginError: "Ju lutemi hyni fillimisht përmes ekipit tuaj.",
+                    loadError: "Propozimi nuk u ngarkua. Provoni përsëri.",
+                    awaiting: "Propozimi juaj është në pritje të përgjigjes së anëtarit. Ndajeni lidhjen më poshtë.",
+                    reviewPrompt: "Ju jeni përzgjedhur për shqyrtim. Merrni një vendim.",
+                    completed: "Ky propozim tashmë është shqyrtuar.",
+                    saved: "Vendimi juaj u ruajt.",
+                    saveError: "Vendimi nuk u ruajt. Provoni përsëri.",
+                    copied: "Lidhja për shqyrtim u kopjua!",
+                    copyError: "Zgjidheni dhe kopjojeni lidhjen manualisht.",
+                    sent: "Dërguar",
+                    received: "Marrë",
+                    emptyDeadline: "Nuk është zgjedhur asnjë preferencë për afatet.",
+                    emptyRoles: "Nuk janë zgjedhur role të preferuara.",
+                    emptyQuality: "Nuk janë zgjedhur pritshmëri për cilësinë.",
+                    statuses: {
+                        pending: "Në pritje të shqyrtimit",
+                        approved: "Miratuar",
+                        changes_requested: "Janë kërkuar ndryshime",
+                        rejected: "Refuzuar"
+                    },
+                    categories: {
+                        Communication: "Komunikimi",
+                        Availability: "Disponueshmëria",
+                        "Preferred Roles": "Rolet e preferuara",
+                        Deadlines: "Afatet",
+                        Quality: "Cilësia"
+                    },
+                    values: {
+                        Research: "Hulumtim",
+                        Design: "Dizajn",
+                        Development: "Zhvillim",
+                        Testing: "Testim",
+                        Documentation: "Dokumentim",
+                        Other: "Tjetër",
+                        "Strict deadlines": "Afate të rrepta",
+                        "Some flexibility": "Pak fleksibilitet",
+                        Flexible: "Afate fleksibile",
+                        Accuracy: "Saktësia",
+                        "Good design / usability": "Dizajn i mirë / lehtësi në përdorim",
+                        "Clean work": "Punë e rregullt",
+                        "Detailed documentation": "Dokumentim i detajuar"
+                    }
+                }
+            }
+        };
+
+        const params = new URLSearchParams(window.location.search);
+        const teamId = params.get("teamId");
+        const requestedProposalId = params.get("proposalId");
+
+        const backLink = document.getElementById("backLink");
+        const languageSelector = document.getElementById("languageSelector");
+        const pickerBox = document.getElementById("pickerBox");
+        const proposalPicker = document.getElementById("proposalPicker");
+        const notice = document.getElementById("notice");
+        const details = document.getElementById("proposalDetails");
+        const topicElement = document.getElementById("proposalTopic");
+        const proposalTextElement = document.getElementById("proposalText");
+        const statusElement = document.getElementById("proposalStatus");
         const deadlineSummary = document.getElementById("deadlineSummary");
         const rolesSummary = document.getElementById("rolesSummary");
         const qualitySummary = document.getElementById("qualitySummary");
-        const changeButton = document.getElementById("changeButton");
-        const approveButton = document.getElementById("approveButton");
+        const shareBox = document.getElementById("shareBox");
+        const reviewLink = document.getElementById("reviewLink");
+        const copyButton = document.getElementById("copyButton");
+        const reviewButtons = document.getElementById("reviewButtons");
         const message = document.getElementById("message");
 
-        let proposal = null;
+        if (teamId) {
+            backLink.href =
+                "comparison.html?teamId=" + encodeURIComponent(teamId);
+        }
 
-        function getSavedArray(key) {
-            try {
-                const saved = JSON.parse(
-                    localStorage.getItem(key) || "[]"
-                );
+        let currentUser = null;
+        let proposals = [];
+        let activeProposal = null;
+        let myPreferences = null;
+        let noticeKey = "loading";
+        let messageKey = null;
 
-                return Array.isArray(saved) ? saved : [];
+        function showNotice(key) {
+            noticeKey = key;
+            notice.textContent = i18next.t(key);
+        }
 
-            } catch (error) {
-                return [];
+        function showMessage(key) {
+            messageKey = key;
+            message.textContent = key ? i18next.t(key) : "";
+        }
+
+        function translateValue(value) {
+            const key = "values." + value;
+
+            return i18next.exists(key)
+                ? i18next.t(key)
+                : value;
+        }
+
+        function translateArray(values, emptyKey) {
+            if (!Array.isArray(values) || values.length === 0) {
+                return i18next.t(emptyKey);
             }
+
+            return values.map(translateValue).join(", ");
         }
 
-        function getSavedText(key) {
-            try {
-                return localStorage.getItem(key) || "";
-            } catch (error) {
-                return "";
-            }
-        }
+        function renderPreferences() {
+            const pref = myPreferences || {};
 
-        function showPreferences() {
-            const deadline = getSavedText("deadlineExpectations");
+            deadlineSummary.textContent = pref.deadline
+                ? translateValue(pref.deadline)
+                : i18next.t("emptyDeadline");
 
-            deadlineSummary.textContent =
-                deadline || "No deadline preference selected.";
-
-            const roles = getSavedArray("preferredRoles");
-
-            rolesSummary.textContent = roles.length > 0
-                ? roles.join(", ")
-                : "No preferred roles selected.";
-
-            const quality = getSavedArray("qualityExpectations");
-
-            qualitySummary.textContent = quality.length > 0
-                ? quality.join(", ")
-                : "No quality expectations selected.";
-        }
-
-        try {
-            const saved = JSON.parse(
-                localStorage.getItem("groupProposal") || "null"
+            rolesSummary.textContent = translateArray(
+                pref.roles,
+                "emptyRoles"
             );
 
-            if (
-                saved &&
-                typeof saved.topic === "string" &&
-                saved.topic.trim().length > 0 &&
-                typeof saved.text === "string" &&
-                saved.text.trim().length >= 10
-            ) {
-                proposal = saved;
+            qualitySummary.textContent = translateArray(
+                pref.quality,
+                "emptyQuality"
+            );
+        }
 
-                proposalTopic.textContent = proposal.topic;
-                proposalText.textContent = proposal.text;
+        function createReviewUrl(proposalId) {
+            const url = new URL("review.html", window.location.href);
 
-                if (proposal.status === "approved") {
-                    proposalStatus.textContent = "Approved";
-                } else if (proposal.status === "changes_requested") {
-                    proposalStatus.textContent = "Changes Requested";
+            url.searchParams.set("teamId", teamId);
+            url.searchParams.set("proposalId", proposalId);
+
+            return url.href;
+        }
+
+        function renderPicker() {
+            proposalPicker.replaceChildren();
+
+            proposals.forEach(function(proposal) {
+                const option = document.createElement("option");
+                option.value = proposal.id;
+
+                const direction =
+                    proposal.author_id === currentUser.id
+                        ? i18next.t("sent")
+                        : i18next.t("received");
+
+                option.textContent =
+                    direction + " — " +
+                    i18next.t("categories." + proposal.topic) +
+                    " — " +
+                    i18next.t("statuses." + proposal.status);
+
+                proposalPicker.appendChild(option);
+            });
+
+            pickerBox.hidden = proposals.length === 0;
+
+            if (activeProposal) {
+                proposalPicker.value = activeProposal.id;
+            }
+        }
+
+        function renderProposal() {
+            details.hidden = !activeProposal;
+
+            if (!activeProposal || !currentUser) {
+                return;
+            }
+
+            topicElement.textContent = i18next.t(
+                "categories." + activeProposal.topic
+            );
+
+            proposalTextElement.textContent =
+                activeProposal.proposal_text;
+
+            statusElement.textContent = i18next.t(
+                "statuses." + activeProposal.status
+            );
+
+            statusElement.className = "status";
+
+            if (activeProposal.status === "approved") {
+                statusElement.classList.add("approved");
+            }
+
+            if (activeProposal.status === "rejected") {
+                statusElement.classList.add("rejected");
+            }
+
+            renderPreferences();
+
+            const isAuthor =
+                activeProposal.author_id === currentUser.id;
+
+            const isReviewer =
+                activeProposal.teammate_id === currentUser.id;
+
+            shareBox.hidden = !isAuthor;
+
+            reviewButtons.hidden = !(
+                isReviewer &&
+                activeProposal.status === "pending"
+            );
+
+            if (isAuthor) {
+                reviewLink.value = createReviewUrl(activeProposal.id);
+            }
+
+            if (activeProposal.status !== "pending") {
+                showNotice("completed");
+            } else if (isAuthor) {
+                showNotice("awaiting");
+            } else if (isReviewer) {
+                showNotice("reviewPrompt");
+            }
+        }
+
+        function updateLanguage() {
+            document.documentElement.lang = i18next.language;
+            document.title = i18next.t("title");
+
+            document.querySelectorAll("[data-i18n]").forEach(
+                function(element) {
+                    const key = element.getAttribute("data-i18n");
+                    element.textContent = i18next.t(key);
+                }
+            );
+
+            backLink.textContent = "← " + i18next.t("back");
+            languageSelector.value = i18next.language;
+
+            renderPicker();
+            renderProposal();
+
+            if (messageKey) {
+                message.textContent = i18next.t(messageKey);
+            } else {
+                message.textContent = "";
+            }
+
+            if (!activeProposal && noticeKey) {
+                notice.textContent = i18next.t(noticeKey);
+            }
+        }
+
+        async function loadReview() {
+            details.hidden = true;
+            pickerBox.hidden = true;
+            showNotice("loading");
+            showMessage(null);
+
+            if (!teamId) {
+                showNotice("noTeam");
+                return;
+            }
+
+            try {
+                const { data: authData, error: authError } =
+                    await database.auth.getUser();
+
+                if (authError || !authData.user) {
+                    throw new Error("NOT_SIGNED_IN");
+                }
+
+                currentUser = authData.user;
+
+                const { data, error } = await database
+                    .from("preference_proposals")
+                    .select(
+                        "id,team_id,author_id,teammate_id,topic,proposal_text,status,created_at,reviewed_at"
+                    )
+                    .eq("team_id", teamId)
+                    .or(
+                        "author_id.eq." + currentUser.id +
+                        ",teammate_id.eq." + currentUser.id
+                    )
+                    .order("created_at", {
+                        ascending: false
+                    });
+
+                if (error) {
+                    throw error;
+                }
+
+                proposals = data || [];
+
+                if (proposals.length === 0) {
+                    showNotice("noProposals");
+                    return;
+                }
+
+                if (requestedProposalId) {
+                    activeProposal = proposals.find(function(proposal) {
+                        return proposal.id === requestedProposalId;
+                    }) || null;
                 } else {
-                    proposalStatus.textContent = "Pending Review";
+                    activeProposal = proposals[0];
                 }
 
-                showPreferences();
+                if (!activeProposal) {
+                    showNotice("notFound");
+                    return;
+                }
 
-                proposalDetails.classList.remove("hidden");
+                const prefResult = await database
+                    .from("team_preferences")
+                    .select("deadline,roles,quality")
+                    .eq("team_id", teamId)
+                    .eq("user_id", currentUser.id)
+                    .maybeSingle();
 
-            } else {
-                message.textContent =
-                    "No valid proposal found. Please go back and create a proposal first.";
+                if (!prefResult.error) {
+                    myPreferences = prefResult.data;
+                }
+
+                renderPicker();
+                renderProposal();
+
+            } catch (error) {
+                showNotice(
+                    error.message === "NOT_SIGNED_IN"
+                        ? "loginError"
+                        : "loadError"
+                );
             }
-
-        } catch (error) {
-            message.textContent =
-                "The proposal could not be loaded. Please return to the previous screen.";
         }
 
-        changeButton.addEventListener("click", function() {
+        proposalPicker.addEventListener("change", function() {
+            const url = new URL(window.location.href);
 
-            if (!proposal) {
-                message.textContent =
-                    "No proposal is available to change.";
+            url.searchParams.set(
+                "proposalId",
+                proposalPicker.value
+            );
+
+            window.location.href = url.href;
+        });
+
+        copyButton.addEventListener("click", async function() {
+            if (!activeProposal) {
                 return;
             }
 
+            const link = createReviewUrl(activeProposal.id);
+
             try {
-                proposal.status = "changes_requested";
-
-                localStorage.setItem(
-                    "groupProposal",
-                    JSON.stringify(proposal)
-                );
-
-                window.location.href = "proposal.html";
-
+                await navigator.clipboard.writeText(link);
+                showMessage("copied");
             } catch (error) {
-                message.textContent =
-                    "Could not save the change request. Please try again.";
+                reviewLink.focus();
+                reviewLink.select();
+                showMessage("copyError");
             }
-
         });
 
-        approveButton.addEventListener("click", function() {
-
-            if (!proposal) {
-                message.textContent =
-                    "No proposal is available to approve.";
+        async function saveDecision(decision) {
+            if (
+                !activeProposal ||
+                !currentUser ||
+                activeProposal.teammate_id !== currentUser.id ||
+                activeProposal.status !== "pending"
+            ) {
                 return;
             }
 
+            const buttons = reviewButtons.querySelectorAll("button");
+
+            buttons.forEach(function(button) {
+                button.disabled = true;
+            });
+
+            showMessage(null);
+
             try {
-                proposal.status = "approved";
-                proposal.approvedAt = new Date().toISOString();
+                const { data, error } = await database
+                    .from("preference_proposals")
+                    .update({
+                        status: decision,
+                        reviewed_at: new Date().toISOString()
+                    })
+                    .eq("id", activeProposal.id)
+                    .eq("team_id", teamId)
+                    .eq("teammate_id", currentUser.id)
+                    .eq("status", "pending")
+                    .select("id,status,reviewed_at")
+                    .maybeSingle();
 
-                localStorage.setItem(
-                    "groupProposal",
-                    JSON.stringify(proposal)
-                );
-
-                window.location.href = "confirmation.html";
-
-            } catch (error) {
-                message.textContent =
-                    "Could not save the approval. Please try again.";
-            }
-
-        });
-    </script>
-<script src="https://cdn.jsdelivr.net/npm/i18next@23.16.8/dist/umd/i18next.min.js"></script>
-
-<script>
-(function () {
-    if (!window.i18next) return;
-
-    const resources = {
-        en: {
-            translation: {
-                title: "Review Proposal",
-                subtitle: "Review your proposed agreement before making a decision.",
-                notice: "Demo mode: This review is stored only in your browser. Approval by other team members will be added when the shared database is connected.",
-                information: "Proposal Information",
-                topic: "Disagreement Topic",
-                status: "Status",
-                agreement: "Proposed Agreement",
-                preferences: "Your Current Preferences",
-                deadlines: "Deadlines",
-                roles: "Preferred Roles",
-                quality: "Quality Expectations",
-                back: "Back",
-                change: "Request Changes",
-                approve: "Approve",
-                language: "Language",
-                pending: "Pending Review",
-                approved: "Approved",
-                changesRequested: "Changes Requested",
-                noDeadline: "No deadline preference selected.",
-                noRoles: "No preferred roles selected.",
-                noQuality: "No quality expectations selected.",
-                noProposal: "No valid proposal found. Please go back and create a proposal first.",
-                loadError: "The proposal could not be loaded. Please return to the previous screen.",
-                changeUnavailable: "No proposal is available to change.",
-                approveUnavailable: "No proposal is available to approve.",
-                changeError: "Could not save the change request. Please try again.",
-                approveError: "Could not save the approval. Please try again.",
-                categories: {
-                    Communication: "Communication",
-                    Availability: "Availability",
-                    "Preferred Roles": "Preferred Roles",
-                    Deadlines: "Deadlines",
-                    Quality: "Quality"
-                },
-                values: {
-                    Research: "Research",
-                    Design: "Design",
-                    Development: "Development",
-                    Testing: "Testing",
-                    Documentation: "Documentation",
-                    Other: "Other",
-                    "Strict deadlines": "Strict deadlines",
-                    "Some flexibility": "Some flexibility",
-                    Flexible: "Flexible",
-                    Accuracy: "Accuracy",
-                    "Good design / usability": "Good design / usability",
-                    "Clean work": "Clean work",
-                    "Detailed documentation": "Detailed documentation"
+                if (error || !data) {
+                    throw error || new Error("UPDATE_FAILED");
                 }
-            }
-        },
-        hr: {
-            translation: {
-                title: "Pregled prijedloga",
-                subtitle: "Pregledajte svoj predloženi dogovor prije donošenja odluke.",
-                notice: "Demonstracijski način rada: Ovaj pregled pohranjen je samo u vašem pregledniku. Odobravanje ostalih članova tima bit će dodano nakon povezivanja zajedničke baze podataka.",
-                information: "Informacije o prijedlogu",
-                topic: "Tema neslaganja",
-                status: "Status",
-                agreement: "Predloženi dogovor",
-                preferences: "Vaše trenutačne preferencije",
-                deadlines: "Rokovi",
-                roles: "Željene uloge",
-                quality: "Očekivanja kvalitete",
-                back: "Natrag",
-                change: "Zatraži izmjene",
-                approve: "Odobri",
-                language: "Jezik",
-                pending: "Čeka pregled",
-                approved: "Odobreno",
-                changesRequested: "Zatražene izmjene",
-                noDeadline: "Nije odabrana preferencija rokova.",
-                noRoles: "Nisu odabrane željene uloge.",
-                noQuality: "Nisu odabrana očekivanja kvalitete.",
-                noProposal: "Nije pronađen valjan prijedlog. Vratite se i prvo izradite prijedlog.",
-                loadError: "Prijedlog nije moguće učitati. Vratite se na prethodni zaslon.",
-                changeUnavailable: "Nema dostupnog prijedloga za izmjenu.",
-                approveUnavailable: "Nema dostupnog prijedloga za odobravanje.",
-                changeError: "Zahtjev za izmjene nije moguće spremiti. Pokušajte ponovno.",
-                approveError: "Odobrenje nije moguće spremiti. Pokušajte ponovno.",
-                categories: {
-                    Communication: "Komunikacija",
-                    Availability: "Dostupnost",
-                    "Preferred Roles": "Željene uloge",
-                    Deadlines: "Rokovi",
-                    Quality: "Kvaliteta"
-                },
-                values: {
-                    Research: "Istraživanje",
-                    Design: "Dizajn",
-                    Development: "Razvoj",
-                    Testing: "Testiranje",
-                    Documentation: "Dokumentacija",
-                    Other: "Ostalo",
-                    "Strict deadlines": "Strogi rokovi",
-                    "Some flexibility": "Određena fleksibilnost",
-                    Flexible: "Fleksibilni rokovi",
-                    Accuracy: "Točnost",
-                    "Good design / usability": "Dobar dizajn / jednostavnost korištenja",
-                    "Clean work": "Uredno obavljen posao",
-                    "Detailed documentation": "Detaljna dokumentacija"
-                }
-            }
-        },
-        sq: {
-            translation: {
-                title: "Shqyrto propozimin",
-                subtitle: "Shqyrtoni marrëveshjen tuaj të propozuar para se të merrni një vendim.",
-                notice: "Version demonstrues: Ky shqyrtim ruhet vetëm në shfletuesin tuaj. Miratimi nga anëtarët e tjerë të ekipit do të shtohet pasi të lidhet baza e përbashkët e të dhënave.",
-                information: "Informacioni i propozimit",
-                topic: "Tema e mospajtimit",
-                status: "Statusi",
-                agreement: "Marrëveshja e propozuar",
-                preferences: "Preferencat tuaja aktuale",
-                deadlines: "Afatet",
-                roles: "Rolet e preferuara",
-                quality: "Pritshmëritë për cilësinë",
-                back: "Kthehu",
-                change: "Kërko ndryshime",
-                approve: "Mirato",
-                language: "Gjuha",
-                pending: "Në pritje të shqyrtimit",
-                approved: "Miratuar",
-                changesRequested: "Janë kërkuar ndryshime",
-                noDeadline: "Nuk është zgjedhur asnjë preferencë për afatet.",
-                noRoles: "Nuk janë zgjedhur role të preferuara.",
-                noQuality: "Nuk janë zgjedhur pritshmëri për cilësinë.",
-                noProposal: "Nuk u gjet një propozim i vlefshëm. Kthehuni dhe krijoni një propozim së pari.",
-                loadError: "Propozimi nuk mund të ngarkohet. Kthehuni në ekranin e mëparshëm.",
-                changeUnavailable: "Nuk ka propozim për të ndryshuar.",
-                approveUnavailable: "Nuk ka propozim për të miratuar.",
-                changeError: "Kërkesa për ndryshime nuk u ruajt. Provoni përsëri.",
-                approveError: "Miratimi nuk u ruajt. Provoni përsëri.",
-                categories: {
-                    Communication: "Komunikimi",
-                    Availability: "Disponueshmëria",
-                    "Preferred Roles": "Rolet e preferuara",
-                    Deadlines: "Afatet",
-                    Quality: "Cilësia"
-                },
-                values: {
-                    Research: "Hulumtim",
-                    Design: "Dizajn",
-                    Development: "Zhvillim",
-                    Testing: "Testim",
-                    Documentation: "Dokumentim",
-                    Other: "Tjetër",
-                    "Strict deadlines": "Afate të rrepta",
-                    "Some flexibility": "Pak fleksibilitet",
-                    Flexible: "Afate fleksibile",
-                    Accuracy: "Saktësia",
-                    "Good design / usability": "Dizajn i mirë / lehtësi në përdorim",
-                    "Clean work": "Punë e rregullt",
-                    "Detailed documentation": "Dokumentim i detajuar"
-                }
-            }
-        }
-    };
 
-    const main = document.querySelector(".container");
-    const heading = main.querySelector("h1");
-    const subtitle = main.querySelector(".subtitle");
-    const notice = main.querySelector(".notice");
-    const backLink = main.querySelector(".back");
-    const cards = main.querySelectorAll("#proposalDetails .card");
-    const detailsHeading = main.querySelector(".details > h2");
-    const messageElement = document.getElementById("message");
+                activeProposal.status = data.status;
+                activeProposal.reviewed_at = data.reviewed_at;
 
-    const languageBox = document.createElement("div");
-    languageBox.style.margin = "20px 0";
-
-    const languageLabel = document.createElement("label");
-    languageLabel.htmlFor = "languageSelector";
-    languageLabel.style.display = "block";
-    languageLabel.style.marginBottom = "8px";
-    languageLabel.style.fontWeight = "bold";
-
-    const languageSelector = document.createElement("select");
-    languageSelector.id = "languageSelector";
-    languageSelector.style.width = "100%";
-    languageSelector.style.padding = "12px";
-    languageSelector.style.border = "1px solid #ccc";
-    languageSelector.style.borderRadius = "10px";
-    languageSelector.style.fontSize = "15px";
-
-    [
-        ["en", "English"],
-        ["hr", "Hrvatski"],
-        ["sq", "Shqip"]
-    ].forEach(function (entry) {
-        const option = document.createElement("option");
-        option.value = entry[0];
-        option.textContent = entry[1];
-        languageSelector.appendChild(option);
-    });
-
-    languageBox.appendChild(languageLabel);
-    languageBox.appendChild(languageSelector);
-    main.insertBefore(languageBox, heading);
-
-    const errorKeys = {
-        "No valid proposal found. Please go back and create a proposal first.": "noProposal",
-        "The proposal could not be loaded. Please return to the previous screen.": "loadError",
-        "No proposal is available to change.": "changeUnavailable",
-        "No proposal is available to approve.": "approveUnavailable",
-        "Could not save the change request. Please try again.": "changeError",
-        "Could not save the approval. Please try again.": "approveError"
-    };
-
-    let currentError = errorKeys[messageElement.textContent.trim()] || null;
-
-    function translateValue(value) {
-        const translated =
-            resources[i18next.language].translation.values[value];
-
-        return translated || value;
-    }
-
-    function translateArray(key, emptyKey) {
-        const values = getSavedArray(key);
-
-        if (values.length === 0) {
-            return i18next.t(emptyKey);
-        }
-
-        return values.map(translateValue).join(", ");
-    }
-
-    function updatePreferences() {
-        const deadline = getSavedText("deadlineExpectations");
-
-        deadlineSummary.textContent = deadline
-            ? translateValue(deadline)
-            : i18next.t("noDeadline");
-
-        rolesSummary.textContent =
-            translateArray("preferredRoles", "noRoles");
-
-        qualitySummary.textContent =
-            translateArray("qualityExpectations", "noQuality");
-    }
-
-    function updateText() {
-        document.documentElement.lang = i18next.language;
-        document.title = i18next.t("title");
-
-        heading.textContent = i18next.t("title");
-        subtitle.textContent = i18next.t("subtitle");
-        notice.textContent = i18next.t("notice");
-        backLink.textContent = "← " + i18next.t("back");
-        languageLabel.textContent = i18next.t("language");
-
-        cards[0].querySelector("h2").textContent =
-            i18next.t("information");
-
-        const labels = cards[0].querySelectorAll(".label");
-
-        labels[0].textContent = i18next.t("topic");
-        labels[1].textContent = i18next.t("status");
-
-        cards[1].querySelector("h2").textContent =
-            i18next.t("agreement");
-
-        detailsHeading.textContent = i18next.t("preferences");
-
-        cards[2].querySelector("h2").textContent =
-            i18next.t("deadlines");
-
-        cards[3].querySelector("h2").textContent =
-            i18next.t("roles");
-
-        cards[4].querySelector("h2").textContent =
-            i18next.t("quality");
-
-        changeButton.textContent = i18next.t("change");
-        approveButton.textContent = i18next.t("approve");
-
-        if (proposal) {
-            const categories =
-                resources[i18next.language].translation.categories;
-
-            proposalTopic.textContent =
-                categories[proposal.topic] || proposal.topic;
-
-            if (proposal.status === "approved") {
-                proposalStatus.textContent = i18next.t("approved");
-            } else if (proposal.status === "changes_requested") {
-                proposalStatus.textContent =
-                    i18next.t("changesRequested");
-            } else {
-                proposalStatus.textContent = i18next.t("pending");
-            }
-
-            updatePreferences();
-        }
-
-        if (currentError) {
-            messageElement.textContent = i18next.t(currentError);
-        }
-    }
-
-    const observer = new MutationObserver(function () {
-        const text = messageElement.textContent.trim();
-
-        if (!text) {
-            currentError = null;
-            return;
-        }
-
-        if (errorKeys[text]) {
-            currentError = errorKeys[text];
-        }
-
-        if (currentError) {
-            const translated = i18next.t(currentError);
-
-            if (text !== translated) {
-                messageElement.textContent = translated;
-            }
-        }
-    });
-
-    let savedLanguage = "en";
-
-    try {
-        savedLanguage = localStorage.getItem("appLanguage") || "en";
-    } catch (error) {
-        savedLanguage = "en";
-    }
-
-    if (!resources[savedLanguage]) {
-        savedLanguage = "en";
-    }
-
-    i18next.init({
-        lng: savedLanguage,
-        fallbackLng: "en",
-        resources: resources
-    }).then(function () {
-        languageSelector.value = savedLanguage;
-
-        observer.observe(messageElement, {
-            childList: true,
-            characterData: true,
-            subtree: true
-        });
-
-        updateText();
-
-        languageSelector.addEventListener("change", function () {
-            const selectedLanguage = languageSelector.value;
-
-            i18next.changeLanguage(selectedLanguage).then(function () {
                 try {
-                    localStorage.setItem("appLanguage", selectedLanguage);
+                    const saved = JSON.parse(
+                        localStorage.getItem("groupProposal") || "null"
+                    );
+
+                    if (saved && saved.id === activeProposal.id) {
+                        saved.status = data.status;
+
+                        localStorage.setItem(
+                            "groupProposal",
+                            JSON.stringify(saved)
+                        );
+                    }
                 } catch (error) {
                 }
 
-                updateText();
+                window.location.href =
+                    "confirmation.html?teamId=" +
+                    encodeURIComponent(teamId) +
+                    "&proposalId=" +
+                    encodeURIComponent(activeProposal.id);
+
+            } catch (error) {
+                showMessage("saveError");
+
+                buttons.forEach(function(button) {
+                    button.disabled = false;
+                });
+            }
+        }
+
+        reviewButtons.querySelectorAll("button").forEach(
+            function(button) {
+                button.addEventListener("click", function() {
+                    saveDecision(
+                        button.getAttribute("data-decision")
+                    );
+                });
+            }
+        );
+
+        let savedLanguage = "en";
+
+        try {
+            savedLanguage =
+                localStorage.getItem("appLanguage") || "en";
+        } catch (error) {
+            savedLanguage = "en";
+        }
+
+        if (!resources[savedLanguage]) {
+            savedLanguage = "en";
+        }
+
+        i18next.init({
+            lng: savedLanguage,
+            fallbackLng: "en",
+            supportedLngs: ["en", "hr", "sq"],
+            resources: resources
+        }).then(function() {
+            updateLanguage();
+            loadReview();
+
+            languageSelector.addEventListener("change", function() {
+                const selectedLanguage = languageSelector.value;
+
+                i18next.changeLanguage(selectedLanguage).then(function() {
+                    try {
+                        localStorage.setItem(
+                            "appLanguage",
+                            selectedLanguage
+                        );
+                    } catch (error) {
+                    }
+
+                    updateLanguage();
+                });
             });
         });
-    });
-})();
-</script>
+    </script>
 </body>
 </html>
