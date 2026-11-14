@@ -177,6 +177,7 @@
         "holidayUnavailable": "Holiday check is unavailable right now. You can still submit.",
         "submit": "Send to team for voting",
         "submitted": "Proposal sent. Your teammates can now vote.",
+        "submittedAlone": "Proposal approved. You are the only team member, so your vote decided it.",
         "updated": "Proposal updated."
     },
     "voting": {

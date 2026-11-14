@@ -23,7 +23,10 @@
                 " ",
                 h("span",{
                     class:"field-note",
-                    i18n:options.required ? "form.required" : "form.optional"
+                    i18n:options.required ? "form.required" : "form.optional",
+                    // The required attribute is already announced by screen
+                    // readers, so the visible word would be read twice.
+                    "aria-hidden":options.required ? "true" : null
                 })
             ),
             options.hint
