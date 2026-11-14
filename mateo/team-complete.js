@@ -12,6 +12,7 @@
     const navigation=document.querySelector("#complete-navigation");
     const membersLink=document.querySelector("#complete-members-link");
     const statusLink=document.querySelector("#complete-status-link");
+    const contractLink=document.querySelector("#complete-contract-link");
 
     const preferencesNote=document.querySelector(
         "#complete-preferences-note"
@@ -66,9 +67,14 @@
 
             statusLink.href="invitation-status.html?teamId="+
                 encodeURIComponent(teamId);
+
+            // Contract management and conflict resolution (Andrej's area).
+            contractLink.href="../andrej/overview.html?teamId="+
+                encodeURIComponent(teamId);
         }else{
             membersLink.removeAttribute("href");
             statusLink.removeAttribute("href");
+            contractLink.removeAttribute("href");
         }
     }
 

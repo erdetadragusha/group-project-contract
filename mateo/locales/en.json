@@ -214,6 +214,7 @@
         "projectName":"Project name",
         "membersButton":"View team members",
         "statusButton":"View invitation status",
+        "contractButton":"Open team contract",
         "preferencesButton":"Continue to preferences",
         "refreshButton":"Refresh",
         "navigation":"Team navigation",
