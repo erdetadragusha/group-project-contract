@@ -22,6 +22,83 @@ A student application that helps teams share preferences, solve disagreements an
 
 Invitations are stored in the database. The application does not automatically email invitation links. The owner shares the invitation link with the recipient.
 
+## Andrej's implemented features
+
+Contract management and conflict resolution, in the `andrej/` folder.
+
+- Create the team contract with six rule sections (first visit to the overview).
+- Contract overview, full contract text and contract status.
+- Propose a change to a rule, edit it while nobody else has voted, withdraw it.
+- Team voting: approve, reject or abstain. When every member has voted, an approved change replaces the rule text and the contract version increases.
+- Report a conflict, edit or withdraw the report, post updates.
+- Propose a resolution; the people involved accept or reject it.
+- Agreement history of every change, vote result and resolution.
+- Public holidays from the Nager.Date API on the status page and as a warning on voting deadlines.
+- English, Croatian and Albanian, including Croatian plural forms.
+
+### Screens
+
+| # | Screen | File | Data |
+|---|---|---|---|
+| 01 | Active Contract Overview | `andrej/overview.html` | read, create contract |
+| 02 | Contract Sections | `andrej/sections.html` | read |
+| 03 | Change Requests | `andrej/changes.html` | read, filter |
+| 04 | Propose Contract Changes | `andrej/propose.html` | create, update |
+| 05 | Approval Voting | `andrej/voting.html` | vote, delete with confirmation |
+| 06 | Report Conflict | `andrej/report.html` | create, update |
+| 07 | Conflict Details | `andrej/conflict.html` | read, add update, delete with confirmation |
+| 08 | Resolution Proposal | `andrej/resolution.html` | create, accept or reject |
+| 09 | Agreement History | `andrej/history.html` | read, filter |
+| 10 | Contract Status | `andrej/status.html` | read, external API |
+| – | Conflict list | `andrej/conflicts.html` | read, filter |
+
+Every page needs the team in the address, for example
+`/andrej/overview.html?teamId=<team id>`, and a logged-in member of that team.
+
+### Database
+
+Run `database/andrej-setup.sql` in the Supabase SQL Editor **after** `database/mateo-setup.sql`. It can be run more than once.
+
+It contains:
+
+- `contracts`, `contract_sections`: one contract per team, six sections.
+- `change_requests`, `change_votes`: proposals and one vote per member.
+- `conflicts`, `conflict_participants`, `conflict_updates`.
+- `resolutions`, `resolution_responses`.
+- `contract_history`: event type and values; the page translates them.
+- Row Level Security on every table, using `private.can_access_team`.
+- Functions called from the browser: `create_contract`, `cast_vote`, `report_conflict`, `propose_resolution`, `respond_to_resolution`.
+
+Rules enforced in the database, not only in the browser:
+
+- Proposing a change counts as the author's approve vote.
+- Voting closes when every team member has voted. More approve than reject votes wins; a tie rejects.
+- A proposal can be edited only until another member votes.
+- A resolution is accepted when every person involved accepts; one rejection sends it back.
+
+Timestamps are `timestamptz` (UTC) and are shown in the user's time zone.
+
+### External API: Nager.Date
+
+- Site: https://date.nager.at (public holidays, no key, no account).
+- Used on `status.html` (holidays in the next 30 days) and `propose.html` (warning when the voting deadline is a public holiday).
+- Only a country code and a year are sent. No personal data.
+- Handled failures: timeout after 5 seconds, no connection, HTTP 429, other HTTP errors, unreadable answer. Each shows a translated message and the rest of the page keeps working. An unknown country gives an empty list.
+- Answers are cached in `sessionStorage` for 12 hours.
+- The code is in `andrej/common.js` (`holidaysBetween`).
+
+### Languages
+
+- `andrej/locales/en.json`, `hr.json`, `sq.json`, loaded by `andrej/common.js` through i18next.
+- Uses the same `appLanguage` setting as the rest of the application.
+- Dates, relative times, percentages, lists and country names use `Intl`.
+- Check that all languages are complete: `node tools/check-locales.mjs`.
+
+### Known limitations
+
+- The contract is created from starting rules on the overview page; it is not yet filled automatically from the approved proposal in the preferences flow.
+- The browser's own date picker follows the browser language, not the language chosen in the application.
+
 ## Technologies
 
 Mateo's section uses:
