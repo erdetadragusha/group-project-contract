@@ -32,6 +32,9 @@
     // --- Translations -----------------------------------------------------
 
     function t(key,options){
+        // i18next crashes on null options, so "no options" is passed as undefined.
+        options=options || undefined;
+
         if(!i18next.exists(key,options)){
             console.warn("Missing translation:",key);
         }
