@@ -184,6 +184,7 @@
         "holidayUnavailable": "Provjera praznika trenutno nije dostupna. Prijedlog ipak možete poslati.",
         "submit": "Pošalji timu na glasanje",
         "submitted": "Prijedlog je poslan. Kolege sada mogu glasati.",
+        "submittedAlone": "Prijedlog je prihvaćen. Jedini ste član tima pa je vaš glas odlučio.",
         "updated": "Prijedlog je ažuriran."
     },
     "voting": {
