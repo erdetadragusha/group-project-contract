@@ -94,10 +94,27 @@ Timestamps are `timestamptz` (UTC) and are shown in the user's time zone.
 - Dates, relative times, percentages, lists and country names use `Intl`.
 - Check that all languages are complete: `node tools/check-locales.mjs`.
 
+### Checks on the real Supabase project (14.11.)
+
+With a one-member test team: create contract, propose a change (approved at once, version +1), sections, status with live Nager.Date data, history, report a conflict, post an update, propose and accept a resolution, withdraw a report with confirmation, form validation, all pages in en / hr / sq.
+
+Accessibility on all 11 pages: one `h1` and `lang` on every page, every field labelled, errors linked with `aria-describedby`, no text below 4.5:1 contrast, no horizontal scrolling at 320 px width (200 % zoom), keyboard order follows the page with a visible 3 px focus outline, skip link, confirmation dialog opens with focus on Cancel.
+
+### Screenshots
+
+Same screen in three languages: [English](docs/screenshots/andrej/overview-en.jpg), [Croatian](docs/screenshots/andrej/overview-hr.jpg), [Albanian](docs/screenshots/andrej/overview-sq.jpg).
+
+Croatian plural forms on the status page: [1 otvoreni sukob](docs/screenshots/andrej/status-hr-plural-1.jpg), [2 otvorena sukoba](docs/screenshots/andrej/status-hr-plural-2.jpg), [5 otvorenih sukoba](docs/screenshots/andrej/status-hr-plural-5.jpg).
+
+[Confirmation before withdrawing a conflict report](docs/screenshots/andrej/conflict-withdraw-dialog-en.jpg).
+
 ### Known limitations
 
 - The contract is created from starting rules on the overview page; it is not yet filled automatically from the approved proposal in the preferences flow.
 - The browser's own date picker follows the browser language, not the language chosen in the application.
+- Browsers without Albanian locale data (for example some embedded Chromium builds) show dates in Albanian pages in English format; Chrome, Firefox and Safari format them in Albanian.
+- Radio buttons and checkboxes are 20 × 20 px, but their whole label is clickable.
+- Voting by several members was tested on a local copy of the database, not yet with several real accounts.
 
 ## Technologies
 
