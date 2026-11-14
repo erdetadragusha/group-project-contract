@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="join.pageTitle">
+        Join team | Group Project Contract
+    </title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <main class="welcome">
+        <div class="language-control">
+            <label for="language-select" data-i18n="common.language">
+                Language
+            </label>
+
+            <select id="language-select" name="language" disabled>
+                <option value="en" lang="en">English</option>
+                <option value="hr" lang="hr">Hrvatski</option>
+                <option value="sq" lang="sq">Shqip</option>
+            </select>
+        </div>
+
+        <h1 data-i18n="join.heading">Join a team</h1>
+
+        <section class="status-card" aria-labelledby="join-card-heading">
+            <h2 id="join-card-heading" data-i18n="join.cardHeading">
+                Team invitation
+            </h2>
+
+            <p id="join-details"></p>
+        </section>
+
+        <div class="welcome-actions">
+            <button type="button" id="accept-invitation"
+                class="button" data-i18n="join.acceptButton" disabled>
+                Accept invitation
+            </button>
+
+            <button type="button" id="decline-invitation"
+                class="button button-secondary"
+                data-i18n="join.declineButton" disabled>
+                Decline invitation
+            </button>
+        </div>
+
+        <p id="join-message" role="status"></p>
+
+        <nav id="join-links" class="welcome-actions"
+            aria-label="Invitation navigation"
+            data-i18n-aria="join.navigation"></nav>
+
+        <p id="language-message" role="alert"
+            data-i18n="auth.errors.generic" hidden>
+            The request could not be completed. Please try again.
+        </p>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/i18next@23.16.8/dist/umd/i18next.min.js"></script>
+    <script src="i18n.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-client.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

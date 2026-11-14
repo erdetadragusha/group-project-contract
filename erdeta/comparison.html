@@ -1,0 +1,937 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preference Comparison</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6fb;
+            margin: 0;
+            padding: 20px;
+            color: #222;
+        }
+
+        .container {
+            background: white;
+            max-width: 500px;
+            margin: 40px auto;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .back {
+            color: #3458a4;
+            text-decoration: none;
+        }
+
+        h1 {
+            font-size: 25px;
+            text-align: center;
+            color: #263b63;
+        }
+
+        p {
+            text-align: center;
+            color: #555;
+            line-height: 1.5;
+        }
+
+        .language-box,
+        .teammate-box {
+            margin: 20px 0;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            font-size: 15px;
+            background: white;
+        }
+
+        .notice {
+            padding: 12px;
+            background: #fff7e6;
+            border: 1px solid #ead09a;
+            border-radius: 10px;
+            font-size: 14px;
+            line-height: 1.5;
+            margin: 20px 0;
+        }
+
+        .comparison-card {
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        h2 {
+            font-size: 17px;
+            margin: 0;
+            color: #263b63;
+        }
+
+        .status {
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .same {
+            background: #e1f5e8;
+            color: #176b37;
+        }
+
+        .different {
+            background: #fff0db;
+            color: #8a4900;
+        }
+
+        .missing {
+            background: #eeeeee;
+            color: #555;
+        }
+
+        .choices {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .choice {
+            padding: 12px;
+            background: #f4f6fb;
+            border-radius: 8px;
+            min-width: 0;
+        }
+
+        .choice strong {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 13px;
+            color: #263b63;
+        }
+
+        .choice span {
+            display: block;
+            font-size: 13px;
+            line-height: 1.5;
+            overflow-wrap: anywhere;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background: #3458a4;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 17px;
+            cursor: pointer;
+            margin-top: 12px;
+        }
+
+        button:hover {
+            background: #263b63;
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .secondary-button {
+            background: white;
+            border: 1px solid #3458a4;
+            color: #3458a4;
+        }
+
+        .secondary-button:hover {
+            background: #eef3ff;
+        }
+
+        button:focus-visible,
+        a:focus-visible,
+        select:focus-visible {
+            outline: 3px solid #e09b24;
+            outline-offset: 3px;
+        }
+
+        #message {
+            color: #b42318;
+            font-size: 14px;
+        }
+
+        @media (max-width: 450px) {
+            .container {
+                padding: 20px;
+                margin: 15px auto;
+            }
+
+            .choices {
+                gap: 8px;
+            }
+
+            .choice {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main class="container">
+        <a href="quality.html" id="backLink" class="back">
+            ← Back
+        </a>
+
+        <div class="language-box">
+            <label for="languageSelector" data-i18n="language">
+                Language
+            </label>
+
+            <select id="languageSelector">
+                <option value="en">English</option>
+                <option value="hr">Hrvatski</option>
+                <option value="sq">Shqip</option>
+            </select>
+        </div>
+
+        <h1 data-i18n="title">Preference Comparison</h1>
+
+        <p data-i18n="description">
+            Compare your answers with real members of your team.
+        </p>
+
+        <div class="teammate-box">
+            <label for="teammateSelector" data-i18n="chooseTeammate">
+                Choose a teammate:
+            </label>
+
+            <select id="teammateSelector" disabled></select>
+        </div>
+
+        <div class="notice" id="notice" role="status" aria-live="polite">
+            Loading team preferences...
+        </div>
+
+        <div id="comparisonResults"></div>
+
+        <button type="button" id="nextButton" disabled data-i18n="next">
+            View Disagreements
+        </button>
+
+        <button type="button" id="refreshButton" class="secondary-button"
+                data-i18n="refresh">
+            Refresh Preferences
+        </button>
+
+        <p id="message" role="alert"></p>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+    <script src="../mateo/supabase-client.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/i18next@23.16.8/dist/umd/i18next.min.js"></script>
+
+    <script>
+        const resources = {
+            en: {
+                translation: {
+                    title: "Preference Comparison",
+                    description: "Compare your answers with real members of your team.",
+                    language: "Language",
+                    back: "Back",
+                    next: "View Disagreements",
+                    refresh: "Refresh Preferences",
+                    chooseTeammate: "Choose a teammate:",
+                    yourChoice: "Your choice",
+                    teammateChoice: "Teammate's choice",
+                    notSelected: "Not selected",
+                    loading: "Loading team preferences...",
+                    ready: "These are the real preferences saved by your team.",
+                    noTeam: "Please open this screen from your team.",
+                    loginError: "Please sign in through your team first.",
+                    loadError: "Could not load team preferences. Please try again.",
+                    noMembers: "There are no other members in this team yet.",
+                    myMissing: "Your preferences have not been saved yet. Complete Screens 1–5 first.",
+                    teammateMissing: "This teammate has not saved preferences yet. Try refreshing later.",
+                    partial: "Some answers are missing. You can compare the answers that have been saved.",
+                    noComparison: "There are no completed answers to compare yet.",
+                    saveError: "Could not continue. Please try again.",
+                    categories: {
+                        Communication: "Communication",
+                        Availability: "Availability",
+                        "Preferred Roles": "Preferred Roles",
+                        Deadlines: "Deadlines",
+                        Quality: "Quality"
+                    },
+                    statuses: {
+                        Same: "Same",
+                        Different: "Different",
+                        "Not set": "Not set"
+                    },
+                    values: {
+                        Email: "Email",
+                        "In-app Chat": "In-app Chat",
+                        Discord: "Discord",
+                        "Zoom / Meet": "Zoom / Meet",
+                        Other: "Other",
+                        Research: "Research",
+                        Design: "Design",
+                        Development: "Development",
+                        Testing: "Testing",
+                        Documentation: "Documentation",
+                        "Strict deadlines": "Strict deadlines",
+                        "Some flexibility": "Some flexibility",
+                        Flexible: "Flexible",
+                        Accuracy: "Accuracy",
+                        "Good design / usability": "Good design / usability",
+                        "Clean work": "Clean work",
+                        "Detailed documentation": "Detailed documentation",
+                        "Flexible schedule": "Flexible schedule"
+                    },
+                    days: {
+                        Monday: "Monday",
+                        Tuesday: "Tuesday",
+                        Wednesday: "Wednesday",
+                        Thursday: "Thursday",
+                        Friday: "Friday",
+                        Saturday: "Saturday",
+                        Sunday: "Sunday"
+                    },
+                    periods: {
+                        Morning: "Morning",
+                        Afternoon: "Afternoon",
+                        Evening: "Evening"
+                    }
+                }
+            },
+
+            hr: {
+                translation: {
+                    title: "Usporedba preferencija",
+                    description: "Usporedite svoje odgovore sa stvarnim članovima tima.",
+                    language: "Jezik",
+                    back: "Natrag",
+                    next: "Pregled neslaganja",
+                    refresh: "Osvježi preferencije",
+                    chooseTeammate: "Odaberite člana tima:",
+                    yourChoice: "Vaš odabir",
+                    teammateChoice: "Odabir člana tima",
+                    notSelected: "Nije odabrano",
+                    loading: "Učitavanje preferencija tima...",
+                    ready: "Ovo su stvarne preferencije koje je vaš tim spremio.",
+                    noTeam: "Otvorite ovaj zaslon iz svojeg tima.",
+                    loginError: "Najprije se prijavite putem svojeg tima.",
+                    loadError: "Preferencije tima nije moguće učitati. Pokušajte ponovno.",
+                    noMembers: "Još nema drugih članova u ovom timu.",
+                    myMissing: "Vaše preferencije još nisu spremljene. Najprije dovršite zaslone 1–5.",
+                    teammateMissing: "Ovaj član tima još nije spremio preferencije. Pokušajte osvježiti kasnije.",
+                    partial: "Neki odgovori nedostaju. Možete usporediti spremljene odgovore.",
+                    noComparison: "Još nema dovršenih odgovora za usporedbu.",
+                    saveError: "Nije moguće nastaviti. Pokušajte ponovno.",
+                    categories: {
+                        Communication: "Komunikacija",
+                        Availability: "Dostupnost",
+                        "Preferred Roles": "Željene uloge",
+                        Deadlines: "Rokovi",
+                        Quality: "Kvaliteta"
+                    },
+                    statuses: {
+                        Same: "Isto",
+                        Different: "Različito",
+                        "Not set": "Nije postavljeno"
+                    },
+                    values: {
+                        Email: "E-pošta",
+                        "In-app Chat": "Razgovor u aplikaciji",
+                        Discord: "Discord",
+                        "Zoom / Meet": "Zoom / Meet",
+                        Other: "Ostalo",
+                        Research: "Istraživanje",
+                        Design: "Dizajn",
+                        Development: "Razvoj",
+                        Testing: "Testiranje",
+                        Documentation: "Dokumentacija",
+                        "Strict deadlines": "Strogi rokovi",
+                        "Some flexibility": "Određena fleksibilnost",
+                        Flexible: "Fleksibilni rokovi",
+                        Accuracy: "Točnost",
+                        "Good design / usability": "Dobar dizajn / jednostavnost korištenja",
+                        "Clean work": "Uredno obavljen posao",
+                        "Detailed documentation": "Detaljna dokumentacija",
+                        "Flexible schedule": "Fleksibilan raspored"
+                    },
+                    days: {
+                        Monday: "Ponedjeljak",
+                        Tuesday: "Utorak",
+                        Wednesday: "Srijeda",
+                        Thursday: "Četvrtak",
+                        Friday: "Petak",
+                        Saturday: "Subota",
+                        Sunday: "Nedjelja"
+                    },
+                    periods: {
+                        Morning: "Jutro",
+                        Afternoon: "Poslijepodne",
+                        Evening: "Večer"
+                    }
+                }
+            },
+
+            sq: {
+                translation: {
+                    title: "Krahasimi i preferencave",
+                    description: "Krahasoni përgjigjet tuaja me anëtarët e vërtetë të ekipit.",
+                    language: "Gjuha",
+                    back: "Kthehu",
+                    next: "Shiko mospajtimet",
+                    refresh: "Rifresko preferencat",
+                    chooseTeammate: "Zgjidhni një anëtar të ekipit:",
+                    yourChoice: "Zgjedhja juaj",
+                    teammateChoice: "Zgjedhja e anëtarit të ekipit",
+                    notSelected: "Nuk është zgjedhur",
+                    loading: "Duke ngarkuar preferencat e ekipit...",
+                    ready: "Këto janë preferencat e vërteta të ruajtura nga ekipi juaj.",
+                    noTeam: "Hapeni këtë ekran nga ekipi juaj.",
+                    loginError: "Ju lutemi hyni fillimisht përmes ekipit tuaj.",
+                    loadError: "Preferencat e ekipit nuk u ngarkuan. Provoni përsëri.",
+                    noMembers: "Ende nuk ka anëtarë të tjerë në këtë ekip.",
+                    myMissing: "Preferencat tuaja nuk janë ruajtur ende. Përfundoni ekranet 1–5.",
+                    teammateMissing: "Ky anëtar nuk i ka ruajtur ende preferencat. Provoni të rifreskoni më vonë.",
+                    partial: "Disa përgjigje mungojnë. Mund të krahasoni përgjigjet e ruajtura.",
+                    noComparison: "Ende nuk ka përgjigje të plota për krahasim.",
+                    saveError: "Nuk mund të vazhdohet. Provoni përsëri.",
+                    categories: {
+                        Communication: "Komunikimi",
+                        Availability: "Disponueshmëria",
+                        "Preferred Roles": "Rolet e preferuara",
+                        Deadlines: "Afatet",
+                        Quality: "Cilësia"
+                    },
+                    statuses: {
+                        Same: "Njësoj",
+                        Different: "Ndryshe",
+                        "Not set": "Nuk është caktuar"
+                    },
+                    values: {
+                        Email: "Email",
+                        "In-app Chat": "Bisedë në aplikacion",
+                        Discord: "Discord",
+                        "Zoom / Meet": "Zoom / Meet",
+                        Other: "Tjetër",
+                        Research: "Hulumtim",
+                        Design: "Dizajn",
+                        Development: "Zhvillim",
+                        Testing: "Testim",
+                        Documentation: "Dokumentim",
+                        "Strict deadlines": "Afate të rrepta",
+                        "Some flexibility": "Pak fleksibilitet",
+                        Flexible: "Afate fleksibile",
+                        Accuracy: "Saktësia",
+                        "Good design / usability": "Dizajn i mirë / lehtësi në përdorim",
+                        "Clean work": "Punë e rregullt",
+                        "Detailed documentation": "Dokumentim i detajuar",
+                        "Flexible schedule": "Orar fleksibil"
+                    },
+                    days: {
+                        Monday: "E hënë",
+                        Tuesday: "E martë",
+                        Wednesday: "E mërkurë",
+                        Thursday: "E enjte",
+                        Friday: "E premte",
+                        Saturday: "E shtunë",
+                        Sunday: "E diel"
+                    },
+                    periods: {
+                        Morning: "Mëngjes",
+                        Afternoon: "Pasdite",
+                        Evening: "Mbrëmje"
+                    }
+                }
+            }
+        };
+
+        const teamId = new URLSearchParams(
+            window.location.search
+        ).get("teamId");
+
+        const backLink = document.getElementById("backLink");
+        const languageSelector = document.getElementById("languageSelector");
+        const teammateSelector = document.getElementById("teammateSelector");
+        const results = document.getElementById("comparisonResults");
+        const notice = document.getElementById("notice");
+        const message = document.getElementById("message");
+        const nextButton = document.getElementById("nextButton");
+        const refreshButton = document.getElementById("refreshButton");
+
+        if (teamId) {
+            backLink.href =
+                "quality.html?teamId=" + encodeURIComponent(teamId);
+        }
+
+        let currentUserId = null;
+        let selectedTeammateId = null;
+        let members = [];
+        let preferencesByUser = new Map();
+        let comparison = [];
+        let noticeKey = "loading";
+        let errorKey = null;
+
+        function showNotice(key) {
+            noticeKey = key;
+            notice.textContent = i18next.t(key);
+        }
+
+        function showError(key) {
+            errorKey = key;
+            message.textContent = key ? i18next.t(key) : "";
+        }
+
+        function arrayOrEmpty(value) {
+            return Array.isArray(value) ? value : [];
+        }
+
+        function availabilityChoices(value) {
+            if (!value || typeof value !== "object") {
+                return [];
+            }
+
+            const selected = arrayOrEmpty(value.times)
+                .map(function(time) {
+                    return time.replace("-", " ");
+                });
+
+            if (value.flexible === true) {
+                selected.push("Flexible schedule");
+            }
+
+            return selected;
+        }
+
+        function getCategories(record) {
+            const data = record || {};
+
+            return [
+                {
+                    category: "Communication",
+                    values: arrayOrEmpty(data.communication)
+                },
+                {
+                    category: "Availability",
+                    values: availabilityChoices(data.availability)
+                },
+                {
+                    category: "Preferred Roles",
+                    values: arrayOrEmpty(data.roles)
+                },
+                {
+                    category: "Deadlines",
+                    values: data.deadline ? [data.deadline] : []
+                },
+                {
+                    category: "Quality",
+                    values: arrayOrEmpty(data.quality)
+                }
+            ];
+        }
+
+        function sameChoices(first, second) {
+            const a = [...new Set(first)].sort();
+            const b = [...new Set(second)].sort();
+
+            return JSON.stringify(a) === JSON.stringify(b);
+        }
+
+        function createComparison(mine, teammate) {
+            const myCategories = getCategories(mine);
+            const teammateCategories = getCategories(teammate);
+
+            return myCategories.map(function(item, index) {
+                const other = teammateCategories[index].values;
+                let status = "Different";
+
+                if (item.values.length === 0 || other.length === 0) {
+                    status = "Not set";
+                } else if (sameChoices(item.values, other)) {
+                    status = "Same";
+                }
+
+                return {
+                    category: item.category,
+                    mine: item.values,
+                    teammate: other,
+                    status: status
+                };
+            });
+        }
+
+        function translateValue(value) {
+            const valueKey = "values." + value;
+
+            if (i18next.exists(valueKey)) {
+                return i18next.t(valueKey);
+            }
+
+            const parts = value.split(" ");
+
+            if (
+                parts.length === 2 &&
+                i18next.exists("days." + parts[0]) &&
+                i18next.exists("periods." + parts[1])
+            ) {
+                return i18next.t("days." + parts[0]) +
+                    " — " + i18next.t("periods." + parts[1]);
+            }
+
+            return value;
+        }
+
+        function translateChoices(values) {
+            if (!values.length) {
+                return i18next.t("notSelected");
+            }
+
+            return values.map(translateValue).join(", ");
+        }
+
+        function createChoice(title, values) {
+            const box = document.createElement("div");
+            box.className = "choice";
+
+            const heading = document.createElement("strong");
+            heading.textContent = i18next.t(title);
+
+            const text = document.createElement("span");
+            text.textContent = translateChoices(values);
+
+            box.appendChild(heading);
+            box.appendChild(text);
+
+            return box;
+        }
+
+        function renderCards() {
+            results.replaceChildren();
+            comparison = [];
+            nextButton.disabled = true;
+
+            if (!currentUserId) {
+                return;
+            }
+
+            if (members.length === 0) {
+                showNotice("noMembers");
+                return;
+            }
+
+            const mine = preferencesByUser.get(currentUserId);
+            const teammate = preferencesByUser.get(selectedTeammateId);
+
+            if (!mine) {
+                showNotice("myMissing");
+                return;
+            }
+
+            if (!teammate) {
+                showNotice("teammateMissing");
+                return;
+            }
+
+            comparison = createComparison(mine, teammate);
+
+            comparison.forEach(function(item) {
+                const card = document.createElement("section");
+                card.className = "comparison-card";
+
+                const header = document.createElement("div");
+                header.className = "card-header";
+
+                const heading = document.createElement("h2");
+                heading.textContent = i18next.t(
+                    "categories." + item.category
+                );
+
+                const status = document.createElement("span");
+                status.className = "status";
+
+                if (item.status === "Same") {
+                    status.classList.add("same");
+                } else if (item.status === "Different") {
+                    status.classList.add("different");
+                } else {
+                    status.classList.add("missing");
+                }
+
+                status.textContent = i18next.t(
+                    "statuses." + item.status
+                );
+
+                header.appendChild(heading);
+                header.appendChild(status);
+
+                const choices = document.createElement("div");
+                choices.className = "choices";
+
+                choices.appendChild(
+                    createChoice("yourChoice", item.mine)
+                );
+
+                choices.appendChild(
+                    createChoice("teammateChoice", item.teammate)
+                );
+
+                card.appendChild(header);
+                card.appendChild(choices);
+
+                results.appendChild(card);
+            });
+
+            const comparable = comparison.some(function(item) {
+                return item.status !== "Not set";
+            });
+
+            const incomplete = comparison.some(function(item) {
+                return item.status === "Not set";
+            });
+
+            nextButton.disabled = !comparable;
+
+            if (!comparable) {
+                showNotice("noComparison");
+            } else if (incomplete) {
+                showNotice("partial");
+            } else {
+                showNotice("ready");
+            }
+        }
+
+        function updateLanguage() {
+            document.documentElement.lang = i18next.language;
+            document.title = i18next.t("title");
+
+            document.querySelectorAll("[data-i18n]").forEach(function(element) {
+                const key = element.getAttribute("data-i18n");
+                element.textContent = i18next.t(key);
+            });
+
+            backLink.textContent = "← " + i18next.t("back");
+            languageSelector.value = i18next.language;
+
+            if (noticeKey) {
+                showNotice(noticeKey);
+            }
+
+            if (errorKey) {
+                showError(errorKey);
+            }
+
+            renderCards();
+        }
+
+        async function loadComparison() {
+            nextButton.disabled = true;
+            teammateSelector.disabled = true;
+            refreshButton.disabled = true;
+            showError(null);
+            showNotice("loading");
+            results.replaceChildren();
+
+            if (!teamId) {
+                showNotice("noTeam");
+                refreshButton.disabled = false;
+                return;
+            }
+
+            try {
+                const { data: authData, error: authError } =
+                    await database.auth.getUser();
+
+                if (authError || !authData.user) {
+                    throw new Error("NOT_SIGNED_IN");
+                }
+
+                currentUserId = authData.user.id;
+
+                const memberRequest = database.rpc(
+                    "get_team_members",
+                    { p_team_id: teamId }
+                );
+
+                const preferenceRequest = database
+                    .from("team_preferences")
+                    .select(
+                        "user_id,communication,availability,roles,deadline,quality"
+                    )
+                    .eq("team_id", teamId);
+
+                const [memberResult, preferenceResult] =
+                    await Promise.all([
+                        memberRequest,
+                        preferenceRequest
+                    ]);
+
+                if (memberResult.error) {
+                    throw memberResult.error;
+                }
+
+                if (preferenceResult.error) {
+                    throw preferenceResult.error;
+                }
+
+                members = (memberResult.data || []).filter(function(member) {
+                    return member.user_id !== currentUserId;
+                });
+
+                preferencesByUser = new Map(
+                    (preferenceResult.data || []).map(function(row) {
+                        return [row.user_id, row];
+                    })
+                );
+
+                teammateSelector.replaceChildren();
+
+                members.forEach(function(member) {
+                    const option = document.createElement("option");
+                    option.value = member.user_id;
+                    option.textContent = member.full_name;
+                    teammateSelector.appendChild(option);
+                });
+
+                if (!members.some(function(member) {
+                    return member.user_id === selectedTeammateId;
+                })) {
+                    selectedTeammateId = members.length
+                        ? members[0].user_id
+                        : null;
+                }
+
+                teammateSelector.value = selectedTeammateId || "";
+                teammateSelector.disabled = members.length === 0;
+
+                renderCards();
+
+            } catch (error) {
+                currentUserId = null;
+                members = [];
+                comparison = [];
+                teammateSelector.replaceChildren();
+
+                showNotice(
+                    error.message === "NOT_SIGNED_IN"
+                        ? "loginError"
+                        : "loadError"
+                );
+            } finally {
+                refreshButton.disabled = false;
+            }
+        }
+
+        teammateSelector.addEventListener("change", function() {
+            selectedTeammateId = teammateSelector.value;
+            renderCards();
+        });
+
+        refreshButton.addEventListener("click", loadComparison);
+
+        nextButton.addEventListener("click", function() {
+            if (
+                nextButton.disabled ||
+                !teamId ||
+                !selectedTeammateId ||
+                comparison.length === 0
+            ) {
+                return;
+            }
+
+            try {
+                localStorage.setItem(
+                    "groupComparison",
+                    JSON.stringify(comparison)
+                );
+
+                localStorage.setItem(
+                    "groupComparisonTeamId",
+                    teamId
+                );
+
+                localStorage.setItem(
+                    "groupComparisonTeammateId",
+                    selectedTeammateId
+                );
+
+                window.location.href =
+                    "disagreements.html?teamId=" +
+                    encodeURIComponent(teamId);
+
+            } catch (error) {
+                showError("saveError");
+            }
+        });
+
+        let savedLanguage = "en";
+
+        try {
+            savedLanguage = localStorage.getItem("appLanguage") || "en";
+        } catch (error) {
+            savedLanguage = "en";
+        }
+
+        if (!resources[savedLanguage]) {
+            savedLanguage = "en";
+        }
+
+        i18next.init({
+            lng: savedLanguage,
+            fallbackLng: "en",
+            supportedLngs: ["en", "hr", "sq"],
+            resources: resources
+        }).then(function() {
+            updateLanguage();
+            loadComparison();
+
+            languageSelector.addEventListener("change", function() {
+                const selectedLanguage = languageSelector.value;
+
+                i18next.changeLanguage(selectedLanguage).then(function() {
+                    try {
+                        localStorage.setItem(
+                            "appLanguage",
+                            selectedLanguage
+                        );
+                    } catch (error) {
+                    }
+
+                    updateLanguage();
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title data-i18n="completion.pageTitle">
+        Team setup | Group Project Contract
+    </title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <main class="welcome">
+        <div class="language-control">
+            <label for="language-select" data-i18n="common.language">
+                Language
+            </label>
+
+            <select id="language-select" disabled>
+                <option value="en">English</option>
+                <option value="hr">Hrvatski</option>
+                <option value="sq">Shqip</option>
+            </select>
+        </div>
+
+        <h1 data-i18n="completion.heading">
+            Team setup
+        </h1>
+
+        <p id="complete-message" role="status" aria-live="polite"></p>
+
+        <section id="complete-summary"
+                 class="status-card"
+                 aria-labelledby="complete-heading"
+                 hidden>
+
+            <h2 id="complete-heading"
+                data-i18n="completion.completeHeading">
+                Team setup complete
+            </h2>
+
+            <dl>
+                <dt data-i18n="completion.teamName">Team name</dt>
+                <dd id="complete-team-name"></dd>
+
+                <dt data-i18n="completion.projectName">Project name</dt>
+                <dd id="complete-project-name"></dd>
+            </dl>
+
+            <p id="complete-member-count"></p>
+            <p id="complete-pending-count"></p>
+        </section>
+
+        <nav id="complete-navigation"
+             class="welcome-actions"
+             data-i18n-aria="completion.navigation"
+             aria-label="Team navigation"
+             hidden>
+
+            <a id="complete-members-link"
+               class="button button-secondary"
+               data-i18n="completion.membersButton">
+                View team members
+            </a>
+
+            <a id="complete-status-link"
+               class="button button-secondary"
+               data-i18n="completion.statusButton">
+                View invitation status
+            </a>
+        </nav>
+
+        <p id="complete-preferences-note"
+           data-i18n="completion.preferencesNote"
+           hidden>
+            Next, choose your working preferences.
+            Your preference answers are currently saved only in this browser.
+        </p>
+
+        <div class="welcome-actions">
+            <button id="complete-preferences"
+                    type="button"
+                    class="button"
+                    data-i18n="completion.preferencesButton"
+                    disabled>
+                Continue to preferences
+            </button>
+
+            <button id="complete-refresh"
+                    type="button"
+                    class="button button-secondary"
+                    data-i18n="completion.refreshButton"
+                    disabled>
+                Refresh
+            </button>
+        </div>
+
+        <p id="language-message"
+           role="alert"
+           data-i18n="auth.errors.generic"
+           hidden></p>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/i18next@23.16.8/dist/umd/i18next.min.js"></script>
+    <script src="i18n.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-client.js"></script>
+
+    <script src="team-complete.js"></script>
+</body>
+</html>

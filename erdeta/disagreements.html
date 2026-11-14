@@ -1,0 +1,918 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disagreement Overview</title>
+
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6fb;
+            margin: 0;
+            padding: 20px;
+            color: #222;
+        }
+
+        .container {
+            background: white;
+            max-width: 500px;
+            margin: 40px auto;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .back {
+            color: #3458a4;
+            text-decoration: none;
+        }
+
+        h1 {
+            color: #263b63;
+            font-size: 25px;
+            text-align: center;
+        }
+
+        p {
+            color: #555;
+            line-height: 1.5;
+            text-align: center;
+        }
+
+        .language-box {
+            margin: 20px 0;
+        }
+
+        .language-box label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            font-size: 15px;
+            background: white;
+        }
+
+        .notice, .empty {
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 10px;
+            line-height: 1.5;
+        }
+
+        .notice {
+            background: #fff7e6;
+            border: 1px solid #ead09a;
+        }
+
+        .empty {
+            background: #eef3ff;
+            text-align: center;
+        }
+
+        fieldset {
+            border: none;
+            padding: 0;
+            margin: 20px 0;
+        }
+
+        legend {
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .option {
+            display: block;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            cursor: pointer;
+        }
+
+        .option:hover,
+        .option:has(input:checked) {
+            background: #eef3ff;
+            border-color: #3458a4;
+        }
+
+        .option-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        input[type="radio"] {
+            width: 20px;
+            height: 20px;
+            accent-color: #3458a4;
+            flex-shrink: 0;
+        }
+
+        .option-title {
+            font-size: 17px;
+            font-weight: bold;
+            color: #263b63;
+        }
+
+        .badge {
+            margin-left: auto;
+            padding: 5px 9px;
+            background: #fff0db;
+            color: #8a4900;
+            border-radius: 20px;
+            font-size: 12px;
+        }
+
+        .choices {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .choice {
+            padding: 12px;
+            background: #f4f6fb;
+            border-radius: 8px;
+            min-width: 0;
+        }
+
+        .choice strong {
+            display: block;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .choice span {
+            font-size: 13px;
+            line-height: 1.5;
+            overflow-wrap: anywhere;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background: #3458a4;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 17px;
+            cursor: pointer;
+        }
+
+        button:disabled {
+            background: #aaa;
+            cursor: not-allowed;
+        }
+
+        button:focus-visible,
+        a:focus-visible,
+        input:focus-visible,
+        select:focus-visible {
+            outline: 3px solid #e09b24;
+            outline-offset: 3px;
+        }
+
+        #message {
+            color: #b42318;
+            text-align: left;
+        }
+
+        @media (max-width: 450px) {
+            .container {
+                padding: 20px;
+                margin: 15px auto;
+            }
+
+            .choices {
+                gap: 8px;
+            }
+
+            .choice {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main class="container">
+
+        <a href="comparison.html" class="back" id="backLink">
+            ← Back
+        </a>
+
+        <div class="language-box">
+            <label for="languageSelector" data-i18n="language">
+                Language
+            </label>
+            <select id="languageSelector">
+                <option value="en">English</option>
+                <option value="hr">Hrvatski</option>
+                <option value="sq">Shqip</option>
+            </select>
+        </div>
+
+        <h1 data-i18n="title">Disagreement Overview</h1>
+
+        <p data-i18n="description">
+            These are the areas where you and your teammate have different preferences.
+        </p>
+
+        <div class="notice" id="notice" role="status" aria-live="polite">
+            Loading disagreements...
+        </div>
+
+        <form id="disagreementForm">
+            <fieldset>
+                <legend data-i18n="instruction">
+                    Choose a disagreement to discuss:
+                </legend>
+
+                <div id="disagreementList"></div>
+            </fieldset>
+
+            <button type="submit" id="proposalButton" disabled data-i18n="next">
+                Create Proposal
+            </button>
+
+            <p id="message" role="alert"></p>
+        </form>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+    <script src="../mateo/supabase-client.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/i18next@23.16.8/dist/umd/i18next.min.js"></script>
+
+    <script>
+        const resources = {
+            en: {
+                translation: {
+                    title: "Disagreement Overview",
+                    description: "These are the areas where you and your teammate have different preferences.",
+                    instruction: "Choose a disagreement to discuss:",
+                    language: "Language",
+                    back: "Back",
+                    next: "Create Proposal",
+                    different: "Different",
+                    yourChoice: "Your choice",
+                    teammate: "Teammate's choice",
+                    notAvailable: "Not available",
+                    loading: "Loading disagreements...",
+                    ready: "These differences come from real team preferences.",
+                    partial: "Some answers are missing. Only completed answers are compared.",
+                    noTeam: "Please open this page from your team.",
+                    noComparison: "Choose a teammate on the comparison screen first.",
+                    loginError: "Please sign in through your team first.",
+                    loadError: "Could not load preferences. Please try again.",
+                    noPreferences: "Both team members need to save preferences before they can be compared.",
+                    noDisagreements: "No disagreements found in the completed answers!",
+                    selectError: "Please select a disagreement first.",
+                    saveError: "Could not continue. Please try again.",
+                    categories: {
+                        Communication: "Communication",
+                        Availability: "Availability",
+                        "Preferred Roles": "Preferred Roles",
+                        Deadlines: "Deadlines",
+                        Quality: "Quality"
+                    },
+                    values: {
+                        Email: "Email",
+                        "In-app Chat": "In-app Chat",
+                        Discord: "Discord",
+                        "Zoom / Meet": "Zoom / Meet",
+                        Other: "Other",
+                        Research: "Research",
+                        Design: "Design",
+                        Development: "Development",
+                        Testing: "Testing",
+                        Documentation: "Documentation",
+                        "Strict deadlines": "Strict deadlines",
+                        "Some flexibility": "Some flexibility",
+                        Flexible: "Flexible",
+                        Accuracy: "Accuracy",
+                        "Good design / usability": "Good design / usability",
+                        "Clean work": "Clean work",
+                        "Detailed documentation": "Detailed documentation",
+                        "Flexible schedule": "Flexible schedule"
+                    },
+                    days: {
+                        Monday: "Monday",
+                        Tuesday: "Tuesday",
+                        Wednesday: "Wednesday",
+                        Thursday: "Thursday",
+                        Friday: "Friday",
+                        Saturday: "Saturday",
+                        Sunday: "Sunday"
+                    },
+                    periods: {
+                        Morning: "Morning",
+                        Afternoon: "Afternoon",
+                        Evening: "Evening"
+                    }
+                }
+            },
+            hr: {
+                translation: {
+                    title: "Pregled neslaganja",
+                    description: "Ovo su područja u kojima vi i član vašeg tima imate različite preferencije.",
+                    instruction: "Odaberite neslaganje o kojem želite razgovarati:",
+                    language: "Jezik",
+                    back: "Natrag",
+                    next: "Izradi prijedlog",
+                    different: "Različito",
+                    yourChoice: "Vaš odabir",
+                    teammate: "Odabir člana tima",
+                    notAvailable: "Nije dostupno",
+                    loading: "Učitavanje neslaganja...",
+                    ready: "Ove razlike temelje se na stvarnim preferencijama tima.",
+                    partial: "Neki odgovori nedostaju. Uspoređuju se samo dovršeni odgovori.",
+                    noTeam: "Otvorite ovu stranicu iz svojeg tima.",
+                    noComparison: "Prvo odaberite člana tima na zaslonu za usporedbu.",
+                    loginError: "Najprije se prijavite putem svojeg tima.",
+                    loadError: "Preferencije nije moguće učitati. Pokušajte ponovno.",
+                    noPreferences: "Oba člana tima trebaju spremiti preferencije prije usporedbe.",
+                    noDisagreements: "Nema neslaganja u dovršenim odgovorima!",
+                    selectError: "Prvo odaberite neslaganje.",
+                    saveError: "Nije moguće nastaviti. Pokušajte ponovno.",
+                    categories: {
+                        Communication: "Komunikacija",
+                        Availability: "Dostupnost",
+                        "Preferred Roles": "Željene uloge",
+                        Deadlines: "Rokovi",
+                        Quality: "Kvaliteta"
+                    },
+                    values: {
+                        Email: "E-pošta",
+                        "In-app Chat": "Razgovor u aplikaciji",
+                        Discord: "Discord",
+                        "Zoom / Meet": "Zoom / Meet",
+                        Other: "Ostalo",
+                        Research: "Istraživanje",
+                        Design: "Dizajn",
+                        Development: "Razvoj",
+                        Testing: "Testiranje",
+                        Documentation: "Dokumentacija",
+                        "Strict deadlines": "Strogi rokovi",
+                        "Some flexibility": "Određena fleksibilnost",
+                        Flexible: "Fleksibilni rokovi",
+                        Accuracy: "Točnost",
+                        "Good design / usability": "Dobar dizajn / jednostavnost korištenja",
+                        "Clean work": "Uredno obavljen posao",
+                        "Detailed documentation": "Detaljna dokumentacija",
+                        "Flexible schedule": "Fleksibilan raspored"
+                    },
+                    days: {
+                        Monday: "Ponedjeljak",
+                        Tuesday: "Utorak",
+                        Wednesday: "Srijeda",
+                        Thursday: "Četvrtak",
+                        Friday: "Petak",
+                        Saturday: "Subota",
+                        Sunday: "Nedjelja"
+                    },
+                    periods: {
+                        Morning: "Jutro",
+                        Afternoon: "Poslijepodne",
+                        Evening: "Večer"
+                    }
+                }
+            },
+            sq: {
+                translation: {
+                    title: "Përmbledhja e mospajtimeve",
+                    description: "Këto janë fushat ku ju dhe anëtari i ekipit keni preferenca të ndryshme.",
+                    instruction: "Zgjidhni një mospajtim për ta diskutuar:",
+                    language: "Gjuha",
+                    back: "Kthehu",
+                    next: "Krijo propozim",
+                    different: "Ndryshe",
+                    yourChoice: "Zgjedhja juaj",
+                    teammate: "Zgjedhja e anëtarit të ekipit",
+                    notAvailable: "Nuk është në dispozicion",
+                    loading: "Duke ngarkuar mospajtimet...",
+                    ready: "Këto dallime bazohen në preferencat e vërteta të ekipit.",
+                    partial: "Disa përgjigje mungojnë. Krahasohen vetëm përgjigjet e plota.",
+                    noTeam: "Hapeni këtë faqe nga ekipi juaj.",
+                    noComparison: "Së pari zgjidhni një anëtar në ekranin e krahasimit.",
+                    loginError: "Ju lutemi hyni fillimisht përmes ekipit tuaj.",
+                    loadError: "Preferencat nuk u ngarkuan. Provoni përsëri.",
+                    noPreferences: "Të dy anëtarët duhet t'i ruajnë preferencat para krahasimit.",
+                    noDisagreements: "Nuk ka mospajtime në përgjigjet e plota!",
+                    selectError: "Ju lutemi zgjidhni fillimisht një mospajtim.",
+                    saveError: "Nuk mund të vazhdohet. Provoni përsëri.",
+                    categories: {
+                        Communication: "Komunikimi",
+                        Availability: "Disponueshmëria",
+                        "Preferred Roles": "Rolet e preferuara",
+                        Deadlines: "Afatet",
+                        Quality: "Cilësia"
+                    },
+                    values: {
+                        Email: "Email",
+                        "In-app Chat": "Bisedë në aplikacion",
+                        Discord: "Discord",
+                        "Zoom / Meet": "Zoom / Meet",
+                        Other: "Tjetër",
+                        Research: "Hulumtim",
+                        Design: "Dizajn",
+                        Development: "Zhvillim",
+                        Testing: "Testim",
+                        Documentation: "Dokumentim",
+                        "Strict deadlines": "Afate të rrepta",
+                        "Some flexibility": "Pak fleksibilitet",
+                        Flexible: "Afate fleksibile",
+                        Accuracy: "Saktësia",
+                        "Good design / usability": "Dizajn i mirë / lehtësi në përdorim",
+                        "Clean work": "Punë e rregullt",
+                        "Detailed documentation": "Dokumentim i detajuar",
+                        "Flexible schedule": "Orar fleksibil"
+                    },
+                    days: {
+                        Monday: "E hënë",
+                        Tuesday: "E martë",
+                        Wednesday: "E mërkurë",
+                        Thursday: "E enjte",
+                        Friday: "E premte",
+                        Saturday: "E shtunë",
+                        Sunday: "E diel"
+                    },
+                    periods: {
+                        Morning: "Mëngjes",
+                        Afternoon: "Pasdite",
+                        Evening: "Mbrëmje"
+                    }
+                }
+            }
+        };
+
+        const form = document.getElementById("disagreementForm");
+        const list = document.getElementById("disagreementList");
+        const message = document.getElementById("message");
+        const button = document.getElementById("proposalButton");
+        const notice = document.getElementById("notice");
+        const backLink = document.getElementById("backLink");
+        const languageSelector = document.getElementById("languageSelector");
+
+        const teamId = new URLSearchParams(
+            window.location.search
+        ).get("teamId");
+
+        if (teamId) {
+            backLink.href = "comparison.html?teamId=" +
+                encodeURIComponent(teamId);
+        }
+
+        let comparisons = [];
+        let disagreements = [];
+        let noticeKey = "loading";
+        let errorKey = null;
+
+        function showNotice(key) {
+            noticeKey = key;
+            notice.textContent = i18next.t(key);
+        }
+
+        function showError(key) {
+            errorKey = key;
+            message.textContent = key ? i18next.t(key) : "";
+        }
+
+        function arrayOrEmpty(value) {
+            return Array.isArray(value) ? value : [];
+        }
+
+        function availabilityChoices(value) {
+            if (!value || typeof value !== "object") {
+                return [];
+            }
+
+            const choices = arrayOrEmpty(value.times)
+                .filter(function(time) {
+                    return typeof time === "string";
+                })
+                .map(function(time) {
+                    return time.replace("-", " ");
+                });
+
+            if (value.flexible === true) {
+                choices.push("Flexible schedule");
+            }
+
+            return choices;
+        }
+
+        function getCategories(record) {
+            return [
+                {
+                    category: "Communication",
+                    values: arrayOrEmpty(record.communication)
+                },
+                {
+                    category: "Availability",
+                    values: availabilityChoices(record.availability)
+                },
+                {
+                    category: "Preferred Roles",
+                    values: arrayOrEmpty(record.roles)
+                },
+                {
+                    category: "Deadlines",
+                    values: record.deadline ? [record.deadline] : []
+                },
+                {
+                    category: "Quality",
+                    values: arrayOrEmpty(record.quality)
+                }
+            ];
+        }
+
+        function sameChoices(first, second) {
+            const a = [...new Set(first)].sort();
+            const b = [...new Set(second)].sort();
+
+            return JSON.stringify(a) === JSON.stringify(b);
+        }
+
+        function comparePreferences(mine, teammate) {
+            const own = getCategories(mine);
+            const other = getCategories(teammate);
+
+            return own.map(function(item, index) {
+                const teammateValues = other[index].values;
+
+                let status = "Not set";
+
+                if (item.values.length && teammateValues.length) {
+                    status = sameChoices(item.values, teammateValues)
+                        ? "Same"
+                        : "Different";
+                }
+
+                return {
+                    category: item.category,
+                    mine: item.values,
+                    teammate: teammateValues,
+                    status: status
+                };
+            });
+        }
+
+        function translateValue(value) {
+            const key = "values." + value;
+
+            if (i18next.exists(key)) {
+                return i18next.t(key);
+            }
+
+            const parts = value.split(" ");
+
+            if (
+                parts.length === 2 &&
+                i18next.exists("days." + parts[0]) &&
+                i18next.exists("periods." + parts[1])
+            ) {
+                return i18next.t("days." + parts[0]) +
+                    " — " + i18next.t("periods." + parts[1]);
+            }
+
+            return value;
+        }
+
+        function translateChoices(values) {
+            return values.length
+                ? values.map(translateValue).join(", ")
+                : i18next.t("notAvailable");
+        }
+
+        function createChoice(titleKey, values) {
+            const box = document.createElement("div");
+            box.className = "choice";
+
+            const heading = document.createElement("strong");
+            heading.textContent = i18next.t(titleKey);
+
+            const text = document.createElement("span");
+            text.textContent = translateChoices(values);
+
+            box.appendChild(heading);
+            box.appendChild(text);
+            return box;
+        }
+
+        function renderDisagreements() {
+            list.replaceChildren();
+            button.disabled = true;
+
+            if (!disagreements.length) {
+                return;
+            }
+
+            disagreements.forEach(function(item) {
+                const label = document.createElement("label");
+                label.className = "option";
+
+                const header = document.createElement("div");
+                header.className = "option-header";
+
+                const radio = document.createElement("input");
+                radio.type = "radio";
+                radio.name = "disagreement";
+                radio.value = item.category;
+
+                const title = document.createElement("span");
+                title.className = "option-title";
+                title.textContent = i18next.t(
+                    "categories." + item.category
+                );
+
+                const badge = document.createElement("span");
+                badge.className = "badge";
+                badge.textContent = i18next.t("different");
+
+                header.appendChild(radio);
+                header.appendChild(title);
+                header.appendChild(badge);
+
+                const choices = document.createElement("div");
+                choices.className = "choices";
+
+                choices.appendChild(
+                    createChoice("yourChoice", item.mine)
+                );
+                choices.appendChild(
+                    createChoice("teammate", item.teammate)
+                );
+
+                label.appendChild(header);
+                label.appendChild(choices);
+
+                list.appendChild(label);
+            });
+
+            button.disabled = false;
+        }
+
+        async function loadDisagreements() {
+            showNotice("loading");
+            showError(null);
+            button.disabled = true;
+            list.replaceChildren();
+
+            if (!teamId) {
+                showNotice("noTeam");
+                return;
+            }
+
+            let comparisonTeamId;
+            let teammateId;
+
+            try {
+                comparisonTeamId = localStorage.getItem(
+                    "groupComparisonTeamId"
+                );
+
+                teammateId = localStorage.getItem(
+                    "groupComparisonTeammateId"
+                );
+            } catch (error) {
+                showNotice("noComparison");
+                return;
+            }
+
+            if (
+                comparisonTeamId !== teamId ||
+                !teammateId
+            ) {
+                showNotice("noComparison");
+                return;
+            }
+
+            try {
+                const { data: authData, error: authError } =
+                    await database.auth.getUser();
+
+                if (authError || !authData.user) {
+                    throw new Error("NOT_SIGNED_IN");
+                }
+
+                const currentUserId = authData.user.id;
+
+                if (teammateId === currentUserId) {
+                    showNotice("noComparison");
+                    return;
+                }
+
+                const { data: members, error: memberError } =
+                    await database.rpc("get_team_members", {
+                        p_team_id: teamId
+                    });
+
+                if (memberError) {
+                    throw memberError;
+                }
+
+                const validTeammate = (members || []).some(
+                    function(member) {
+                        return member.user_id === teammateId;
+                    }
+                );
+
+                if (!validTeammate) {
+                    showNotice("noComparison");
+                    return;
+                }
+
+                const { data: rows, error } = await database
+                    .from("team_preferences")
+                    .select(
+                        "user_id,communication,availability,roles,deadline,quality"
+                    )
+                    .eq("team_id", teamId)
+                    .in("user_id", [currentUserId, teammateId]);
+
+                if (error) {
+                    throw error;
+                }
+
+                const mine = (rows || []).find(function(row) {
+                    return row.user_id === currentUserId;
+                });
+
+                const teammate = (rows || []).find(function(row) {
+                    return row.user_id === teammateId;
+                });
+
+                if (!mine || !teammate) {
+                    showNotice("noPreferences");
+                    return;
+                }
+
+                comparisons = comparePreferences(mine, teammate);
+
+                disagreements = comparisons.filter(function(item) {
+                    return item.status === "Different";
+                });
+
+                renderDisagreements();
+
+                const hasMissing = comparisons.some(function(item) {
+                    return item.status === "Not set";
+                });
+
+                if (disagreements.length) {
+                    showNotice(hasMissing ? "partial" : "ready");
+                } else {
+                    showNotice("noDisagreements");
+                }
+
+            } catch (error) {
+                showNotice(
+                    error.message === "NOT_SIGNED_IN"
+                        ? "loginError"
+                        : "loadError"
+                );
+            }
+        }
+
+        form.addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            const selected = document.querySelector(
+                'input[name="disagreement"]:checked'
+            );
+
+            if (!selected) {
+                showError("selectError");
+                return;
+            }
+
+            if (!disagreements.some(function(item) {
+                return item.category === selected.value;
+            })) {
+                showError("selectError");
+                return;
+            }
+
+            try {
+                localStorage.setItem(
+                    "groupComparison",
+                    JSON.stringify(comparisons)
+                );
+
+                localStorage.setItem(
+                    "selectedDisagreement",
+                    selected.value
+                );
+
+                window.location.href =
+                    "proposal.html?teamId=" +
+                    encodeURIComponent(teamId);
+
+            } catch (error) {
+                showError("saveError");
+            }
+        });
+
+        let savedLanguage = "en";
+
+        try {
+            savedLanguage = localStorage.getItem("appLanguage") || "en";
+        } catch (error) {
+            savedLanguage = "en";
+        }
+
+        if (!resources[savedLanguage]) {
+            savedLanguage = "en";
+        }
+
+        i18next.init({
+            lng: savedLanguage,
+            fallbackLng: "en",
+            supportedLngs: ["en", "hr", "sq"],
+            resources: resources
+        }).then(function() {
+            document.querySelectorAll("[data-i18n]").forEach(
+                function(element) {
+                    element.textContent = i18next.t(
+                        element.getAttribute("data-i18n")
+                    );
+                }
+            );
+
+            function translatePage() {
+                document.documentElement.lang = i18next.language;
+                document.title = i18next.t("title");
+
+                document.querySelectorAll("[data-i18n]").forEach(
+                    function(element) {
+                        element.textContent = i18next.t(
+                            element.getAttribute("data-i18n")
+                        );
+                    }
+                );
+
+                backLink.textContent = "← " + i18next.t("back");
+                languageSelector.value = i18next.language;
+
+                showNotice(noticeKey);
+
+                if (errorKey) {
+                    showError(errorKey);
+                }
+
+                const selected = document.querySelector(
+                    'input[name="disagreement"]:checked'
+                );
+
+                const selectedCategory = selected
+                    ? selected.value
+                    : null;
+
+                renderDisagreements();
+
+                if (selectedCategory) {
+                    const radio = Array.from(
+                        document.querySelectorAll(
+                            'input[name="disagreement"]'
+                        )
+                    ).find(function(input) {
+                        return input.value === selectedCategory;
+                    });
+
+                    if (radio) {
+                        radio.checked = true;
+                    }
+                }
+            }
+
+            translatePage();
+
+            loadDisagreements();
+
+            languageSelector.addEventListener("change", function() {
+                const language = languageSelector.value;
+
+                i18next.changeLanguage(language).then(function() {
+                    try {
+                        localStorage.setItem("appLanguage", language);
+                    } catch (error) {
+                    }
+
+                    translatePage();
+                });
+            });
+        });
+    </script>
+</body>
+</html>

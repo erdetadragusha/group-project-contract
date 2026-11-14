@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title data-i18n="invite.pageTitle">
+        Invite members | Group Project Contract
+    </title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <main class="welcome">
+        <div class="language-control">
+            <label for="language-select" data-i18n="common.language">
+                Language
+            </label>
+
+            <select id="language-select" disabled>
+                <option value="en">English</option>
+                <option value="hr">Hrvatski</option>
+                <option value="sq">Shqip</option>
+            </select>
+        </div>
+
+        <h1 data-i18n="invite.heading">Invite members</h1>
+
+        <p data-i18n="invite.description">
+            Add your teammates' email addresses.
+        </p>
+
+        <form id="invite-form" class="account-form">
+            <label for="member-email" data-i18n="invite.email">
+                Email address
+            </label>
+
+            <input type="email"
+                   id="member-email"
+                   name="email"
+                   autocomplete="email"
+                   maxlength="254"
+                   aria-describedby="invite-message"
+                   required>
+
+            <button type="submit"
+                    class="button"
+                    data-i18n="invite.addButton"
+                    disabled>
+                Add
+            </button>
+        </form>
+
+        <section class="status-card"
+                 aria-labelledby="invite-draft-heading">
+
+            <h2 id="invite-draft-heading"
+                data-i18n="invite.draftHeading">
+                Invitations to save
+            </h2>
+
+            <p id="invite-empty" data-i18n="invite.empty">
+                No email addresses added yet.
+            </p>
+
+            <ul id="invite-list" class="invite-list"></ul>
+        </section>
+
+        <button id="send-invites"
+                type="button"
+                class="button"
+                data-i18n="invite.saveButton"
+                disabled>
+            Save invitations
+        </button>
+
+        <p id="invite-message" role="status" aria-live="polite"></p>
+
+        <p id="language-message"
+           role="alert"
+           data-i18n="auth.errors.generic"
+           hidden></p>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/i18next@23.16.8/dist/umd/i18next.min.js"></script>
+    <script src="i18n.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-client.js"></script>
+
+    <script src="script.js"></script>
+</body>
+</html>
