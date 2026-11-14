@@ -98,7 +98,7 @@ Timestamps are `timestamptz` (UTC) and are shown in the user's time zone.
 
 With a one-member test team: create contract, propose a change (approved at once, version +1), sections, status with live Nager.Date data, history, report a conflict, post an update, propose and accept a resolution, withdraw a report with confirmation, form validation, all pages in en / hr / sq.
 
-Accessibility on all 11 pages: one `h1` and `lang` on every page, every field labelled, errors linked with `aria-describedby`, no text below 4.5:1 contrast, no horizontal scrolling at 320 px width (200 % zoom), keyboard order follows the page with a visible 3 px focus outline, skip link, confirmation dialog opens with focus on Cancel.
+Accessibility on all 11 pages: one `h1` and `lang` on every page, every field labelled, errors linked with `aria-describedby`, no text below 4.5:1 contrast, no horizontal scrolling at 320 px width (200 % zoom), keyboard order follows the page with a visible 3 px focus outline, skip link, confirmation dialog opens with focus on Cancel. A walkthrough of the accessibility tree on the proposal form found "required" read twice on every required field; fixed. A full VoiceOver run has not been done yet.
 
 ### Screenshots
 
